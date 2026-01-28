@@ -8,9 +8,10 @@ interface FileUploadProps {
   accept?: Record<string, string[]>;
   multiple?: boolean;
   className?: string;
+  title?: string;
 }
 
-export function FileUpload({ onFilesSelected, accept, multiple = true, className }: FileUploadProps) {
+export function FileUpload({ onFilesSelected, accept, multiple = true, className, title }: FileUploadProps) {
   const onDrop = useCallback((acceptedFiles: File[]) => {
     onFilesSelected(acceptedFiles);
   }, [onFilesSelected]);
@@ -37,7 +38,7 @@ export function FileUpload({ onFilesSelected, accept, multiple = true, className
         </div>
         <div>
           <p className="text-xl font-bold text-gray-900">
-            {isDragActive ? "Drop files here" : "Upload your files"}
+            {isDragActive ? "Drop files here" : (title || "Upload your files")}
           </p>
           <p className="text-gray-500 mt-2">
             Click to upload or drag and drop

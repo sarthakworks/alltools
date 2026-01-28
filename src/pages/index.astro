@@ -1,6 +1,5 @@
 ---
 import Layout from '../layouts/Layout.astro';
-import Header from '../components/Header.astro';
 
 const tools = [
   {
@@ -28,7 +27,6 @@ const tools = [
 ---
 
 <Layout title="AllTools - Free Online Tools">
-  <Header />
   <main class="min-h-[calc(100vh-4rem)]">
     <!-- Hero Section -->
     <section class="bg-white border-b border-gray-200 py-20 text-center px-4">
@@ -130,9 +128,5 @@ const tools = [
     </section>
   </main>
   
-  <footer class="bg-white border-t border-gray-200 py-12 mt-auto">
-    <div class="container mx-auto px-4 text-center text-gray-400">
-      <p>&copy; {new Date().getFullYear()} AllTools. All rights reserved.</p>
-    </div>
-  </footer>
+
 </Layout>

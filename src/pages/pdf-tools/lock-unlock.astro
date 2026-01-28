@@ -1,0 +1,40 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import PDFSecurityTool from '../../components/tools/PDFSecurityTool';
+
+const title = "Lock & Unlock PDF - PDF Security Tools";
+const description = "Password protect your PDF files or remove passwords from locked PDFs.";
+---
+
+<Layout title={title}>
+  <main class="container mx-auto px-4 py-12 max-w-4xl">
+    <div class="mb-8 text-center">
+      <a href="/pdf-tools" class="text-sm font-medium text-blue-600 hover:text-blue-700 mb-4 inline-block transition-colors bg-blue-50 px-3 py-1 rounded-full">&larr; Back to Tools</a>
+      <h1 class="text-3xl font-bold text-gray-900 mb-2">PDF Security</h1>
+      <p class="text-gray-500">Secure your documents with encryption or remove passwords.</p>
+    </div>
+
+    <div class="bg-white shadow-sm border border-gray-200 rounded-2xl p-6 md:p-8">
+      <PDFSecurityTool client:only="react" />
+    </div>
+
+    {/* SEO Content */}
+    <div class="mt-24 max-w-3xl mx-auto prose prose-lg">
+      <h2>How to protect a PDF?</h2>
+      <ol>
+        <li>Select the "Lock PDF" tab.</li>
+        <li>Upload your file.</li>
+        <li>Enter a strong password.</li>
+        <li>Download the encrypted file.</li>
+      </ol>
+
+       <h2>How to unlock a PDF?</h2>
+      <ol>
+        <li>Select the "Unlock PDF" tab.</li>
+        <li>Upload your locked file.</li>
+        <li>Enter the correct password.</li>
+        <li>Download the unlocked version.</li>
+      </ol>
+    </div>
+  </main>
+</Layout>

@@ -1,23 +1,20 @@
-import React, { useState, useEffect } from 'react';
-import * as pdfjsLib from 'pdfjs-dist';
+import React, { useState } from 'react';
 import JSZip from 'jszip';
 import FileSaver from 'file-saver';
 import { FileUpload } from '../ui/file-uploader';
 import { ArrowDown, Image as ImageIcon, Loader2 } from 'lucide-react';
 import { cn } from '../../lib/utils';
 
-// Initialize worker
-// Use a CDN or local worker for simplicity in this Client-side environment.
-// For production, it's best to copy the worker to public/ but CDN is reliable for this demo.
-pdfjsLib.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjsLib.version}/pdf.worker.min.mjs`;
+
+// Note: PDF.js is imported dynamically to avoid SSR issues
 
 export default function PDFToImageTool() {
   const [file, setFile] = useState<File | null>(null);
+  const [pages, setPages] = useState<string[]>([]);
   const [isProcessing, setIsProcessing] = useState(false);
-  const [pages, setPages] = useState<string[]>([]); // Array of image URLs
   const [progress, setProgress] = useState(0);
 
-  const handleFiles = (files: File[]) => {
+  const handleFilesSelected = (files: File[]) => {
     if (files.length > 0) {
       setFile(files[0]);
       setPages([]);
@@ -27,37 +24,43 @@ export default function PDFToImageTool() {
 
   const convertToImages = async () => {
     if (!file) return;
+
     setIsProcessing(true);
     setProgress(0);
     setPages([]);
 
     try {
       const arrayBuffer = await file.arrayBuffer();
-      const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
-      const numPages = pdf.numPages;
+      
+      const pdfjsLib = await import('pdfjs-dist');
+      pdfjsLib.GlobalWorkerOptions.workerSrc = '/pdf.worker.min.mjs';
+      
+      const pdf = await pdfjsLib.getDocument(arrayBuffer).promise;
+      const totalPages = pdf.numPages;
       const newPages: string[] = [];
 
-      for (let i = 1; i <= numPages; i++) {
+      for (let i = 1; i <= totalPages; i++) {
         const page = await pdf.getPage(i);
-        const viewport = page.getViewport({ scale: 2.0 }); // High quality
+        const viewport = page.getViewport({ scale: 2.0 }); // High quality scale
         const canvas = document.createElement('canvas');
         const context = canvas.getContext('2d');
         canvas.height = viewport.height;
         canvas.width = viewport.width;
 
         if (context) {
-          const renderContext = { canvasContext: context, viewport: viewport };
-          await page.render(renderContext as any).promise;
-          const imgUrl = canvas.toDataURL('image/jpeg', 0.8);
-          newPages.push(imgUrl);
+            await page.render({
+            canvasContext: context,
+            viewport: viewport
+            } as any).promise;
+
+            newPages.push(canvas.toDataURL('image/jpeg', 0.8));
         }
         
-        setProgress(Math.round((i / numPages) * 100));
+        setProgress(Math.round((i / totalPages) * 100));
+        setPages([...newPages]); // Update preview progressively
       }
-
-      setPages(newPages);
     } catch (error) {
-      console.error('Error converting PDF:', error);
+      console.error('Error converting PDF to images:', error);
       alert('Failed to convert PDF. Please try again.');
     } finally {
       setIsProcessing(false);
@@ -66,12 +69,12 @@ export default function PDFToImageTool() {
 
   const downloadAll = async () => {
     if (pages.length === 0) return;
-    
+
     const zip = new JSZip();
-    pages.forEach((url, i) => {
-      // Remove data:image/jpeg;base64,
-      const data = url.split(',')[1];
-      zip.file(`page-${i + 1}.jpg`, data, { base64: true });
+    pages.forEach((page, index) => {
+      // Remove data URL prefix to get base64
+      const data = page.split(',')[1];
+      zip.file(`page-${index + 1}.jpg`, data, { base64: true });
     });
 
     const content = await zip.generateAsync({ type: 'blob' });
@@ -79,17 +82,12 @@ export default function PDFToImageTool() {
   };
 
   return (
-    <div className="space-y-8">
-      {!file && (
-        <FileUpload 
-          onFilesSelected={handleFiles}
-          accept={{ 'application/pdf': ['.pdf'] }}
-          multiple={false}
-        />
-      )}
-
-      {file && (
-        <div className="space-y-6">
+    <div className="max-w-4xl mx-auto">
+      {!file ? (
+        <FileUpload onFilesSelected={handleFilesSelected} accept={{ 'application/pdf': ['.pdf'] }} />
+      ) : (
+        <div className="space-y-8">
+          
           <div className="flex items-center justify-between p-4 rounded-xl bg-gray-50 border border-gray-200">
             <div className="flex items-center gap-3">
               <div className="w-10 h-10 rounded-lg bg-orange-100 flex items-center justify-center text-orange-600">
@@ -140,8 +138,7 @@ export default function PDFToImageTool() {
                   onClick={downloadAll}
                   className="bg-green-600 hover:bg-green-500 text-white px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-2"
                 >
-                  <ArrowDown className="w-4 h-4" />
-                  Download All (ZIP)
+                  <ArrowDown className="w-4 h-4" /> Download All (ZIP)
                 </button>
               </div>
 

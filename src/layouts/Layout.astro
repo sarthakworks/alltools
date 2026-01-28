@@ -6,6 +6,9 @@ interface Props {
 	description?: string;
 }
 
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+
 const { title, description = "Free tools for everyone. PDF, Image, AI tools and more." } = Astro.props;
 ---
 
@@ -23,6 +26,8 @@ const { title, description = "Free tools for everyone. PDF, Image, AI tools and 
 		<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 	</head>
 	<body class="min-h-screen flex flex-col">
+        <Header />
 		<slot />
+        <Footer />
 	</body>
 </html>
