@@ -1,0 +1,20 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import Header from '../../components/Header.astro';
+import AIWriterTool from '../../components/tools/AIWriterTool';
+---
+
+<Layout title="AI Writer - AllTools" description="Free AI Writing tool. Generate blog posts, emails, and stories.">
+  <Header />
+  <main class="container mx-auto px-4 py-12 max-w-6xl">
+    <div class="mb-8 text-center">
+      <a href="/ai-tools" class="text-sm font-medium text-blue-600 hover:text-blue-700 mb-4 inline-block transition-colors bg-blue-50 px-3 py-1 rounded-full">&larr; Back to Tools</a>
+      <h1 class="text-3xl font-bold text-gray-900 mb-2">AI Writer</h1>
+      <p class="text-gray-500">Generate high-quality content instantly. Powered by Gemini.</p>
+    </div>
+
+    <div class="bg-white shadow-sm border border-gray-200 rounded-2xl p-6 md:p-8">
+      <AIWriterTool client:load />
+    </div>
+  </main>
+</Layout>

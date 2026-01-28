@@ -1,0 +1,138 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Header from '../components/Header.astro';
+
+const tools = [
+  {
+    title: "PDF Tools",
+    description: "Merge, split, and convert PDFs.",
+    href: "/pdf-tools",
+    icon: "📄",
+    color: "bg-red-100 text-red-600"
+  },
+  {
+    title: "Image Tools",
+    description: "Compress, resize, and edit images.",
+    href: "/image-tools",
+    icon: "🖼️",
+    color: "bg-blue-100 text-blue-600"
+  },
+  {
+    title: "AI Tools",
+    description: "Generate content using AI.",
+    href: "/ai-tools",
+    icon: "✨",
+    color: "bg-purple-100 text-purple-600"
+  }
+];
+---
+
+<Layout title="AllTools - Free Online Tools">
+  <Header />
+  <main class="min-h-[calc(100vh-4rem)]">
+    <!-- Hero Section -->
+    <section class="bg-white border-b border-gray-200 py-20 text-center px-4">
+      <h1 class="text-4xl md:text-6xl font-extrabold text-gray-900 mb-6 tracking-tight">
+        Free Tools for <span class="text-blue-600">Everyone</span>
+      </h1>
+      <p class="text-xl text-gray-500 max-w-2xl mx-auto mb-8">
+        We offer PDF, Image, Video, and AI tools to make your life easier. <br class="hidden md:block" /> No limits, no sign-up required.
+      </p>
+      
+      <!-- Search Placeholder -->
+      <div class="max-w-xl mx-auto relative">
+        <input 
+          type="text" 
+          placeholder="Search for a tool (e.g. 'Merge PDF')" 
+          class="w-full pl-12 pr-4 py-4 rounded-full border border-gray-200 shadow-sm text-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-gray-50 text-gray-900"
+        />
+        <svg xmlns="http://www.w3.org/2000/svg" class="absolute left-5 top-1/2 -translate-y-1/2 text-gray-400 w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+        </svg>
+      </div>
+    </section>
+
+    <!-- Tools Grid -->
+    <section class="container mx-auto px-4 py-16">
+      <h2 class="text-3xl font-bold text-gray-900 mb-12 text-center">Popular Tools</h2>
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-6xl mx-auto">
+        
+        {/* PDF Tools Card */}
+        <a href="/pdf-tools" class="group flex flex-col rounded-3xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 hover:-translate-y-1">
+          <div class="bg-[#6c5dd3] p-8 h-48 relative flex flex-col justify-between">
+            <div class="flex justify-between items-start">
+              <div class="w-12 h-12 bg-white/20 backdrop-blur-sm rounded-xl flex items-center justify-center text-white">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-file-text"><path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"/><polyline points="14 2 14 8 20 8"/><path d="M16 13H8"/><path d="M16 17H8"/><path d="M10 9H8"/></svg>
+              </div>
+              <span class="px-3 py-1 bg-white/20 backdrop-blur-sm rounded-full text-xs font-medium text-white">2+ tools</span>
+            </div>
+            <div>
+              <h3 class="text-2xl font-bold text-white mb-1">PDF Tools</h3>
+              <div class="flex justify-between items-end">
+                <p class="text-white/80 text-sm">Solve Your PDF Problems</p>
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-arrow-right text-white"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+              </div>
+            </div>
+          </div>
+          <div class="bg-[#f3f0ff] p-4 flex justify-between items-center">
+             <span class="text-gray-500 text-xs font-semibold uppercase tracking-wider">Featured Tool :</span>
+             <span class="text-[#6c5dd3] font-bold text-sm bg-white px-3 py-1 rounded-full shadow-sm">PDF Merge</span>
+          </div>
+        </a>
+
+        {/* Image Tools Card */}
+        <a href="/image-tools" class="group flex flex-col rounded-3xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 hover:-translate-y-1">
+          <div class="bg-[#ff6b2c] p-8 h-48 relative flex flex-col justify-between">
+            <div class="flex justify-between items-start">
+              <div class="w-12 h-12 bg-white/20 backdrop-blur-sm rounded-xl flex items-center justify-center text-white">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-image"><rect width="18" height="18" x="3" y="3" rx="2" ry="2"/><circle cx="9" cy="9" r="2"/><path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"/></svg>
+              </div>
+              <span class="px-3 py-1 bg-white/20 backdrop-blur-sm rounded-full text-xs font-medium text-white">2+ tools</span>
+            </div>
+            <div>
+              <h3 class="text-2xl font-bold text-white mb-1">Image Tools</h3>
+              <div class="flex justify-between items-end">
+                <p class="text-white/80 text-sm">Solve Your Image Problems</p>
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-arrow-right text-white"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+              </div>
+            </div>
+          </div>
+          <div class="bg-[#fff4ed] p-4 flex justify-between items-center">
+             <span class="text-gray-500 text-xs font-semibold uppercase tracking-wider">Featured Tool :</span>
+             <span class="text-[#ff6b2c] font-bold text-sm bg-white px-3 py-1 rounded-full shadow-sm">Compress Image</span>
+          </div>
+        </a>
+
+        {/* AI Tools Card */}
+        <a href="/ai-tools" class="group flex flex-col rounded-3xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 hover:-translate-y-1">
+          <div class="bg-[#0099ff] p-8 h-48 relative flex flex-col justify-between">
+            <div class="flex justify-between items-start">
+              <div class="w-12 h-12 bg-white/20 backdrop-blur-sm rounded-xl flex items-center justify-center text-white">
+                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-sparkles"><path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z"/><path d="M5 3v4"/><path d="M9 3v4"/><path d="M19 19H5"/><path d="M19 15H5"/><path d="M19 11H5"/></svg>
+              </div>
+              <span class="px-3 py-1 bg-white/20 backdrop-blur-sm rounded-full text-xs font-medium text-white">1+ tools</span>
+            </div>
+            <div>
+              <h3 class="text-2xl font-bold text-white mb-1">AI Write</h3>
+              <div class="flex justify-between items-end">
+                <p class="text-white/80 text-sm">Solve Your Text Problems</p>
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-arrow-right text-white"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+              </div>
+            </div>
+          </div>
+          <div class="bg-[#f0f9ff] p-4 flex justify-between items-center">
+             <span class="text-gray-500 text-xs font-semibold uppercase tracking-wider">Featured Tool :</span>
+             <span class="text-[#0099ff] font-bold text-sm bg-white px-3 py-1 rounded-full shadow-sm">Article Writer</span>
+          </div>
+        </a>
+
+      </div>
+    </section>
+  </main>
+  
+  <footer class="bg-white border-t border-gray-200 py-12 mt-auto">
+    <div class="container mx-auto px-4 text-center text-gray-400">
+      <p>&copy; {new Date().getFullYear()} AllTools. All rights reserved.</p>
+    </div>
+  </footer>
+</Layout>

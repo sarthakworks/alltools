@@ -1,0 +1,44 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import Header from '../../components/Header.astro';
+
+const tools = [
+  {
+    title: "Compress Image",
+    description: "Reduce image file size without losing quality.",
+    href: "/image-tools/compress",
+    icon: "shrink",
+    color: "bg-blue-50 text-blue-600"
+  },
+  {
+    title: "Resize Image",
+    description: "Change image dimensions and aspect ratio.",
+    href: "/image-tools/resize",
+    icon: "crop",
+    color: "bg-indigo-50 text-indigo-600"
+  }
+];
+---
+
+<Layout title="Image Tools - AllTools">
+  <Header />
+  <main class="container mx-auto px-4 py-12">
+    <div class="mb-12 text-center max-w-2xl mx-auto">
+      <h1 class="text-3xl font-bold text-gray-900 mb-4">Image Tools</h1>
+      <p class="text-gray-500">Edit, resize, and compress images directly in your browser. No upload needed.</p>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      {tools.map(tool => (
+        <a href={tool.href} class="block p-8 rounded-2xl bg-white shadow-sm border border-gray-100 hover:shadow-md hover:-translate-y-1 transition-all group">
+           <div class={`w-12 h-12 ${tool.color} rounded-lg flex items-center justify-center mb-6`}>
+              {tool.icon === 'shrink' && <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-minimize-2"><polyline points="4 14 10 14 10 20"/><polyline points="20 10 14 10 14 4"/><line x1="14" x2="21" y1="10" y2="3"/><line x1="3" x2="10" y1="21" y2="14"/></svg>}
+              {tool.icon === 'crop' && <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-crop"><path d="M6 2v14a2 2 0 0 0 2 2h14"/><path d="M18 22V8a2 2 0 0 0-2-2H2"/></svg>}
+           </div>
+          <h3 class="text-xl font-semibold text-gray-900 mb-2 group-hover:text-blue-600 transition-colors">{tool.title}</h3>
+          <p class="text-gray-500 text-sm leading-relaxed">{tool.description}</p>
+        </a>
+      ))}
+    </div>
+  </main>
+</Layout>
