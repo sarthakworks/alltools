@@ -104,26 +104,24 @@ export default function PDFMergeTool() {
     })
   );
 
-  const flattenPDF = async (fileIndex: number, password: string): Promise<Uint8Array> => {
-    setIsUnlocking(true);
-    setUnlockProgress(0);
-    
-    try {
-      const arrayBuffer = await files[fileIndex].arrayBuffer();
-      const pdfjsLib = await import('pdfjs-dist');
-      pdfjsLib.GlobalWorkerOptions.workerSrc = '/pdf.worker.min.mjs';
+  const processAndFlattenPDF = async (
+    arrayBuffer: ArrayBuffer, 
+    password: string = '',
+    onProgress?: (progress: number) => void
+  ): Promise<Uint8Array> => {
+    const pdfjsLib = await import('pdfjs-dist');
+    pdfjsLib.GlobalWorkerOptions.workerSrc = '/pdf.worker.min.mjs';
 
-      const loadingTask = pdfjsLib.getDocument({
-        data: new Uint8Array(arrayBuffer),
-        password: password || undefined,
-      });
+    const loadingTask = pdfjsLib.getDocument({
+      data: new Uint8Array(arrayBuffer),
+      password: password || undefined,
+    });
 
-      const pdfViewer = await loadingTask.promise;
-      const totalPages = pdfViewer.numPages;
+    const pdfViewer = await loadingTask.promise;
+    const totalPages = pdfViewer.numPages;
+    const newPdf = await PDFDocument.create();
 
-      const newPdf = await PDFDocument.create();
-
-      for (let i = 1; i <= totalPages; i++) {
+    for (let i = 1; i <= totalPages; i++) {
         const page = await pdfViewer.getPage(i);
         const viewport = page.getViewport({ scale: 5.0 });
         
@@ -133,32 +131,29 @@ export default function PDFMergeTool() {
         canvas.height = viewport.height;
 
         if (context) {
-          await page.render({
+        await page.render({
             canvasContext: context,
             viewport: viewport,
-          } as any).promise;
+        } as any).promise;
 
-          const imgDataUrl = canvas.toDataURL("image/png");
-          const imgBytes = await fetch(imgDataUrl).then((res) => res.arrayBuffer());
+        const imgDataUrl = canvas.toDataURL("image/png");
+        const imgBytes = await fetch(imgDataUrl).then((res) => res.arrayBuffer());
 
-          const img = await newPdf.embedPng(imgBytes);
-          const newPage = newPdf.addPage([img.width, img.height]);
-          newPage.drawImage(img, {
+        const img = await newPdf.embedPng(imgBytes);
+        const newPage = newPdf.addPage([img.width, img.height]);
+        newPage.drawImage(img, {
             x: 0,
             y: 0,
             width: img.width,
             height: img.height,
-          });
+        });
         }
-        setUnlockProgress(Math.round((i / totalPages) * 100));
-      }
-      
-      const pdfBytes = await newPdf.save();
-      return pdfBytes;
-    } finally {
-      setIsUnlocking(false);
-      setUnlockProgress(0);
+        if (onProgress) {
+            onProgress(Math.round((i / totalPages) * 100));
+        }
     }
+    
+    return await newPdf.save();
   };
 
   const handleFilesSelected = async (selectedFiles: File[]) => {
@@ -190,54 +185,12 @@ export default function PDFMergeTool() {
             } catch {
               // Empty password failed, try flattening silently
               try {
-                const pdfjsLib = await import('pdfjs-dist');
-                pdfjsLib.GlobalWorkerOptions.workerSrc = '/pdf.worker.min.mjs';
-
-                const loadingTask = pdfjsLib.getDocument({
-                  data: new Uint8Array(arrayBuffer),
-                  password: '',
-                });
-
-                const pdfViewer = await loadingTask.promise;
-                const totalPages = pdfViewer.numPages;
-                const newPdf = await PDFDocument.create();
-
-                for (let i = 1; i <= totalPages; i++) {
-                  // Update progress for each page during flattening
+                const pdfBytes = await processAndFlattenPDF(arrayBuffer, '', (progress) => {
                   const fileProgress = (fileIdx / totalFiles) * 50;
-                  const pageProgress = (i / totalPages) * (50 / totalFiles);
+                  const pageProgress = (progress / 100) * (50 / totalFiles);
                   setProcessingProgress(Math.round(fileProgress + pageProgress));
-                  setProcessingMessage(`Flattening ${file.name} (page ${i}/${totalPages})...`);
-                  
-                  const page = await pdfViewer.getPage(i);
-                  const viewport = page.getViewport({ scale: 5.0 });
-                  
-                  const canvas = document.createElement("canvas");
-                  const context = canvas.getContext("2d");
-                  canvas.width = viewport.width;
-                  canvas.height = viewport.height;
-
-                  if (context) {
-                    await page.render({
-                      canvasContext: context,
-                      viewport: viewport,
-                    } as any).promise;
-
-                    const imgDataUrl = canvas.toDataURL("image/png");
-                    const imgBytes = await fetch(imgDataUrl).then((res) => res.arrayBuffer());
-
-                    const img = await newPdf.embedPng(imgBytes);
-                    const newPage = newPdf.addPage([img.width, img.height]);
-                    newPage.drawImage(img, {
-                      x: 0,
-                      y: 0,
-                      width: img.width,
-                      height: img.height,
-                    });
-                  }
-                }
+                });
                 
-                const pdfBytes = await newPdf.save();
                 const flattenedBlob = new Blob([pdfBytes as any], { type: 'application/pdf' });
                 const flattenedFile = new File([flattenedBlob], file.name, { type: 'application/pdf' });
                 processedFiles.push(flattenedFile);
@@ -426,51 +379,12 @@ export default function PDFMergeTool() {
     if (useForceUnlock) {
       try {
         const arrayBuffer = await currentFile.arrayBuffer();
-        const pdfjsLib = await import('pdfjs-dist');
-        pdfjsLib.GlobalWorkerOptions.workerSrc = '/pdf.worker.min.mjs';
-
-        const loadingTask = pdfjsLib.getDocument({
-          data: new Uint8Array(arrayBuffer),
-          password: password || undefined,
-        });
-
-        const pdfViewer = await loadingTask.promise;
-        const totalPages = pdfViewer.numPages;
-        const newPdf = await PDFDocument.create();
-
         setIsUnlocking(true);
-        for (let i = 1; i <= totalPages; i++) {
-          const page = await pdfViewer.getPage(i);
-          const viewport = page.getViewport({ scale: 5.0 });
-          
-          const canvas = document.createElement("canvas");
-          const context = canvas.getContext("2d");
-          canvas.width = viewport.width;
-          canvas.height = viewport.height;
-
-          if (context) {
-            await page.render({
-              canvasContext: context,
-              viewport: viewport,
-            } as any).promise;
-
-            const imgDataUrl = canvas.toDataURL("image/png");
-            const imgBytes = await fetch(imgDataUrl).then((res) => res.arrayBuffer());
-
-            const img = await newPdf.embedPng(imgBytes);
-            const newPage = newPdf.addPage([img.width, img.height]);
-            newPage.drawImage(img, {
-              x: 0,
-              y: 0,
-              width: img.width,
-              height: img.height,
-            });
-          }
-          setUnlockProgress(Math.round((i / totalPages)* 100));
-        }
+        const pdfBytes = await processAndFlattenPDF(arrayBuffer, password, (progress) => {
+          setUnlockProgress(progress);
+        });
         setIsUnlocking(false);
         
-        const pdfBytes = await newPdf.save();
         const flattenedBlob = new Blob([pdfBytes as any], { type: 'application/pdf' });
         const flattenedFile = new File([flattenedBlob], fileName, { type: 'application/pdf' });
         
@@ -514,49 +428,12 @@ export default function PDFMergeTool() {
       setIsUnlocking(true);
       try {
         const arrayBuffer = await currentFile.arrayBuffer();
-        const pdfjsLib = await import('pdfjs-dist');
-        pdfjsLib.GlobalWorkerOptions.workerSrc = '/pdf.worker.min.mjs';
-
-        const loadingTask = pdfjsLib.getDocument({
-          data: new Uint8Array(arrayBuffer),
-          password: password || undefined,
-        });
-
-        const pdfViewer = await loadingTask.promise;
-        const totalPages = pdfViewer.numPages;
-        const newPdf = await PDFDocument.create();
-
-        for (let i = 1; i <= totalPages; i++) {
-          const page = await pdfViewer.getPage(i);
-          const viewport = page.getViewport({ scale: 5.0 });
-          
-          const canvas = document.createElement("canvas");
-          const context = canvas.getContext("2d");
-          canvas.width = viewport.width;
-          canvas.height = viewport.height;
-
-          if (context) {
-            await page.render({
-              canvasContext: context,
-              viewport: viewport,
-            } as any).promise;
-
-            const imgDataUrl = canvas.toDataURL("image/png");
-            const imgBytes = await fetch(imgDataUrl).then((res) => res.arrayBuffer());
-
-            const img = await newPdf.embedPng(imgBytes);
-            const newPage = newPdf.addPage([img.width, img.height]);
-            newPage.drawImage(img, {
-              x: 0,
-              y: 0,
-              width: img.width,
-              height: img.height,
-            });
-          }
-          setUnlockProgress(Math.round((i / totalPages) * 100));
-        }
         
-        const pdfBytes = await newPdf.save();
+        // Use helper to unlock and flatten
+        const pdfBytes = await processAndFlattenPDF(arrayBuffer, password, (progress) => {
+          setUnlockProgress(progress);
+        });
+        
         const flattenedBlob = new Blob([pdfBytes as any], { type: 'application/pdf' });
         const flattenedFile = new File([flattenedBlob], fileName, { type: 'application/pdf' });
         
