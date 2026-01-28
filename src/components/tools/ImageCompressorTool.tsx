@@ -146,7 +146,7 @@ export default function ImageCompressorTool() {
                  </button>
                </div>
              ) : (
-               <div className="h-full min-h-[300px] flex flex-col items-center justify-center rounded-2xl border-2 border-dashed border-gray-200 bg-gray-50 text-gray-400">
+               <div className="h-full min-h-75 flex flex-col items-center justify-center rounded-2xl border-2 border-dashed border-gray-200 bg-gray-50 text-gray-400">
                  <p className="font-medium">Preview will appear here</p>
                </div>
              )}

@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
-import { PDFDocument, StandardFonts, rgb } from 'pdf-lib';
+import { PDFDocument } from 'pdf-lib';
 import { FileUpload } from '../ui/file-uploader';
-import { Lock, Unlock, FileText, Loader2, Download, ShieldCheck, ShieldAlert, X } from 'lucide-react';
+import { Lock, Unlock, Loader2, Download, ShieldCheck, ShieldAlert, X } from 'lucide-react';
 import FileSaver from 'file-saver';
 
 type Tab = 'lock' | 'unlock';
@@ -13,6 +13,8 @@ export default function PDFSecurityTool() {
   const [isProcessing, setIsProcessing] = useState(false);
   const [processedFile, setProcessedFile] = useState<Blob | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [useForceMode, setUseForceMode] = useState(false);
+  const [progress, setProgress] = useState(0);
 
   const handleFilesSelected = (files: File[]) => {
     if (files.length > 0) {
@@ -20,6 +22,7 @@ export default function PDFSecurityTool() {
       setProcessedFile(null);
       setError(null);
       setPassword('');
+      setUseForceMode(false);
     }
   };
 
@@ -27,43 +30,100 @@ export default function PDFSecurityTool() {
     if (!file || !password) return;
     setIsProcessing(true);
     setError(null);
+    setProgress(0);
 
     try {
       const arrayBuffer = await file.arrayBuffer();
 
       if (activeTab === 'lock') {
-        // LOCK PDF
-        const pdfDoc = await PDFDocument.load(arrayBuffer);
-        // Save with encryption
-        const pdfBytes = await pdfDoc.save({
-            userPassword: password,
-            ownerPassword: password,
-            permissions: {
-                printing: true,
-                modifying: false,
-                copying: false,
-                annotating: false,
-                fillingForms: false,
-                contentAccessibility: false,
-                documentAssembly: false,
-            }
-        });
-        setProcessedFile(new Blob([pdfBytes], { type: 'application/pdf' }));
-      } else {
-        // UNLOCK PDF
-        // Note: pdf-lib requires the password to load the doc if encrypted
         try {
-            // Fix: Create correct options object
-            const pdfDoc = await PDFDocument.load(arrayBuffer, { password, ignoreEncryption: false });
-            const pdfBytes = await pdfDoc.save(); // Saving without encryption removes it
-            setProcessedFile(new Blob([pdfBytes], { type: 'application/pdf' }));
-        } catch (e) {
-            throw new Error("Incorrect password or file not encrypted.");
+             // @ts-ignore
+             const { encryptPDF } = await import('@pdfsmaller/pdf-encrypt-lite');
+             
+             const encryptedBytes = await encryptPDF(
+                new Uint8Array(arrayBuffer),
+                password,
+                password
+             );
+
+            setProcessedFile(new Blob([encryptedBytes as any], { type: 'application/pdf' }));
+        } catch (e: any) {
+            if (e.message && e.message.includes('Encrypted')) {
+                throw new Error("This PDF is already encrypted. Please unlock it first.");
+            }
+            throw e;
+        }
+      } else {
+        if (useForceMode) {
+             const pdfjsLib = await import('pdfjs-dist');
+             pdfjsLib.GlobalWorkerOptions.workerSrc = '/pdf.worker.min.mjs';
+
+             const loadingTask = pdfjsLib.getDocument({
+                data: new Uint8Array(arrayBuffer),
+                password: password,
+             });
+
+             const pdfViewer = await loadingTask.promise;
+             const totalPages = pdfViewer.numPages;
+
+             const newPdf = await PDFDocument.create();
+
+             for (let i = 1; i <= totalPages; i++) {
+                const page = await pdfViewer.getPage(i);
+                const viewport = page.getViewport({ scale: 5.0 }); 
+                
+                const canvas = document.createElement("canvas");
+                const context = canvas.getContext("2d");
+                canvas.width = viewport.width;
+                canvas.height = viewport.height;
+
+                if (context) {
+                    await page.render({
+                        canvasContext: context,
+                        viewport: viewport,
+                    } as any).promise;
+
+                    const imgDataUrl = canvas.toDataURL("image/png");
+                    const imgBytes = await fetch(imgDataUrl).then((res) => res.arrayBuffer());
+
+                    const img = await newPdf.embedPng(imgBytes);
+                    const newPage = newPdf.addPage([img.width, img.height]);
+                    newPage.drawImage(img, {
+                        x: 0,
+                        y: 0,
+                        width: img.width,
+                        height: img.height,
+                    });
+                }
+                 setProgress(Math.round((i / totalPages) * 100));
+             }
+             
+             const pdfBytes = await newPdf.save();
+             setProcessedFile(new Blob([pdfBytes as any], { type: 'application/pdf' }));
+
+        } else {
+             try {
+                const pdfDoc = await PDFDocument.load(arrayBuffer, { password, ignoreEncryption: false } as any);
+                const pdfBytes = await pdfDoc.save();
+                setProcessedFile(new Blob([pdfBytes as any], { type: 'application/pdf' }));
+            } catch (e: any) {
+                 console.error("Unlock failed:", e);
+                 
+                 if (e.message && e.message.toLowerCase().includes('password')) {
+                     throw new Error("Incorrect password. Please try again.");
+                 }
+                 
+                 if (e.message && (e.message.includes('Unsupported') || e.message.includes('Encrypted'))) {
+                     throw new Error("This PDF uses advanced encryption. Please try checking 'Force Unlock (Flatten PDF)' below.");
+                 }
+    
+                 throw new Error(`Unlock failed: ${e.message}`);
+            }
         }
       }
     } catch (err: any) {
       console.error("Security operation failed:", err);
-      setError(err.message || "Operation failed");
+      setError(err.message || "Operation failed. Please try a different file.");
     } finally {
       setIsProcessing(false);
     }
@@ -143,6 +203,22 @@ export default function PDFSecurityTool() {
                         )}
                     </div>
 
+                    {activeTab === 'unlock' && (
+                        <div className="bg-blue-50 p-4 rounded-lg flex items-start gap-3">
+                            <input
+                                type="checkbox"
+                                id="force-mode"
+                                checked={useForceMode}
+                                onChange={(e) => setUseForceMode(e.target.checked)}
+                                className="mt-1 w-4 h-4 text-blue-600 rounded border-gray-300 focus:ring-blue-500"
+                            />
+                            <label htmlFor="force-mode" className="text-sm text-gray-700 cursor-pointer">
+                                <span className="font-semibold block text-gray-900">Force Unlock (Flatten PDF)</span>
+                                <span className="text-gray-500">Enable this if regular unlocking fails (e.g. for Aadhaar or Bank Statements). Converts pages to images.</span>
+                            </label>
+                        </div>
+                    )}
+
                     <button
                         onClick={processPDF}
                         disabled={!password || isProcessing}
@@ -153,7 +229,7 @@ export default function PDFSecurityTool() {
                         {isProcessing ? (
                             <>
                                 <Loader2 className="w-5 h-5 animate-spin" />
-                                {activeTab === 'lock' ? 'Encrypting...' : 'Decrypting...'}
+                                {activeTab === 'lock' ? 'Encrypting...' : useForceMode ? `Processing (${progress}%)...` : 'Decrypting...'}
                             </>
                         ) : (
                             <>

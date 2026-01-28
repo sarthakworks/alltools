@@ -96,11 +96,11 @@ export default function ImageResizerTool() {
       {file && previewUrl && (
         <div className="grid lg:grid-cols-3 gap-8">
           <div className="lg:col-span-2 space-y-4">
-            <div className="relative rounded-2xl overflow-hidden border border-gray-200 bg-gray-100 flex items-center justify-center min-h-[400px] shadow-inner">
+            <div className="relative rounded-2xl overflow-hidden border border-gray-200 bg-gray-100 flex items-center justify-center min-h-100 shadow-inner">
               <img 
                 src={previewUrl} 
                 alt="Preview" 
-                className="max-w-full max-h-[600px] object-contain shadow-lg" 
+                className="max-w-full max-h-150 object-contain shadow-lg" 
               />
             </div>
           </div>

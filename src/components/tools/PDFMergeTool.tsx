@@ -209,8 +209,15 @@ export default function PDFMergeTool() {
       const pdfDocs: Record<number, PDFDocument> = {};
 
       for (const idx of uniqueFileIndices) {
-          const arrayBuffer = await files[idx].arrayBuffer();
-          pdfDocs[idx] = await PDFDocument.load(arrayBuffer);
+          try {
+              const arrayBuffer = await files[idx].arrayBuffer();
+              pdfDocs[idx] = await PDFDocument.load(arrayBuffer);
+          } catch (e: any) {
+              if (e.message?.includes('encrypted') || e.name === 'EncryptedPDFError') {
+                  throw new Error(`File "${files[idx].name}" is password protected. Please unlock it first using the Security Tool.`);
+              }
+              throw e;
+          }
       }
 
       for (const page of pages) {

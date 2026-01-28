@@ -176,7 +176,7 @@ export default function AIWriterTool() {
               <button
                 onClick={generateContent}
                 disabled={isGenerating || !topic}
-                className="w-full bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 text-white py-4 rounded-xl font-bold transition-all shadow-lg shadow-purple-500/20 flex items-center justify-center gap-2 transform active:scale-95"
+                className="w-full bg-linear-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 text-white py-4 rounded-xl font-bold transition-all shadow-lg shadow-purple-500/20 flex items-center justify-center gap-2 transform active:scale-95"
               >
                 {isGenerating ? (
                   <>
@@ -193,7 +193,7 @@ export default function AIWriterTool() {
         </div>
       </div>
 
-      <div className="h-full min-h-[500px] flex flex-col">
+      <div className="h-full min-h-125 flex flex-col">
         {result ? (
           <div className="flex-1 bg-white border border-gray-200 rounded-2xl overflow-hidden flex flex-col animate-in fade-in shadow-sm">
             <div className="p-4 border-b border-gray-100 flex items-center justify-between bg-gray-50">
