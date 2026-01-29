@@ -1,34 +1,96 @@
-import React, { useRef, useState, useEffect } from 'react';
-import { Download, EyeOff, Upload, RotateCcw, Square } from 'lucide-react';
+import React, { useRef, useState, useEffect, useCallback } from 'react';
+import { Download, EyeOff, Upload, RotateCcw, MousePointerClick } from 'lucide-react';
+import { FileUpload } from '../ui/file-uploader';
 
 export default function ImageBlurTool() {
-  const [image, setImage] = useState<HTMLImageElement | null>(null);
+  const [src, setSrc] = useState<string | null>(null);
+  const [baseImage, setBaseImage] = useState<HTMLImageElement | null>(null);
+  const [history, setHistory] = useState<string[]>([]); // Stack of image states
   const [isDrawing, setIsDrawing] = useState(false);
   const [startPos, setStartPos] = useState({ x: 0, y: 0 });
   const [currentPos, setCurrentPos] = useState({ x: 0, y: 0 });
+  const [completedCrop, setCompletedCrop] = useState<{x: number, y: number, w: number, h: number} | null>(null);
   const [blurType, setBlurType] = useState<'blur' | 'pixelate'>('blur');
+  const [blurIntensity, setBlurIntensity] = useState(15);
   
   const mainCanvasRef = useRef<HTMLCanvasElement>(null);
   const overlayCanvasRef = useRef<HTMLCanvasElement>(null);
 
   // Load image
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files && e.target.files[0]) {
-      const img = new Image();
-      img.src = URL.createObjectURL(e.target.files[0]);
-      img.onload = () => {
-        setImage(img);
-        if (mainCanvasRef.current && overlayCanvasRef.current) {
-          const mainCtx = mainCanvasRef.current.getContext('2d');
-          mainCanvasRef.current.width = img.width;
-          mainCanvasRef.current.height = img.height;
-          overlayCanvasRef.current.width = img.width;
-          overlayCanvasRef.current.height = img.height;
-          mainCtx?.drawImage(img, 0, 0);
-        }
-      };
+  const handleFilesSelected = (files: File[]) => {
+    if (files && files.length > 0) {
+      const reader = new FileReader();
+      reader.addEventListener('load', () => {
+        const image = new Image();
+        image.src = reader.result as string;
+        image.onload = () => {
+          setSrc(reader.result as string);
+          setBaseImage(image);
+          setHistory([reader.result as string]); // Initialize history with original
+          setCompletedCrop(null);
+          setStartPos({ x: 0, y: 0 });
+          setCurrentPos({ x: 0, y: 0 });
+        };
+      });
+      reader.readAsDataURL(files[0]);
     }
   };
+
+  // Draw function - reliably draws base image + any effects
+  const drawCanvas = useCallback(() => {
+    if (!baseImage || !mainCanvasRef.current) return;
+
+    const canvas = mainCanvasRef.current;
+    const ctx = canvas.getContext('2d');
+    if (!ctx) return;
+
+    // Resize canvas to match image
+    if (canvas.width !== baseImage.width || canvas.height !== baseImage.height) {
+      canvas.width = baseImage.width;
+      canvas.height = baseImage.height;
+      
+      if (overlayCanvasRef.current) {
+        overlayCanvasRef.current.width = baseImage.width;
+        overlayCanvasRef.current.height = baseImage.height;
+      }
+    }
+
+    // Clear and draw base image
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    ctx.drawImage(baseImage, 0, 0);
+
+    // Apply completed blur if exists
+    if (completedCrop && completedCrop.w > 0 && completedCrop.h > 0) {
+      const { x, y, w, h } = completedCrop;
+      
+      ctx.save();
+      ctx.beginPath();
+      ctx.rect(x, y, w, h);
+      ctx.clip();
+
+      if (blurType === 'blur') {
+        ctx.filter = `blur(${blurIntensity}px)`;
+        ctx.drawImage(baseImage, 0, 0);
+        ctx.filter = 'none';
+      } else {
+        // Pixelate
+        const blockSize = Math.max(2, Math.floor(blurIntensity / 3));
+        for (let py = y; py < y + h; py += blockSize) {
+          for (let px = x; px < x + w; px += blockSize) {
+            const imageData = ctx.getImageData(px, py, 1, 1).data;
+            ctx.fillStyle = `rgb(${imageData[0]},${imageData[1]},${imageData[2]})`;
+            ctx.fillRect(px, py, blockSize, blockSize);
+          }
+        }
+      }
+      ctx.restore();
+    }
+  }, [baseImage, completedCrop, blurType, blurIntensity]);
+
+  // Redraw whenever dependencies change
+  useEffect(() => {
+    drawCanvas();
+  }, [drawCanvas]);
 
   const getPos = (e: React.MouseEvent | React.TouchEvent) => {
     if (!overlayCanvasRef.current) return { x: 0, y: 0 };
@@ -52,7 +114,7 @@ export default function ImageBlurTool() {
   };
 
   const startSelection = (e: React.MouseEvent | React.TouchEvent) => {
-    if (!image) return;
+    if (!baseImage) return;
     setIsDrawing(true);
     const pos = getPos(e);
     setStartPos(pos);
@@ -60,14 +122,29 @@ export default function ImageBlurTool() {
   };
 
   const updateSelection = (e: React.MouseEvent | React.TouchEvent) => {
-    if (!isDrawing || !image) return;
+    if (!isDrawing || !baseImage) return;
     const pos = getPos(e);
     setCurrentPos(pos);
     drawSelectionBox(pos);
   };
 
   const endSelection = () => {
+    if (!isDrawing) return;
     setIsDrawing(false);
+    
+    // Auto-apply effect when selection ends
+    const w = currentPos.x - startPos.x;
+    const h = currentPos.y - startPos.y;
+    
+    if (Math.abs(w) > 10 && Math.abs(h) > 10) { // Minimum selection size
+      applyEffect();
+    } else {
+      // Clear overlay if selection too small
+      if (overlayCanvasRef.current) {
+        const overlayCtx = overlayCanvasRef.current.getContext('2d');
+        overlayCtx?.clearRect(0, 0, overlayCanvasRef.current.width, overlayCanvasRef.current.height);
+      }
+    }
   };
 
   const drawSelectionBox = (endPos: { x: number; y: number }) => {
@@ -89,107 +166,58 @@ export default function ImageBlurTool() {
   };
 
   const applyEffect = () => {
-    if (!mainCanvasRef.current || !overlayCanvasRef.current) return;
-    
-    const { x, y, w, h } = getSelectionRect();
-    if (w === 0 || h === 0) return;
-
-    const ctx = mainCanvasRef.current.getContext('2d');
-    if (!ctx) return;
-
-    // Get the selected region
-    const imageData = ctx.getImageData(x, y, w, h);
-    
-    if (blurType === 'blur') {
-      applyGaussianBlur(imageData, w, h, 15);
-    } else {
-      applyPixelation(imageData, w, h, 10);
-    }
-    
-    ctx.putImageData(imageData, x, y);
-    
-    // Clear overlay
-    const overlayCtx = overlayCanvasRef.current.getContext('2d');
-    overlayCtx?.clearRect(0, 0, overlayCanvasRef.current.width, overlayCanvasRef.current.height);
-  };
-
-  const applyGaussianBlur = (imageData: ImageData, width: number, height: number, radius: number) => {
-    const pixels = imageData.data;
-    const tempPixels = new Uint8ClampedArray(pixels);
-    
-    for (let y = 0; y < height; y++) {
-      for (let x = 0; x < width; x++) {
-        let r = 0, g = 0, b = 0, a = 0, count = 0;
-        
-        for (let dy = -radius; dy <= radius; dy++) {
-          for (let dx = -radius; dx <= radius; dx++) {
-            const nx = x + dx;
-            const ny = y + dy;
-            
-            if (nx >= 0 && nx < width && ny >= 0 && ny < height) {
-              const i = (ny * width + nx) * 4;
-              r += tempPixels[i];
-              g += tempPixels[i + 1];
-              b += tempPixels[i + 2];
-              a += tempPixels[i + 3];
-              count++;
-            }
-          }
-        }
-        
-        const i = (y * width + x) * 4;
-        pixels[i] = r / count;
-        pixels[i + 1] = g / count;
-        pixels[i + 2] = b / count;
-        pixels[i + 3] = a / count;
-      }
-    }
-  };
-
-  const applyPixelation = (imageData: ImageData, width: number, height: number, blockSize: number) => {
-    const pixels = imageData.data;
-    
-    for (let y = 0; y < height; y += blockSize) {
-      for (let x = 0; x < width; x += blockSize) {
-        let r = 0, g = 0, b = 0, a = 0, count = 0;
-        
-        for (let dy = 0; dy < blockSize && y + dy < height; dy++) {
-          for (let dx = 0; dx < blockSize && x + dx < width; dx++) {
-            const i = ((y + dy) * width + (x + dx)) * 4;
-            r += pixels[i];
-            g += pixels[i + 1];
-            b += pixels[i + 2];
-            a += pixels[i + 3];
-            count++;
-          }
-        }
-        
-        r = Math.floor(r / count);
-        g = Math.floor(g / count);
-        b = Math.floor(b / count);
-        a = Math.floor(a / count);
-        
-        for (let dy = 0; dy < blockSize && y + dy < height; dy++) {
-          for (let dx = 0; dx < blockSize && x + dx < width; dx++) {
-            const i = ((y + dy) * width + (x + dx)) * 4;
-            pixels[i] = r;
-            pixels[i + 1] = g;
-            pixels[i + 2] = b;
-            pixels[i + 3] = a;
-          }
-        }
-      }
-    }
-  };
-
-  const getSelectionRect = () => {
     const w = currentPos.x - startPos.x;
     const h = currentPos.y - startPos.y;
-    return { 
-      x: w < 0 ? currentPos.x : startPos.x, 
-      y: h < 0 ? currentPos.y : startPos.y, 
-      w: Math.abs(w), 
-      h: Math.abs(h) 
+    
+    if (Math.abs(w) === 0 || Math.abs(h) === 0) return;
+
+    setCompletedCrop({
+      x: w < 0 ? currentPos.x : startPos.x,
+      y: h < 0 ? currentPos.y : startPos.y,
+      w: Math.abs(w),
+      h: Math.abs(h)
+    });
+
+    // Wait for next frame to ensure effect is drawn to canvas
+    requestAnimationFrame(() => {
+      if (!mainCanvasRef.current) return;
+      
+      const newDataUrl = mainCanvasRef.current.toDataURL('image/png');
+      
+      // Add to history
+      setHistory(prev => [...prev, newDataUrl]);
+      
+      // Update base image
+      const newImg = new Image();
+      newImg.src = newDataUrl;
+      newImg.onload = () => {
+        setBaseImage(newImg);
+        setCompletedCrop(null);
+        setStartPos({ x: 0, y: 0 });
+        setCurrentPos({ x: 0, y: 0 });
+        
+        // Clear overlay
+        const overlayCtx = overlayCanvasRef.current?.getContext('2d');
+        overlayCtx?.clearRect(0, 0, overlayCanvasRef.current.width, overlayCanvasRef.current.height);
+      };
+    });
+  };
+
+  const undo = () => {
+    if (history.length <= 1) return; // Can't undo original
+    
+    const newHistory = [...history];
+    newHistory.pop(); // Remove current state
+    const prevDataUrl = newHistory[newHistory.length - 1];
+    setHistory(newHistory);
+    
+    const newImg = new Image();
+    newImg.src = prevDataUrl;
+    newImg.onload = () => {
+      setBaseImage(newImg);
+      setCompletedCrop(null);
+      setStartPos({ x: 0, y: 0 });
+      setCurrentPos({ x: 0, y: 0 });
     };
   };
 
@@ -208,89 +236,135 @@ export default function ImageBlurTool() {
   };
 
   const reset = () => {
-    if (!image || !mainCanvasRef.current) return;
-    const ctx = mainCanvasRef.current.getContext('2d');
-    ctx?.clearRect(0, 0, mainCanvasRef.current.width, mainCanvasRef.current.height);
-    ctx?.drawImage(image, 0, 0);
-    const overlayCtx = overlayCanvasRef.current?.getContext('2d');
-    overlayCtx?.clearRect(0, 0, overlayCanvasRef.current.width, overlayCanvasRef.current.height);
+    if (!src) return;
+    const img = new Image();
+    img.src = src;
+    img.onload = () => {
+      setBaseImage(img);
+      setCompletedCrop(null);
+      setStartPos({ x: 0, y: 0 });
+      setCurrentPos({ x: 0, y: 0 });
+      const overlayCtx = overlayCanvasRef.current?.getContext('2d');
+      overlayCtx?.clearRect(0, 0, overlayCanvasRef.current.width, overlayCanvasRef.current.height);
+    };
   };
 
   return (
-    <div className="flex flex-col items-center gap-6">
-      {!image ? (
-        <div className="w-full max-w-xl p-12 text-center bg-gray-50 border-2 border-dashed border-gray-300 rounded-3xl hover:bg-white hover:border-blue-400 transition-colors cursor-pointer relative group">
-          <input type="file" onChange={handleFileChange} accept="image/*" className="absolute inset-0 opacity-0 cursor-pointer" />
-          <div className="bg-blue-100 p-4 rounded-full w-fit mx-auto text-blue-600 mb-4 group-hover:scale-110 transition-transform">
-            <Upload size={32} />
-          </div>
-          <h3 className="text-xl font-bold text-gray-900 mb-2">Upload Image to Blur</h3>
-          <p className="text-gray-500 text-sm">JPG, PNG, WebP supported</p>
-        </div>
+    <div className="max-w-5xl mx-auto">
+      {!src ? (
+        <FileUpload
+          onFilesSelected={handleFilesSelected}
+          accept={{ 'image/*': ['.jpg', '.jpeg', '.png', '.webp', '.gif'] }}
+          multiple={false}
+          title="Upload Image to Blur"
+        />
       ) : (
-        <div className="w-full max-w-5xl">
-          {/* Toolbar */}
-          <div className="flex flex-wrap gap-3 mb-4 justify-center bg-white p-3 rounded-xl border border-gray-100 shadow-sm">
-            <button onClick={() => window.location.reload()} className="flex items-center gap-2 px-3 py-2 hover:bg-gray-100 rounded-lg text-gray-700 font-medium text-sm">
-              <Upload size={16} /> New Image
-            </button>
-            
-            <div className="w-px bg-gray-200"></div>
-            
-            {/* Blur Type Selector */}
-            <div className="flex bg-gray-100 p-1 rounded-lg">
-              <button 
-                onClick={() => setBlurType('blur')}
-                className={`px-3 py-1 rounded text-xs font-semibold transition-all ${blurType === 'blur' ? 'bg-white text-blue-600 shadow-sm' : 'text-gray-600'}`}
-              >
-                Blur
-              </button>
-              <button 
-                onClick={() => setBlurType('pixelate')}
-                className={`px-3 py-1 rounded text-xs font-semibold transition-all ${blurType === 'pixelate' ? 'bg-white text-purple-600 shadow-sm' : 'text-gray-600'}`}
-              >
-                Pixelate
-              </button>
+        <div className="flex flex-col lg:flex-row gap-6 w-full max-w-7xl">
+          {/* Left: Canvas */}
+          <div className="flex-1">
+            <p className="text-center text-sm text-gray-500 mb-4 bg-blue-50 py-2 px-4 rounded-lg border border-blue-100">
+              <MousePointerClick size={14} className="inline mr-2" />
+              Click and drag to select area - effect applies automatically when you release
+            </p>
+
+            {/* Canvas Container */}
+            <div className="relative overflow-auto border border-gray-200 rounded-xl shadow-lg bg-white w-fit max-w-150 max-h-150">
+              <canvas 
+                ref={mainCanvasRef}
+                className="block"
+              />
+              <canvas 
+                ref={overlayCanvasRef}
+                onMouseDown={startSelection}
+                onMouseMove={updateSelection}
+                onMouseUp={endSelection}
+                onMouseLeave={endSelection}
+                onTouchStart={startSelection}
+                onTouchMove={updateSelection}
+                onTouchEnd={endSelection}
+                className="absolute top-0 left-0 block touch-none cursor-crosshair"
+                style={{ pointerEvents: 'auto' }}
+              />
             </div>
-
-            <button onClick={applyEffect} disabled={!isDrawing && currentPos.x === 0} className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white hover:bg-blue-700 rounded-lg font-bold text-sm disabled:opacity-50">
-              <EyeOff size={16} /> Apply {blurType === 'blur' ? 'Blur' : 'Pixelate'}
-            </button>
-            
-            <button onClick={reset} className="flex items-center gap-2 px-3 py-2 hover:bg-gray-100 rounded-lg text-gray-700 font-medium text-sm">
-              <RotateCcw size={16} /> Reset
-            </button>
-
-            <div className="w-px bg-gray-200"></div>
-            
-            <button onClick={downloadImage} className="flex items-center gap-2 px-4 py-2 bg-gray-900 text-white hover:bg-black rounded-lg font-bold text-sm">
-              <Download size={16} /> Download
-            </button>
           </div>
 
-          <p className="text-center text-sm text-gray-500 mb-4 bg-blue-50 py-2 px-4 rounded-lg border border-blue-100">
-            <Square size={14} className="inline mr-2" />
-            Click and drag to select area, then click "Apply {blurType === 'blur' ? 'Blur' : 'Pixelate'}"
-          </p>
+          {/* Right: Controls Sidebar */}
+          <div className="w-full lg:w-80 shrink-0">
+            <div className="bg-white p-6 rounded-xl border border-gray-100 shadow-lg sticky top-6 space-y-6">
+              <h3 className="text-lg font-bold text-gray-900">Settings</h3>
 
-          {/* Canvas Container */}
-          <div className="relative overflow-hidden border border-gray-200 rounded-xl shadow-lg bg-white w-fit mx-auto">
-            <canvas 
-              ref={mainCanvasRef}
-              className="max-h-[70vh] w-auto h-auto block"
-            />
-            <canvas 
-              ref={overlayCanvasRef}
-              onMouseDown={startSelection}
-              onMouseMove={updateSelection}
-              onMouseUp={endSelection}
-              onMouseLeave={endSelection}
-              onTouchStart={startSelection}
-              onTouchMove={updateSelection}
-              onTouchEnd={endSelection}
-              className="absolute top-0 left-0 max-h-[70vh] w-auto h-auto block touch-none cursor-crosshair"
-              style={{ pointerEvents: 'auto' }}
-            />
+              {/* Blur Type */}
+              <div>
+                <label className="text-sm font-medium text-gray-700 mb-2 block">Effect Type</label>
+                <div className="flex bg-gray-100 p-1 rounded-lg">
+                  <button 
+                    onClick={() => setBlurType('blur')}
+                    className={`flex-1 px-3 py-2 rounded text-sm font-semibold transition-all ${blurType === 'blur' ? 'bg-white text-blue-600 shadow-sm' : 'text-gray-600'}`}
+                  >
+                    Blur
+                  </button>
+                  <button 
+                    onClick={() => setBlurType('pixelate')}
+                    className={`flex-1 px-3 py-2 rounded text-sm font-semibold transition-all ${blurType === 'pixelate' ? 'bg-white text-purple-600 shadow-sm' : 'text-gray-600'}`}
+                  >
+                    Pixelate
+                  </button>
+                </div>
+              </div>
+
+              {/* Intensity Slider */}
+              <div>
+                <div className="flex justify-between items-center mb-2">
+                  <label className="text-sm font-medium text-gray-700">Intensity</label>
+                  <span className="text-sm font-bold text-blue-600">{blurIntensity}</span>
+                </div>
+                <input
+                  type="range"
+                  min="5"
+                  max="50"
+                  value={blurIntensity}
+                  onChange={(e) => setBlurIntensity(Number(e.target.value))}
+                  className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-blue-600"
+                />
+                <div className="flex justify-between text-xs text-gray-500 mt-1">
+                  <span>Light</span>
+                  <span>Heavy</span>
+                </div>
+              </div>
+
+              <div className="border-t border-gray-200 pt-6 space-y-3">
+                <button 
+                  onClick={undo} 
+                  disabled={history.length <= 1} 
+                  className="w-full flex items-center justify-center gap-2 px-4 py-3 bg-orange-600 text-white hover:bg-orange-700 rounded-lg font-bold text-sm disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                >
+                  <RotateCcw size={18} /> Undo Last Blur
+                </button>
+                
+                <button 
+                  onClick={reset} 
+                  className="w-full flex items-center justify-center gap-2 px-4 py-3 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-lg font-medium text-sm transition-colors"
+                >
+                  <RotateCcw size={18} /> Reset to Original
+                </button>
+              </div>
+
+              <div className="border-t border-gray-200 pt-6 space-y-3">
+                <button 
+                  onClick={downloadImage} 
+                  className="w-full flex items-center justify-center gap-2 px-4 py-3 bg-gray-900 text-white hover:bg-black rounded-lg font-bold text-sm transition-colors"
+                >
+                  <Download size={18} /> Download Result
+                </button>
+
+                <button 
+                  onClick={() => window.location.reload()} 
+                  className="w-full flex items-center justify-center gap-2 px-4 py-3 border-2 border-gray-300 hover:border-gray-400 text-gray-700 rounded-lg font-medium text-sm transition-colors"
+                >
+                  <Upload size={18} /> Upload New Image
+                </button>
+              </div>
+            </div>
           </div>
         </div>
       )}

@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Upload, Copy, FileText, Loader2, Languages } from 'lucide-react';
 import { createWorker } from 'tesseract.js';
+import { FileUpload } from '../ui/file-uploader';
 
 export default function ImageOCRTool() {
   const [image, setImage] = useState<string | null>(null);
@@ -10,14 +11,14 @@ export default function ImageOCRTool() {
   const [language, setLanguage] = useState('eng');
   const [copySuccess, setCopySuccess] = useState(false);
 
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files && e.target.files[0]) {
+  const handleFilesSelected = (files: File[]) => {
+    if (files && files.length > 0) {
       const reader = new FileReader();
       reader.onload = () => {
         setImage(reader.result as string);
         setExtractedText('');
       };
-      reader.readAsDataURL(e.target.files[0]);
+      reader.readAsDataURL(files[0]);
     }
   };
 
@@ -71,14 +72,12 @@ export default function ImageOCRTool() {
   return (
     <div className="max-w-5xl mx-auto">
       {!image ? (
-        <div className="w-full max-w-xl mx-auto p-12 text-center bg-gradient-to-br from-green-50 to-blue-50 border-2 border-dashed border-green-300 rounded-3xl hover:from-green-100 hover:to-blue-100 hover:border-green-400 transition-all cursor-pointer relative group">
-          <input type="file" onChange={handleFileChange} accept="image/*" className="absolute inset-0 opacity-0 cursor-pointer" />
-          <div className="bg-green-100 p-4 rounded-full w-fit mx-auto text-green-600 mb-4 group-hover:scale-110 transition-transform">
-            <FileText size={32} />
-          </div>
-          <h3 className="text-xl font-bold text-gray-900 mb-2">Upload Image with Text</h3>
-          <p className="text-gray-500 text-sm">Screenshots, documents, photos with text</p>
-        </div>
+        <FileUpload
+          onFilesSelected={handleFilesSelected}
+          accept={{ 'image/*': ['.jpg', '.jpeg', '.png', '.webp', '.gif'] }}
+          multiple={false}
+          title="Upload Image with Text"
+        />
       ) : (
         <div className="space-y-6">
           {/* Controls */}

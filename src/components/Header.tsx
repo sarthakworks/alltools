@@ -16,6 +16,10 @@ import {
   Lock,
   Unlock,
   Minimize2,
+  Code2,
+  EyeOff,
+  Sparkles,
+  ScanText,
   FileImage,
   ImagePlus
 } from 'lucide-react';
@@ -49,7 +53,12 @@ export default function Header() {
         { name: 'Compress Image', icon: Minimize2, desc: 'Reduce image size', href: '/image-tools/compress', color: 'bg-green-100 text-green-600' },
         { name: 'Resize Image', icon: ImageIcon, desc: 'Resize & convert images', href: '/image-tools/resize', color: 'bg-pink-100 text-pink-600' },
       ],
-      others: []
+      others: [
+        { name: 'Image to Base64', icon: Code2, desc: 'Convert to/from Base64', href: '/image-tools/to-base64' },
+        { name: 'Blur & Redact', icon: EyeOff, desc: 'Hide sensitive info', href: '/image-tools/blur' },
+        { name: 'Remove Background', icon: Sparkles, desc: 'AI background removal', href: '/image-tools/remove-bg' },
+        { name: 'Image to Text (OCR)', icon: ScanText, desc: 'Extract text from images', href: '/image-tools/image-to-text' },
+      ]
     },
     { 
       label: 'Write', 

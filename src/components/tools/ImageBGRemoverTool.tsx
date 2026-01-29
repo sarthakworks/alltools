@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Upload, Download, Loader2, Palette, Sparkles } from 'lucide-react';
 import { removeBackground } from '@imgly/background-removal';
+import { FileUpload } from '../ui/file-uploader';
 
 export default function ImageBGRemoverTool() {
   const [originalImage, setOriginalImage] = useState<string | null>(null);
@@ -10,9 +11,9 @@ export default function ImageBGRemoverTool() {
   const [bgType, setBgType] = useState<'transparent' | 'color'>('transparent');
   const [fileName, setFileName] = useState('');
 
-  const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files && e.target.files[0]) {
-      const file = e.target.files[0];
+  const handleFilesSelected = async (files: File[]) => {
+    if (files && files.length > 0) {
+      const file = files[0];
       setFileName(file.name);
       
       const reader = new FileReader();
@@ -91,14 +92,12 @@ export default function ImageBGRemoverTool() {
   return (
     <div className="max-w-5xl mx-auto">
       {!originalImage ? (
-        <div className="w-full max-w-xl mx-auto p-12 text-center bg-gradient-to-br from-purple-50 to-blue-50 border-2 border-dashed border-purple-300 rounded-3xl hover:from-purple-100 hover:to-blue-100 hover:border-purple-400 transition-all cursor-pointer relative group">
-          <input type="file" onChange={handleFileChange} accept="image/*" className="absolute inset-0 opacity-0 cursor-pointer" />
-          <div className="bg-purple-100 p-4 rounded-full w-fit mx-auto text-purple-600 mb-4 group-hover:scale-110 transition-transform">
-            <Sparkles size={32} />
-          </div>
-          <h3 className="text-xl font-bold text-gray-900 mb-2">Upload Image</h3>
-          <p className="text-gray-500 text-sm">AI will automatically remove the background</p>
-        </div>
+        <FileUpload
+          onFilesSelected={handleFilesSelected}
+          accept={{ 'image/*': ['.jpg', '.jpeg', '.png', '.webp', '.gif'] }}
+          multiple={false}
+          title="Upload Image"
+        />
       ) : (
         <div className="space-y-6">
           {/* Controls */}

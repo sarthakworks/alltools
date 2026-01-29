@@ -78,7 +78,7 @@ export default function ImageCompressorTool() {
   };
 
   return (
-    <div className="space-y-8">
+    <div className="max-w-5xl mx-auto">
       {!file && (
         <FileUpload 
           onFilesSelected={handleFiles}
