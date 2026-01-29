@@ -1,0 +1,54 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import ImageBGRemoverTool from '../../components/tools/ImageBGRemoverTool';
+---
+
+<Layout title="Remove Background - AI-Powered Tool" description="Remove image backgrounds automatically with AI. Replace with transparency or custom colors. 100% free and client-side.">
+  <main class="container mx-auto px-4 py-12 max-w-6xl">
+    <div class="mb-10 text-center">
+      <a href="/" class="text-sm font-medium text-gray-500 hover:text-blue-600 mb-4 inline-flex items-center gap-1 transition-colors">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m12 19-7-7 7-7"/><path d="M19 12H5"/></svg>
+        Back to Home
+      </a>
+      <h1 class="text-3xl md:text-4xl font-extrabold text-gray-900 mb-4 tracking-tight">
+        AI <span class="bg-gradient-to-r from-purple-600 to-blue-600 bg-clip-text text-transparent">Background Remover</span>
+      </h1>
+      <p class="text-gray-500 max-w-2xl mx-auto text-lg leading-relaxed">
+        Automatically remove backgrounds from images using cutting-edge AI. Replace with transparency or any color.
+      </p>
+    </div>
+
+    <div class="bg-white shadow-xl shadow-gray-200/50 border border-gray-100 rounded-3xl p-6 md:p-10">
+      <ImageBGRemoverTool client:load />
+    </div>
+
+    {/* Info */}
+    <div class="mt-16 max-w-3xl mx-auto">
+      <div class="bg-gradient-to-br from-purple-50 to-blue-50 rounded-2xl p-8 border border-purple-100">
+        <h2 class="text-2xl font-bold text-gray-900 mb-4">How It Works</h2>
+        <div class="space-y-3 text-gray-700">
+          <p>
+            <strong>1. Upload:</strong> Choose any image (JPG, PNG, WebP)
+          </p>
+          <p>
+            <strong>2. AI Processing:</strong> Our AI model automatically detects the subject and removes the background
+          </p>
+          <p>
+            <strong>3. Customize:</strong> Keep it transparent or add a solid color background
+          </p>
+          <p>
+            <strong>4. Download:</strong> Save your new image as PNG with transparency
+          </p>
+        </div>
+      </div>
+
+      <div class="mt-8 p-6 bg-yellow-50 border border-yellow-200 rounded-xl">
+        <h3 class="font-bold text-yellow-900 mb-2">⚡ Performance Note</h3>
+        <p class="text-sm text-yellow-800">
+          The AI model downloads on first use (~20MB). Processing may take 10-30 seconds depending on image size and your device.
+          All processing happens locally - your images are never uploaded.
+        </p>
+      </div>
+    </div>
+  </main>
+</Layout>

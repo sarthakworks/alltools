@@ -1,0 +1,58 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import ImageOCRTool from '../../components/tools/ImageOCRTool';
+---
+
+<Layout title="Image to Text (OCR) - Extract Text from Images" description="Extract text from images using OCR. Support for 9+ languages. Free online tool with instant results.">
+  <main class="container mx-auto px-4 py-12 max-w-6xl">
+    <div class="mb-10 text-center">
+      <a href="/" class="text-sm font-medium text-gray-500 hover:text-blue-600 mb-4 inline-flex items-center gap-1 transition-colors">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m12 19-7-7 7-7"/><path d="M19 12H5"/></svg>
+        Back to Home
+      </a>
+      <h1 class="text-3xl md:text-4xl font-extrabold text-gray-900 mb-4 tracking-tight">
+        Image to <span class="text-green-600">Text (OCR)</span>
+      </h1>
+      <p class="text-gray-500 max-w-2xl mx-auto text-lg leading-relaxed">
+        Extract text from images, screenshots, and scanned documents using Optical Character Recognition.
+      </p>
+    </div>
+
+    <div class="bg-white shadow-xl shadow-gray-200/50 border border-gray-100 rounded-3xl p-6 md:p-10">
+      <ImageOCRTool client:load />
+    </div>
+
+    {/* SEO Content */}
+    <div class="mt-16 max-w-3xl mx-auto prose prose-green">
+      <h2>What is OCR?</h2>
+      <p>
+        Optical Character Recognition (OCR) is a technology that converts different types of documents—such as scanned paper documents, 
+        PDF files, or images captured by a digital camera—into editable and searchable data.
+      </p>
+
+      <h3>Use Cases</h3>
+      <ul>
+        <li><strong>Digitize Documents:</strong> Convert paper documents to digital text</li>
+        <li><strong>Extract from Screenshots:</strong> Pull text from app screenshots or error messages</li>
+        <li><strong>Translate Signs:</strong> Extract text from photos of foreign language signs</li>
+        <li><strong>Data Entry:</strong> Quickly copy text from business cards, receipts, or forms</li>
+      </ul>
+
+      <div class="bg-blue-50 border border-blue-200 rounded-xl p-6 not-prose my-8">
+        <h3 class="font-bold text-blue-900 mb-3">💡 Tips for Best Results</h3>
+        <ul class="text-sm text-blue-800 space-y-2 list-disc list-inside">
+          <li>Use high-resolution, clear images with good lighting</li>
+          <li>Ensure text is horizontal and not skewed</li>
+          <li>Select the correct language for better accuracy</li>
+          <li>Crop the image to focus on the text area</li>
+        </ul>
+      </div>
+
+      <h3>Is my data secure?</h3>
+      <p>
+        <strong>Absolutely.</strong> All OCR processing happens locally in your browser using Tesseract.js. 
+        Your images are never uploaded to any server, ensuring complete privacy.
+      </p>
+    </div>
+  </main>
+</Layout>

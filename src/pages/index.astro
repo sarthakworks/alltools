@@ -1,132 +1,243 @@
 ---
 import Layout from '../layouts/Layout.astro';
+import ToolsGrid from '../components/ToolsGrid';
+import { categories, stats } from '../data/tools';
+import { Search, ArrowRight, FileText, Image as ImageIcon, Zap, CheckCircle, Shield, PenTool } from 'lucide-react';
 
-const tools = [
-  {
-    title: "PDF Tools",
-    description: "Merge, split, and convert PDFs.",
-    href: "/pdf-tools",
-    icon: "📄",
-    color: "bg-red-100 text-red-600"
-  },
-  {
-    title: "Image Tools",
-    description: "Compress, resize, and edit images.",
-    href: "/image-tools",
-    icon: "🖼️",
-    color: "bg-blue-100 text-blue-600"
-  },
-  {
-    title: "AI Tools",
-    description: "Generate content using AI.",
-    href: "/ai-tools",
-    icon: "✨",
-    color: "bg-purple-100 text-purple-600"
-  }
-];
+const titleWords = ['Education', 'Business', 'Life', 'Work', 'Creativity'];
 ---
 
-<Layout title="AllTools - Free Online Tools">
+<Layout title="AllTools - Free PDF, Image, Video & AI Tools">
   <main class="min-h-[calc(100vh-4rem)]">
-    <!-- Hero Section -->
-    <section class="bg-white border-b border-gray-200 py-20 text-center px-4">
-      <h1 class="text-4xl md:text-6xl font-extrabold text-gray-900 mb-6 tracking-tight">
-        Free Tools for <span class="text-blue-600">Everyone</span>
-      </h1>
-      <p class="text-xl text-gray-500 max-w-2xl mx-auto mb-8">
-        We offer PDF, Image, Video, and AI tools to make your life easier. <br class="hidden md:block" /> No limits, no sign-up required.
-      </p>
-      
-      <!-- Search Placeholder -->
-      <div class="max-w-xl mx-auto relative">
-        <input 
-          type="text" 
-          placeholder="Search for a tool (e.g. 'Merge PDF')" 
-          class="w-full pl-12 pr-4 py-4 rounded-full border border-gray-200 shadow-sm text-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-gray-50 text-gray-900"
-        />
-        <svg xmlns="http://www.w3.org/2000/svg" class="absolute left-5 top-1/2 -translate-y-1/2 text-gray-400 w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-        </svg>
-      </div>
+    
+    {/* Hero Section */}
+    <section class="bg-white pt-20 pb-24 text-center px-4 relative overflow-hidden">
+        {/* Floating Background Shapes */}
+        <div class="absolute top-20 left-10 w-12 h-12 bg-yellow-400 rounded-full opacity-20 animate-pulse"></div>
+        <div class="absolute top-40 right-20 w-8 h-8 bg-blue-500 rotate-45 opacity-20"></div>
+        <div class="absolute bottom-10 left-1/4 w-4 h-4 bg-red-400 rounded-full opacity-30"></div>
+
+        <div class="relative z-10 max-w-7xl mx-auto">
+          <h1 class="text-5xl md:text-7xl font-extrabold text-[#111827] mb-6 tracking-tight leading-tight">
+            Free Tools to Make <br class="md:hidden" />
+            <span id="typewriter-word" class="text-blue-600 bg-blue-50 px-2 rounded-lg inline-block transition-all duration-500 ease-in-out">
+              Education
+            </span> Simple
+          </h1>
+          <p class="text-gray-500 text-lg md:text-xl mb-10 max-w-2xl mx-auto">
+            We offer PDF, video, image and other online tools to make your life easier
+          </p>
+
+          {/* Search Bar */}
+          <div class="max-w-2xl mx-auto relative mb-16 px-4">
+            <div class="relative group">
+              <div class="absolute inset-y-0 left-0 pl-6 flex items-center pointer-events-none">
+                 <Search className="h-6 w-6 text-blue-500" />
+              </div>
+              <input
+                type="text"
+                placeholder="Search"
+                class="w-full pl-16 pr-32 py-5 rounded-full border border-gray-200 shadow-lg shadow-blue-500/5 text-lg focus:outline-none focus:ring-4 focus:ring-blue-100 focus:border-blue-500 transition-all"
+              />
+              <button class="absolute right-2 top-2 bottom-2 bg-blue-600 text-white px-8 rounded-full font-semibold hover:bg-blue-700 transition-colors shadow-md">
+                Search
+              </button>
+            </div>
+          </div>
+
+          {/* Category Cards */}
+          {/* Category Cards */}
+          <div class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-6 max-w-7xl mx-auto px-4 mt-16 text-left">
+            {categories.map((cat) => (
+              <a href={cat.href} class="group flex flex-col rounded-3xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 hover:-translate-y-1">
+                <div class={`${cat.color} p-6 h-42 relative flex flex-col justify-between`}>
+                  <div class="flex justify-between items-start">
+                    <div class="w-10 h-10 bg-white/20 backdrop-blur-sm rounded-xl flex items-center justify-center text-white">
+                      <cat.icon className="w-5 h-5" />
+                    </div>
+                    {cat.count && (
+                      <span class="px-2.5 py-1 bg-white/20 backdrop-blur-sm rounded-full text-[10px] font-bold text-white tracking-wide">{cat.count}</span>
+                    )}
+                  </div>
+                  <div>
+                    <h3 class="text-xl font-bold text-white mb-0.5">{cat.name}</h3>
+                    <div class="flex justify-between items-end">
+                      <p class="text-white/80 text-xs leading-none">{cat.desc}</p>
+                      <ArrowRight className="text-white w-4 h-4 opacity-75 group-hover:translate-x-1 transition-transform" />
+                    </div>
+                  </div>
+                </div>
+                {cat.featured && (
+                  <div class={`${cat.lightColor || 'bg-gray-50'} p-4 flex justify-between items-center h-16`}>
+                    <div class="flex flex-col">
+                       <span class="text-gray-400 text-[10px] font-bold uppercase tracking-wider leading-tight">Featured</span>
+                       <span class="text-gray-400 text-[10px] font-bold uppercase tracking-wider leading-tight">Tool :</span>
+                    </div>
+                    <span class={`text-[10px] font-bold bg-white px-3 py-2 rounded-xl shadow-sm hover:shadow-md transition-all truncate text-center min-w-[90px] ${cat.color.replace('bg-', 'text-').replace('[#', 'text-[#')}`}>
+                      {cat.featured.name}
+                    </span>
+                  </div>
+                )}
+              </a>
+            ))}
+          </div>
+        </div>
     </section>
 
-    <!-- Tools Grid -->
-    <section class="container mx-auto px-4 py-16">
-      <h2 class="text-3xl font-bold text-gray-900 mb-12 text-center">Popular Tools</h2>
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-6xl mx-auto">
-        
-        {/* PDF Tools Card */}
-        <a href="/pdf-tools" class="group flex flex-col rounded-3xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 hover:-translate-y-1">
-          <div class="bg-[#6c5dd3] p-8 h-48 relative flex flex-col justify-between">
-            <div class="flex justify-between items-start">
-              <div class="w-12 h-12 bg-white/20 backdrop-blur-sm rounded-xl flex items-center justify-center text-white">
-                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-file-text"><path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"/><polyline points="14 2 14 8 20 8"/><path d="M16 13H8"/><path d="M16 17H8"/><path d="M10 9H8"/></svg>
+    {/* Stats Bar */}
+    <div class="bg-[#f3f7fa] border-y border-gray-100 py-8">
+        <div class="container mx-auto px-4">
+          <div class="grid grid-cols-2 md:grid-cols-4 gap-8 divide-x divide-gray-200/50">
+            {stats.map((stat) => (
+              <div class="text-center px-4">
+                <div class="text-3xl md:text-4xl font-bold text-blue-600 mb-1">{stat.value}</div>
+                <div class="text-xs md:text-sm font-semibold text-gray-400 uppercase tracking-widest">{stat.label}</div>
               </div>
-              <span class="px-3 py-1 bg-white/20 backdrop-blur-sm rounded-full text-xs font-medium text-white">2+ tools</span>
-            </div>
-            <div>
-              <h3 class="text-2xl font-bold text-white mb-1">PDF Tools</h3>
-              <div class="flex justify-between items-end">
-                <p class="text-white/80 text-sm">Solve Your PDF Problems</p>
-                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-arrow-right text-white"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
-              </div>
-            </div>
+            ))}
           </div>
-          <div class="bg-[#f3f0ff] p-4 flex justify-between items-center">
-             <span class="text-gray-500 text-xs font-semibold uppercase tracking-wider">Featured Tool :</span>
-             <span class="text-[#6c5dd3] font-bold text-sm bg-white px-3 py-1 rounded-full shadow-sm">PDF Merge</span>
-          </div>
-        </a>
+        </div>
+    </div>
 
-        {/* Image Tools Card */}
-        <a href="/image-tools" class="group flex flex-col rounded-3xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 hover:-translate-y-1">
-          <div class="bg-[#ff6b2c] p-8 h-48 relative flex flex-col justify-between">
-            <div class="flex justify-between items-start">
-              <div class="w-12 h-12 bg-white/20 backdrop-blur-sm rounded-xl flex items-center justify-center text-white">
-                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-image"><rect width="18" height="18" x="3" y="3" rx="2" ry="2"/><circle cx="9" cy="9" r="2"/><path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"/></svg>
-              </div>
-              <span class="px-3 py-1 bg-white/20 backdrop-blur-sm rounded-full text-xs font-medium text-white">2+ tools</span>
-            </div>
-            <div>
-              <h3 class="text-2xl font-bold text-white mb-1">Image Tools</h3>
-              <div class="flex justify-between items-end">
-                <p class="text-white/80 text-sm">Solve Your Image Problems</p>
-                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-arrow-right text-white"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
-              </div>
-            </div>
+    {/* Popular Tools Section (Values Interactivity) */}
+    <section class="bg-gray-50 py-24">
+        <div class="container mx-auto px-4">
+          <div class="text-center mb-12">
+            <h2 class="text-4xl font-bold text-gray-900 mb-4">Our Most Popular Tools</h2>
+            <p class="text-gray-500">We present the best of the best. All free, no catch.</p>
           </div>
-          <div class="bg-[#fff4ed] p-4 flex justify-between items-center">
-             <span class="text-gray-500 text-xs font-semibold uppercase tracking-wider">Featured Tool :</span>
-             <span class="text-[#ff6b2c] font-bold text-sm bg-white px-3 py-1 rounded-full shadow-sm">Compress Image</span>
-          </div>
-        </a>
 
-        {/* AI Tools Card */}
-        <a href="/ai-tools" class="group flex flex-col rounded-3xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 hover:-translate-y-1">
-          <div class="bg-[#0099ff] p-8 h-48 relative flex flex-col justify-between">
-            <div class="flex justify-between items-start">
-              <div class="w-12 h-12 bg-white/20 backdrop-blur-sm rounded-xl flex items-center justify-center text-white">
-                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-sparkles"><path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z"/><path d="M5 3v4"/><path d="M9 3v4"/><path d="M19 19H5"/><path d="M19 15H5"/><path d="M19 11H5"/></svg>
-              </div>
-              <span class="px-3 py-1 bg-white/20 backdrop-blur-sm rounded-full text-xs font-medium text-white">1+ tools</span>
-            </div>
-            <div>
-              <h3 class="text-2xl font-bold text-white mb-1">AI Write</h3>
-              <div class="flex justify-between items-end">
-                <p class="text-white/80 text-sm">Solve Your Text Problems</p>
-                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-arrow-right text-white"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
-              </div>
-            </div>
-          </div>
-          <div class="bg-[#f0f9ff] p-4 flex justify-between items-center">
-             <span class="text-gray-500 text-xs font-semibold uppercase tracking-wider">Featured Tool :</span>
-             <span class="text-[#0099ff] font-bold text-sm bg-white px-3 py-1 rounded-full shadow-sm">Article Writer</span>
-          </div>
-        </a>
-
-      </div>
+          {/* React Island for Filtering */}
+          <ToolsGrid client:visible />
+          
+        </div>
     </section>
+
+   {/* Free Tools You'd Usually Pay For */}
+      <section class="bg-white py-24 border-t border-gray-100">
+        <div class="container mx-auto px-4">
+          <div class="flex flex-col md:flex-row justify-between md:items-end mb-12 max-w-6xl mx-auto gap-4">
+            <div>
+              <h2 class="text-3xl md:text-4xl font-bold text-gray-900 mb-2">Free Tools You’d Usually Pay For</h2>
+              <p class="text-gray-500">No limits, No Sign-ups</p>
+            </div>
+            <div class="flex gap-2">
+              <button class="p-2 rounded-full border border-gray-100 hover:bg-gray-50" aria-label="Previous"><ArrowRight className="w-5 h-5 rotate-180 text-gray-400" /></button>
+              <button class="p-2 rounded-full bg-blue-600 text-white" aria-label="Next"><ArrowRight className="w-5 h-5" /></button>
+            </div>
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-6xl mx-auto">
+            {/* Feature Cards */}
+            <div class="bg-blue-50 rounded-3xl p-8 h-80 relative overflow-hidden group hover:shadow-lg transition-all cursor-pointer">
+              <div class="relative z-10">
+                 <div class="w-12 h-12 bg-white rounded-xl shadow-sm flex items-center justify-center mb-6 text-blue-600">
+                    <FileText className="w-6 h-6" />
+                 </div>
+                 <h3 class="text-2xl font-bold text-gray-900 mb-2">PDF Creator</h3>
+                 <p class="text-gray-600 text-sm mb-6">Create PDFs quickly and easily with our free PDF creator.</p>
+                 <span class="text-blue-600 font-semibold text-sm flex items-center gap-1 group-hover:translate-x-1 transition-transform">
+                   Start Creating <ArrowRight className="w-4 h-4" />
+                 </span>
+              </div>
+              <div class="absolute top-1/2 right-[-50px] w-64 h-64 bg-white/40 rounded-full blur-3xl group-hover:bg-white/60 transition-colors"></div>
+            </div>
+
+            <div class="bg-purple-50 rounded-3xl p-8 h-80 relative overflow-hidden group hover:shadow-lg transition-all cursor-pointer">
+              <div class="relative z-10">
+                 <div class="w-12 h-12 bg-white rounded-xl shadow-sm flex items-center justify-center mb-6 text-purple-600">
+                    <ImageIcon className="w-6 h-6" />
+                 </div>
+                 <h3 class="text-2xl font-bold text-gray-900 mb-2">Background Remover</h3>
+                 <p class="text-gray-600 text-sm mb-6">Remove or change the background of a photo automatically.</p>
+                 <span class="text-purple-600 font-semibold text-sm flex items-center gap-1 group-hover:translate-x-1 transition-transform">
+                   Remove BG <ArrowRight className="w-4 h-4" />
+                 </span>
+              </div>
+              <div class="absolute bottom-0 right-0 w-40 h-40 bg-purple-200/30 rounded-full blur-2xl"></div>
+            </div>
+
+            <div class="bg-green-50 rounded-3xl p-8 h-80 relative overflow-hidden group hover:shadow-lg transition-all cursor-pointer">
+              <div class="relative z-10">
+                 <div class="w-12 h-12 bg-white rounded-xl shadow-sm flex items-center justify-center mb-6 text-green-600">
+                    <Zap className="w-6 h-6" />
+                 </div>
+                 <h3 class="text-2xl font-bold text-gray-900 mb-2">Photo Cleanup</h3>
+                 <p class="text-gray-600 text-sm mb-6">Use AI to remove unwanted objects, texts, people from an image.</p>
+                 <span class="text-green-600 font-semibold text-sm flex items-center gap-1 group-hover:translate-x-1 transition-transform">
+                   Clean Photo <ArrowRight className="w-4 h-4" />
+                 </span>
+              </div>
+              <div class="absolute top-0 right-[-20px] w-32 h-32 bg-green-200/40 rounded-full blur-xl"></div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Premium CTA Section */}
+      <section class="bg-gradient-to-r from-blue-600 to-blue-800 text-white py-24 overflow-hidden relative">
+        <div class="container mx-auto px-4 relative z-10 flex flex-col md:flex-row items-center justify-between gap-12 max-w-6xl mx-auto">
+          <div class="max-w-xl">
+            <h2 class="text-4xl font-bold mb-4">Get more with Premium</h2>
+            <p class="text-blue-100 text-lg mb-8 leading-relaxed">
+              Keep your projects further with premium tools that stay out of your way and work smarter. Create without limits, ads, or roadblocks. Get started for just $3.99 a month.
+            </p>
+            <div class="flex flex-wrap gap-4 mb-8">
+               <div class="flex items-center gap-2 bg-white/10 px-4 py-2 rounded-full text-sm font-medium">
+                 <Shield className="w-4 h-4" /> Ad-free
+               </div>
+               <div class="flex items-center gap-2 bg-white/10 px-4 py-2 rounded-full text-sm font-medium">
+                 <CheckCircle className="w-4 h-4" /> Unlimited usage
+               </div>
+               <div class="flex items-center gap-2 bg-white/10 px-4 py-2 rounded-full text-sm font-medium">
+                 <Zap className="w-4 h-4" /> Faster processing
+               </div>
+            </div>
+            <button class="bg-white text-blue-700 font-bold px-8 py-3 rounded-xl shadow-lg hover:bg-blue-50 transition-colors">
+              Get Started
+            </button>
+          </div>
+          
+          {/* Visual Illustration */}
+          <div class="hidden md:block w-[500px] h-[300px] bg-white/10 rounded-2xl border border-white/20 backdrop-blur-sm p-6 relative">
+             <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-center">
+               <div class="w-20 h-20 bg-blue-500 rounded-full flex items-center justify-center mx-auto mb-4 shadow-xl">
+                 <PenTool className="w-10 h-10 text-white" />
+               </div>
+               <div class="w-32 h-4 bg-white/20 rounded-full mx-auto mb-2"></div>
+               <div class="w-24 h-4 bg-white/10 rounded-full mx-auto"></div>
+             </div>
+             {/* Floating elements */}
+             <div class="absolute top-10 left-10 w-12 h-12 bg-white rounded-lg shadow-lg flex items-center justify-center text-red-500 transform rotate-12"><FileText size={20} /></div>
+             <div class="absolute bottom-10 right-10 w-12 h-12 bg-white rounded-lg shadow-lg flex items-center justify-center text-green-500 transform -rotate-12"><ImageIcon size={20} /></div>
+             <div class="absolute top-1/4 right-8 w-10 h-10 bg-white/20 rounded-full"></div>
+          </div>
+        </div>
+      </section>
+
   </main>
-  
-
 </Layout>
+
+<script>
+  // Simple Typewriter Effect
+  const words = ['Education', 'Business', 'Life', 'Work', 'Creativity'];
+  let index = 0;
+  const element = document.getElementById('typewriter-word');
+  
+  if (element) {
+    setInterval(() => {
+        index = (index + 1) % words.length;
+        // Fade out
+        element.style.opacity = '0';
+        element.style.transform = 'translateY(10px)';
+        
+        setTimeout(() => {
+            // Change text
+            element.textContent = words[index];
+            // Fade in
+            element.style.opacity = '1';
+             element.style.transform = 'translateY(0)';
+        }, 500); // Wait for fade out
+        
+    }, 3000);
+  }
+</script>

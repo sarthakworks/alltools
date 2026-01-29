@@ -1,12 +1,17 @@
 ---
 import "../styles/global.css";
+// Supports weights 400-700
+import '@fontsource/inter/400.css';
+import '@fontsource/inter/500.css';
+import '@fontsource/inter/600.css';
+import '@fontsource/inter/700.css';
 
 interface Props {
 	title: string;
 	description?: string;
 }
 
-import Header from '../components/Header.astro';
+import Header from '../components/Header.tsx';
 import Footer from '../components/Footer.astro';
 
 const { title, description = "Free tools for everyone. PDF, Image, AI tools and more." } = Astro.props;
@@ -20,13 +25,13 @@ const { title, description = "Free tools for everyone. PDF, Image, AI tools and 
 		<meta name="viewport" content="width=device-width" />
 		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
 		<meta name="generator" content={Astro.generator} />
+		<link rel="manifest" href="/manifest.webmanifest" />
+		<meta name="theme-color" content="#ffffff" />
 		<title>{title}</title>
-		<link rel="preconnect" href="https://fonts.googleapis.com">
-		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-		<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
 	</head>
 	<body class="min-h-screen flex flex-col">
-        <Header />
+        <Header client:load />
 		<slot />
         <Footer />
 	</body>
