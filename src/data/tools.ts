@@ -1,11 +1,9 @@
 import { 
-  FileText, Image as ImageIcon, Video, PenTool, File, 
-  Merge, Scissors, Lock, Unlock, Minimize2, 
-  ImagePlus, FileImage, Type, Download, Music,
-  Youtube, Instagram, Twitter, Linkedin,
-  EyeOff, FileCode, Eraser, ScanText, FileUp, Sparkles,
-  Search, Wand, Code2, Scan, Languages, Layout,
-  Smartphone, Monitor, Laptop, Image as LucideImage
+  FileText, Image as ImageIcon, Video, PenTool,
+  Merge, Scissors, Lock, Minimize2, 
+  ImagePlus, FileImage, 
+  EyeOff, FileCode, ScanText, Sparkles,
+ Image as LucideImage
 } from 'lucide-react';
 
 export interface ToolMetadata {
@@ -38,7 +36,9 @@ export const allTools: ToolMetadata[] = [
   { id: 'image-ocr', name: 'Image to Text (OCR)', desc: 'Extract text from images', icon: ScanText, href: '/image-tools/image-to-text', category: 'image', isNew: true, color: 'bg-orange-50 text-orange-600' },
 
   // AI Tools
-  { id: 'ai-writer', name: 'AI Writer', desc: 'Generate blog posts & emails with AI', icon: PenTool, href: '/ai-tools/writer', category: 'write', isNew: true, color: 'bg-purple-50 text-purple-600' },
+  { id: 'ai-writer', name: 'AI Writer', desc: 'Generate blog posts & emails with AI', icon: PenTool, href: '/ai-tools/writer', category: 'ai', isNew: true, color: 'bg-purple-50 text-purple-600' },
+  { id: 'essay-writer', name: 'Essay Writer', desc: 'Write academic essays offline', icon: FileText, href: '/ai-tools/essay-writer', category: 'ai', isNew: true, color: 'bg-indigo-50 text-indigo-600' },
+  { id: 'image-gen', name: 'Image Generator', desc: 'Create AI art from text prompts', icon: ImageIcon, href: '/ai-tools/image-generator', category: 'ai', isNew: true, color: 'bg-pink-50 text-pink-600' },
 ];
 
 export const categories = [
@@ -61,16 +61,16 @@ export const categories = [
     featured: { name: 'Mute Video', href: '/video-tools/mute' }
   },
   { 
-    id: 'write', name: 'AI Write', icon: PenTool, href: '/ai-tools',
+    id: 'ai', name: 'AI Tools', icon: PenTool, href: '/ai-tools',
     color: 'bg-[#0099ff]', lightColor: 'bg-[#f0f9ff]', 
     count: '10+ tools', desc: 'Solve Your Text Problems',
     featured: { name: 'Paragraph Writer', href: '/ai-tools/writer' }
   },
   { 
-    id: 'file', name: 'File Tools', icon: File, href: '/file-tools',
+    id: 'coding', name: 'Coding Tools', icon: FileCode, href: '/coding-tools',
     color: 'bg-[#0d9488]', lightColor: 'bg-[#f0fdfa]', 
-    count: '15+ tools', desc: 'Solve Your File Problems',
-    featured: { name: 'Split Excel', href: '/file-tools/split-excel' }
+    count: '15+ tools', desc: 'Solve Your Coding Problems',
+    featured: { name: 'JSON Formatter', href: '/coding-tools/json-formatter' }
   },
 ];
 

@@ -11,7 +11,7 @@ const CATEGORY_TABS = [
   { id: 'image', label: 'Image Tools', icon: ImageIcon },
   { id: 'video', label: 'Video Tools', icon: Video },
   { id: 'write', label: 'AI Write', icon: PenTool },
-  { id: 'file', label: 'File Tools', icon: File },
+  { id: 'coding', label: 'Coding Tools', icon: File },
 ];
 
 export default function ToolsGrid() {

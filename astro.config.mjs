@@ -37,6 +37,7 @@ export default defineConfig({
         ]
       },
       workbox: {
+        mode: 'production',
         globPatterns: process.env.NODE_ENV === 'development'
           ? []
           : ['**/*.{js,css,html,ico,png,svg,mjs,json}'],

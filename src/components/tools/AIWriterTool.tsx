@@ -1,74 +1,80 @@
 import React, { useState, useEffect } from 'react';
-import { Copy, Loader2, Sparkles, Wand2 } from 'lucide-react';
+import { Copy, Loader2, Sparkles, Wand2, AlertTriangle, MonitorPlay } from 'lucide-react';
 import { cn } from '../../lib/utils';
 
+// Helper for type safety with the experimental API
+declare global {
+  interface Window {
+    ai?: {
+      languageModel?: {
+        capabilities: () => Promise<{ available: 'readily' | 'after-download' | 'no' }>;
+        create: (options?: any) => Promise<{
+          prompt: (text: string) => Promise<string>;
+          destroy: () => void;
+        }>;
+      };
+    };
+  }
+}
+
 export default function AIWriterTool() {
-  const [apiKey, setApiKey] = useState('');
   const [topic, setTopic] = useState('');
   const [tone, setTone] = useState('professional');
   const [type, setType] = useState('article');
   const [result, setResult] = useState('');
   const [isGenerating, setIsGenerating] = useState(false);
-  const [showKeyInput, setShowKeyInput] = useState(true);
+  const [modelStatus, setModelStatus] = useState<'checking' | 'ready' | 'downloading' | 'unavailable'>('checking');
+  const [errorMessage, setErrorMessage] = useState('');
 
   useEffect(() => {
-    const storedKey = localStorage.getItem('gemini_api_key');
-    if (storedKey) {
-      setApiKey(storedKey);
-      setShowKeyInput(false);
-    }
+    checkAvailability();
   }, []);
 
-  const saveKey = () => {
-    if (apiKey.trim()) {
-      localStorage.setItem('gemini_api_key', apiKey);
-      setShowKeyInput(false);
+  const checkAvailability = async () => {
+    if (!window.ai || !window.ai.languageModel) {
+      setModelStatus('unavailable');
+      return;
     }
-  };
 
-  const clearKey = () => {
-    localStorage.removeItem('gemini_api_key');
-    setApiKey('');
-    setShowKeyInput(true);
+    try {
+      const capabilities = await window.ai.languageModel.capabilities();
+      if (capabilities.available === 'readily') {
+        setModelStatus('ready');
+      } else if (capabilities.available === 'after-download') {
+        setModelStatus('downloading');
+      } else {
+        setModelStatus('unavailable');
+      }
+    } catch (e) {
+      setModelStatus('unavailable');
+    }
   };
 
   const generateContent = async () => {
-    if (!apiKey || !topic) return;
+    if (!topic || modelStatus !== 'ready') return;
     setIsGenerating(true);
     setResult('');
+    setErrorMessage('');
 
+    let session;
     try {
-      // Using Gemini API (Google Generative AI) REST endpoint for lightweight client usage
-      const prompt = `Write a ${tone} ${type} about "${topic}". Make it engaging and well-structured.`;
-      
-      const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          contents: [{
-            parts: [{ text: prompt }]
-          }]
-        })
+      // Create a session (this might trigger download if status was 'after-download', but we check 'ready' first)
+      session = await window.ai!.languageModel!.create({
+        systemPrompt: `You are a helpful AI writing assistant. user wants a ${tone} ${type}.`
       });
 
-      const data = await response.json();
+      const prompt = `Write a ${tone} ${type} about "${topic}". Make it engaging and well-structured.`;
+      
+      const stream = await session.prompt(prompt);
+      setResult(stream);
 
-      if (data.error) {
-        throw new Error(data.error.message);
-      }
-
-      const text = data.candidates?.[0]?.content?.parts?.[0]?.text;
-      if (text) {
-        setResult(text);
-      } else {
-        throw new Error('No content generated');
-      }
     } catch (error: any) {
       console.error('Generation error:', error);
-      alert(`Error: ${error.message}`);
+      setErrorMessage(error.message || 'Failed to generate content using offline model.');
     } finally {
+      if (session) {
+        session.destroy();
+      }
       setIsGenerating(false);
     }
   };
@@ -84,38 +90,82 @@ export default function AIWriterTool() {
           <div className="flex items-center justify-between">
             <h3 className="font-bold text-gray-900 flex items-center gap-2">
               <Sparkles className="w-5 h-5 text-purple-600" />
-              Generator Settings
+              Offline Generator Settings
             </h3>
-            {!showKeyInput && (
-              <button onClick={clearKey} className="text-xs text-gray-500 hover:text-red-500 font-medium transition-colors">
-                Change API Key
-              </button>
-            )}
+            <span className={cn("text-xs font-medium px-2 py-1 rounded-full border", 
+              modelStatus === 'ready' ? "bg-green-50 text-green-700 border-green-200" :
+              modelStatus === 'unavailable' ? "bg-red-50 text-red-700 border-red-200" :
+              "bg-yellow-50 text-yellow-700 border-yellow-200"
+            )}>
+              {modelStatus === 'ready' ? 'Model Ready' : 
+               modelStatus === 'checking' ? 'Checking CPU...' :
+               modelStatus === 'downloading' ? 'Model Downloading...' : 'Browser Unsupported'}
+            </span>
           </div>
 
-          {showKeyInput ? (
-            <div className="space-y-4 p-5 bg-white rounded-xl border border-gray-200 shadow-inner">
-              <label className="text-sm font-medium text-gray-900 block">
-                Enter Gemini API Key
-                <span className="block text-xs text-gray-500 mt-1 font-normal">
-                  Your key is stored locally in your browser. Get one free from Google AI Studio.
-                </span>
-              </label>
-              <div className="flex gap-2">
-                <input 
-                  type="password" 
-                  value={apiKey}
-                  onChange={(e) => setApiKey(e.target.value)}
-                  placeholder="AIzaSy..."
-                  className="flex-1 bg-gray-50 border border-gray-300 rounded-lg px-4 py-2.5 text-gray-900 focus:outline-none focus:ring-2 focus:ring-purple-500 transition-all placeholder:text-gray-400"
-                />
-                <button 
-                  onClick={saveKey}
-                  disabled={!apiKey}
-                  className="bg-gray-900 hover:bg-black text-white px-6 py-2.5 rounded-lg text-sm font-bold transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-                >
-                  Save
-                </button>
+          {modelStatus === 'unavailable' ? (
+            <div className="p-4 bg-amber-50 border border-amber-200 rounded-xl space-y-4">
+              <div className="flex gap-3">
+                <AlertTriangle className="w-5 h-5 text-amber-600 shrink-0 mt-0.5" />
+                <div className="text-sm text-amber-800 space-y-3">
+                  <div>
+                    <p className="font-bold">Offline AI Not Detected</p>
+                    <p>Status: {
+                      !window.ai ? "'window.ai' is undefined (Flag disabled/Old Chrome)" : 
+                      !window.ai.languageModel ? "'languageModel' API missing" : 
+                      "Model capabilities check failed"
+                    }</p>
+                  </div>
+                  
+                  <div className="bg-white/50 p-3 rounded-lg border border-amber-100">
+                    <p className="font-bold mb-2">Troubleshooting Steps:</p>
+                    <ol className="list-decimal pl-4 space-y-2 opacity-90">
+                      <li>
+                        <div className="flex items-center gap-2 flex-wrap">
+                          <span><b>Flags:</b> Set to "Enabled":</span>
+                          <div className="flex items-center gap-1 bg-white px-2 py-0.5 rounded border border-gray-200 text-[10px] font-mono select-all">
+                            chrome://flags/#prompt-api-for-gemini-nano
+                          </div>
+                          <button 
+                            onClick={() => navigator.clipboard.writeText('chrome://flags/#prompt-api-for-gemini-nano')}
+                            className="p-1 hover:bg-black/5 rounded transition-colors"
+                            title="Copy Link"
+                          >
+                            <Copy className="w-3 h-3" />
+                          </button>
+                        </div>
+                      </li>
+                      <li>
+                        <div className="flex items-center gap-2 flex-wrap mb-1">
+                          <span><b>Model Download:</b> Check update at:</span>
+                          <div className="flex items-center gap-1 bg-white px-2 py-0.5 rounded border border-gray-200 text-[10px] font-mono select-all">
+                            chrome://components
+                          </div>
+                          <button 
+                            onClick={() => navigator.clipboard.writeText('chrome://components')}
+                            className="p-1 hover:bg-black/5 rounded transition-colors"
+                            title="Copy Link"
+                          >
+                            <Copy className="w-3 h-3" />
+                          </button>
+                        </div>
+                        <ul className="list-disc pl-4 text-xs space-y-0.5 mt-1">
+                          <li>Find <b>Optimization Guide On Device Model</b></li>
+                          <li>Click "Check for update"</li>
+                          <li>Wait until Version is not <code>0.0.0.0</code></li>
+                        </ul>
+                      </li>
+                      <li className="font-medium text-amber-900">Restart Chrome completely after these steps.</li>
+                    </ol>
+                  </div>
+
+                  <button 
+                    onClick={checkAvailability}
+                    className="flex items-center gap-2 px-3 py-1.5 bg-amber-100 hover:bg-amber-200 text-amber-900 rounded-lg text-xs font-semibold transition-colors"
+                  >
+                    <MonitorPlay className="w-3 h-3" /> Re-check Availability
+                  </button>
+                </div>
               </div>
             </div>
           ) : (
@@ -146,9 +196,6 @@ export default function AIWriterTool() {
                       <option value="social media caption">Social Caption</option>
                       <option value="story">Story</option>
                     </select>
-                    <div className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none">
-                      <svg className="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7"></path></svg>
-                    </div>
                   </div>
                 </div>
 
@@ -166,25 +213,28 @@ export default function AIWriterTool() {
                       <option value="informative">Informative</option>
                       <option value="funny">Funny</option>
                     </select>
-                    <div className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none">
-                      <svg className="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7"></path></svg>
-                    </div>
                   </div>
                 </div>
               </div>
 
+              {errorMessage && (
+                <div className="p-3 bg-red-50 text-red-700 text-sm rounded-lg border border-red-100">
+                  {errorMessage}
+                </div>
+              )}
+
               <button
                 onClick={generateContent}
-                disabled={isGenerating || !topic}
-                className="w-full bg-linear-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 text-white py-4 rounded-xl font-bold transition-all shadow-lg shadow-purple-500/20 flex items-center justify-center gap-2 transform active:scale-95"
+                disabled={isGenerating || !topic || modelStatus !== 'ready'}
+                className="w-full bg-linear-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 text-white py-4 rounded-xl font-bold transition-all shadow-lg shadow-purple-500/20 flex items-center justify-center gap-2 transform active:scale-95 disabled:opacity-50 disabled:scale-100 disabled:cursor-not-allowed"
               >
                 {isGenerating ? (
                   <>
-                    <Loader2 className="animate-spin w-5 h-5" /> Generating...
+                    <Loader2 className="animate-spin w-5 h-5" /> Generating (Offline)...
                   </>
                 ) : (
                   <>
-                    <Wand2 className="w-5 h-5" /> Generate Content
+                    <MonitorPlay className="w-5 h-5" /> Generate Locally
                   </>
                 )}
               </button>
@@ -197,7 +247,7 @@ export default function AIWriterTool() {
         {result ? (
           <div className="flex-1 bg-white border border-gray-200 rounded-2xl overflow-hidden flex flex-col animate-in fade-in shadow-sm">
             <div className="p-4 border-b border-gray-100 flex items-center justify-between bg-gray-50">
-              <span className="text-sm font-medium text-gray-500">Generated Result</span>
+              <span className="text-sm font-medium text-gray-500">Offline Result</span>
               <button 
                 onClick={copyToClipboard}
                 className="text-xs font-medium text-blue-600 hover:text-blue-700 flex items-center gap-1.5 transition-colors bg-blue-50 px-3 py-1.5 rounded-full"
@@ -218,6 +268,7 @@ export default function AIWriterTool() {
             <div>
               <Sparkles className="w-12 h-12 mx-auto mb-4 opacity-50 text-gray-300" />
               <p className="font-medium text-gray-500">AI generated content will appear here</p>
+              <p className="text-xs text-gray-400 mt-2">Runs locally on your device</p>
             </div>
           </div>
         )}

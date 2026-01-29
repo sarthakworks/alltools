@@ -1,0 +1,19 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import AIImageGenerator from '../../components/tools/AIImageGenerator';
+---
+
+<Layout title="AI Image Generator - AllTools" description="Create stunning images from text instantly using AI. Free and unlimited.">
+
+  <main class="container mx-auto px-4 py-12 max-w-5xl">
+    <div class="mb-8 text-center">
+      <a href="/ai-tools" class="text-sm font-medium text-indigo-600 hover:text-indigo-700 mb-4 inline-block transition-colors bg-indigo-50 px-3 py-1 rounded-full">&larr; Back to Tools</a>
+      <h1 class="text-3xl font-bold text-gray-900 mb-2">AI Image Generator</h1>
+      <p class="text-gray-500">Turn your imagination into reality with Flux & Stable Diffusion.</p>
+    </div>
+
+    <div class="bg-white shadow-sm border border-gray-200 rounded-2xl p-6 md:p-8">
+      <AIImageGenerator client:load />
+    </div>
+  </main>
+</Layout>
