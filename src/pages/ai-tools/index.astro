@@ -1,15 +1,8 @@
 ---
+import { allTools } from '../../data/tools';
 import Layout from '../../layouts/Layout.astro';
 
-const tools = [
-  {
-    title: "AI Writer",
-    description: "Generate articles, emails, and more with AI.",
-    href: "/ai-tools/writer",
-    icon: "wand",
-    color: "bg-purple-50 text-purple-600"
-  },
-];
+const tools = allTools.filter(t => t.category === 'write');
 ---
 
 <Layout title="AI Tools - AllTools">
@@ -20,15 +13,18 @@ const tools = [
     </div>
 
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-      {tools.map(tool => (
-        <a href={tool.href} class="block p-8 rounded-2xl bg-white shadow-sm border border-gray-100 hover:shadow-md hover:-translate-y-1 transition-all group">
-           <div class={`w-12 h-12 ${tool.color} rounded-lg flex items-center justify-center mb-6`}>
-              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-wand-2"><path d="m21.64 3.64-1.28-1.28a1.21 1.21 0 0 0-1.72 0L2.36 18.64a1.21 1.21 0 0 0 0 1.72l1.28 1.28a1.2 1.2 0 0 0 1.72 0L21.64 5.36a1.2 1.2 0 0 0 0-1.72Z"/><path d="m14 7 3 3"/><path d="M5 6v4"/><path d="M19 14v4"/><path d="M10 2v2"/><path d="M7 8H3"/><path d="M21 16h-4"/><path d="M11 3H9"/></svg>
-           </div>
-          <h3 class="text-xl font-semibold text-gray-900 mb-2 group-hover:text-blue-600 transition-colors">{tool.title}</h3>
-          <p class="text-gray-500 text-sm leading-relaxed">{tool.description}</p>
-        </a>
-      ))}
+      {tools.map(tool => {
+        const Icon = tool.icon;
+        return (
+          <a href={tool.href} class="block p-8 rounded-2xl bg-white shadow-sm border border-gray-100 hover:shadow-md hover:-translate-y-1 transition-all group">
+            <div class={`w-12 h-12 ${tool.color} rounded-lg flex items-center justify-center mb-6`}>
+                <Icon size={24} />
+            </div>
+            <h3 class="text-xl font-semibold text-gray-900 mb-2 group-hover:text-blue-600 transition-colors">{tool.name}</h3>
+            <p class="text-gray-500 text-sm leading-relaxed">{tool.desc}</p>
+          </a>
+        );
+      })}
     </div>
   </main>
 </Layout>

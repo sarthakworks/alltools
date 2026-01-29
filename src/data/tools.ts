@@ -3,8 +3,43 @@ import {
   Merge, Scissors, Lock, Unlock, Minimize2, 
   ImagePlus, FileImage, Type, Download, Music,
   Youtube, Instagram, Twitter, Linkedin,
-  EyeOff, FileCode, Eraser, ScanText
+  EyeOff, FileCode, Eraser, ScanText, FileUp, Sparkles,
+  Search, Wand, Code2, Scan, Languages, Layout,
+  Smartphone, Monitor, Laptop, Image as LucideImage
 } from 'lucide-react';
+
+export interface ToolMetadata {
+  id: string;
+  name: string;
+  desc: string;
+  icon: any;
+  href: string;
+  category: string;
+  isNew?: boolean;
+  featured?: boolean;
+  color?: string;
+}
+
+export const allTools: ToolMetadata[] = [
+  // PDF Tools
+  { id: 'merge-pdf', name: 'Merge PDF', desc: 'Combine multiple PDFs into one', icon: Merge, href: '/pdf-tools/merge', category: 'pdf', color: 'bg-red-50 text-red-600' },
+  { id: 'split-pdf', name: 'Split PDF', desc: 'Extract pages from your PDF', icon: Scissors, href: '/pdf-tools/split', category: 'pdf', isNew: true, color: 'bg-purple-50 text-purple-600' },
+  { id: 'pdf-to-image', name: 'PDF to Image', desc: 'Convert PDF pages to JPG/PNG', icon: FileImage, href: '/pdf-tools/to-image', category: 'pdf', color: 'bg-orange-50 text-orange-600' },
+  { id: 'image-to-pdf', name: 'Image to PDF', desc: 'Convert JPG/PNG to PDF', icon: ImagePlus, href: '/pdf-tools/image-to-pdf', category: 'pdf', color: 'bg-blue-50 text-blue-600' },
+  { id: 'compress-pdf', name: 'Compress PDF', desc: 'Reduce PDF file size', icon: Minimize2, href: '/pdf-tools/compress', category: 'pdf', color: 'bg-green-50 text-green-600' },
+  { id: 'lock-unlock-pdf', name: 'Lock / Unlock PDF', desc: 'Add or remove PDF protections', icon: Lock, href: '/pdf-tools/lock-unlock', category: 'pdf', color: 'bg-indigo-50 text-indigo-600' },
+
+  // Image Tools
+  { id: 'compress-image', name: 'Compress Image', desc: 'Reduce image file size', icon: Minimize2, href: '/image-tools/compress', category: 'image', color: 'bg-blue-50 text-blue-600' },
+  { id: 'resize-image', name: 'Resize Image', desc: 'Change image dimensions', icon: LucideImage, href: '/image-tools/resize', category: 'image', color: 'bg-indigo-50 text-indigo-600' },
+  { id: 'image-to-base64', name: 'Image to Base64', desc: 'Convert images to Base64 strings', icon: FileCode, href: '/image-tools/to-base64', category: 'image', isNew: true, color: 'bg-purple-50 text-purple-600' },
+  { id: 'blur-image', name: 'Blur & Redact', desc: 'Hide sensitive info with blur', icon: EyeOff, href: '/image-tools/blur', category: 'image', isNew: true, color: 'bg-pink-50 text-pink-600' },
+  { id: 'remove-bg', name: 'Remove Background', desc: 'AI-powered background removal', icon: Sparkles, href: '/image-tools/remove-bg', category: 'image', isNew: true, color: 'bg-green-50 text-green-600' },
+  { id: 'image-ocr', name: 'Image to Text (OCR)', desc: 'Extract text from images', icon: ScanText, href: '/image-tools/image-to-text', category: 'image', isNew: true, color: 'bg-orange-50 text-orange-600' },
+
+  // AI Tools
+  { id: 'ai-writer', name: 'AI Writer', desc: 'Generate blog posts & emails with AI', icon: PenTool, href: '/ai-tools/writer', category: 'write', isNew: true, color: 'bg-purple-50 text-purple-600' },
+];
 
 export const categories = [
   { 
@@ -39,32 +74,7 @@ export const categories = [
   },
 ];
 
-export const popularTools = [
-  // PDF
-  { name: 'Merge PDF', desc: 'Combine multiple PDFs into one', icon: Merge, href: '/pdf-tools/merge', category: 'pdf', isNew: false },
-  { name: 'Split PDF', desc: 'Extract pages from your PDF', icon: Scissors, href: '/pdf-tools/split', category: 'pdf', isNew: true },
-  { name: 'PDF to Image', desc: 'Convert PDF pages to JPG', icon: FileImage, href: '/pdf-tools/pdf-to-image', category: 'pdf', isNew: false },
-  { name: 'Image to PDF', desc: 'Convert JPG/PNG to PDF', icon: ImagePlus, href: '/pdf-tools/image-to-pdf', category: 'pdf', isNew: false },
-  { name: 'Compress PDF', desc: 'Reduce PDF file size', icon: Minimize2, href: '/pdf-tools/compress', category: 'pdf', isNew: false },
-  { name: 'Unlock PDF', desc: 'Remove passwords from PDF', icon: Unlock, href: '/pdf-tools/lock-unlock', category: 'pdf', isNew: false },
-
-  // Image
-  { name: 'Compress Image', desc: 'Reduce image size without quality loss', icon: Minimize2, href: '/image-tools/compress', category: 'image', isNew: false },
-  { name: 'Resize Image', desc: 'Change image dimensions', icon: ImageIcon, href: '/image-tools/resize', category: 'image', isNew: false },
-  { name: 'Image to Base64', desc: 'Convert images to Base64 strings', icon: FileCode, href: '/image-tools/to-base64', category: 'image', isNew: true },
-  { name: 'Blur Image', desc: 'Blur sensitive info or selected areas', icon: EyeOff, href: '/image-tools/blur', category: 'image', isNew: true },
-  { name: 'Remove Background', desc: 'Auto remove image background', icon: Eraser, href: '/image-tools/remove-bg', category: 'image', isNew: true },
-  { name: 'Image to Text', desc: 'Extract text via OCR', icon: ScanText, href: '/image-tools/image-to-text', category: 'image', isNew: true },
-  
-  // AI/Write
-  { name: 'AI Writer', desc: 'Generate blog posts & emails', icon: PenTool, href: '/ai-tools/writer', category: 'write', isNew: true },
-  
-  // Placeholders for Video/File to fill grid
-  { name: 'Youtube to Text', desc: 'Convert video to text', icon: Youtube, href: '#', category: 'video', isNew: false },
-  { name: 'Instagram Download', desc: 'Save videos from Instagram', icon: Instagram, href: '#', category: 'video', isNew: false },
-  { name: 'Trim Video', desc: 'Cut video segments', icon: Scissors, href: '#', category: 'video', isNew: false },
-  { name: 'MP4 to MP3', desc: 'Extract audio from video', icon: Music, href: '#', category: 'video', isNew: false },
-];
+export const popularTools = allTools.filter(t => t.isNew || t.featured || ['merge-pdf', 'split-pdf', 'compress-pdf', 'compress-image', 'remove-bg'].includes(t.id));
 
 export const stats = [
   { value: '1m', label: 'Active Users' },
@@ -72,3 +82,4 @@ export const stats = [
   { value: '200+', label: 'Online Tools' },
   { value: '500k', label: 'PDFs Created' },
 ];
+

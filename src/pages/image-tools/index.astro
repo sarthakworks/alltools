@@ -1,50 +1,7 @@
 ---
+import { allTools } from '../../data/tools';
 import Layout from '../../layouts/Layout.astro';
-
-const tools = [
-  {
-    title: "Compress Image",
-    description: "Reduce image file size without losing quality.",
-    href: "/image-tools/compress",
-    icon: "shrink",
-    color: "bg-blue-50 text-blue-600"
-  },
-  {
-    title: "Resize Image",
-    description: "Change image dimensions and aspect ratio.",
-    href: "/image-tools/resize",
-    icon: "crop",
-    color: "bg-indigo-50 text-indigo-600"
-  },
-  {
-    title: "Image to Base64",
-    description: "Convert images to Base64 encoding and back.",
-    href: "/image-tools/to-base64",
-    icon: "code",
-    color: "bg-purple-50 text-purple-600"
-  },
-  {
-    title: "Blur & Redact",
-    description: "Hide sensitive information with blur or pixelation.",
-    href: "/image-tools/blur",
-    icon: "eye-off",
-    color: "bg-pink-50 text-pink-600"
-  },
-  {
-    title: "Remove Background",
-    description: "AI-powered background removal with transparency.",
-    href: "/image-tools/remove-bg",
-    icon: "sparkles",
-    color: "bg-green-50 text-green-600"
-  },
-  {
-    title: "Image to Text (OCR)",
-    description: "Extract text from images using OCR technology.",
-    href: "/image-tools/image-to-text",
-    icon: "scan-text",
-    color: "bg-orange-50 text-orange-600"
-  }
-];
+const tools = allTools.filter(t => t.category === 'image');
 ---
 
 <Layout title="Image Tools - AllTools">
@@ -55,20 +12,18 @@ const tools = [
     </div>
 
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-      {tools.map(tool => (
-        <a href={tool.href} class="block p-8 rounded-2xl bg-white shadow-sm border border-gray-100 hover:shadow-md hover:-translate-y-1 transition-all group">
-           <div class={`w-12 h-12 ${tool.color} rounded-lg flex items-center justify-center mb-6`}>
-              {tool.icon === 'shrink' && <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="4 14 10 14 10 20"/><polyline points="20 10 14 10 14 4"/><line x1="14" x2="21" y1="10" y2="3"/><line x1="3" x2="10" y1="21" y2="14"/></svg>}
-              {tool.icon === 'crop' && <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2v14a2 2 0 0 0 2 2h14"/><path d="M18 22V8a2 2 0 0 0-2-2H2"/></svg>}
-              {tool.icon === 'code' && <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>}
-              {tool.icon === 'eye-off' && <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9.88 9.88a3 3 0 1 0 4.24 4.24"/><path d="M10.73 5.08A10.43 10.43 0 0 1 12 5c7 0 10 7 10 7a13.16 13.16 0 0 1-1.67 2.68"/><path d="M6.61 6.61A13.526 13.526 0 0 0 2 12s3 7 10 7a9.74 9.74 0 0 0 5.39-1.61"/><line x1="2" x2="22" y1="2" y2="22"/></svg>}
-              {tool.icon === 'sparkles' && <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z"/><path d="M5 3v4"/><path d="M19 17v4"/><path d="M3 5h4"/><path d="M17 19h4"/></svg>}
-              {tool.icon === 'scan-text' && <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7V5a2 2 0 0 1 2-2h2"/><path d="M17 3h2a2 2 0 0 1 2 2v2"/><path d="M21 17v2a2 2 0 0 1-2 2h-2"/><path d="M7 21H5a2 2 0 0 1-2-2v-2"/><path d="M7 8h8"/><path d="M7 12h10"/><path d="M7 16h6"/></svg>}
-           </div>
-          <h3 class="text-xl font-semibold text-gray-900 mb-2 group-hover:text-blue-600 transition-colors">{tool.title}</h3>
-          <p class="text-gray-500 text-sm leading-relaxed">{tool.description}</p>
-        </a>
-      ))}
+      {tools.map(tool => {
+        const Icon = tool.icon;
+        return (
+          <a href={tool.href} class="block p-8 rounded-2xl bg-white shadow-sm border border-gray-100 hover:shadow-md hover:-translate-y-1 transition-all group">
+            <div class={`w-12 h-12 ${tool.color} rounded-lg flex items-center justify-center mb-6`}>
+                <Icon size={24} />
+            </div>
+            <h3 class="text-xl font-semibold text-gray-900 mb-2 group-hover:text-blue-600 transition-colors">{tool.name}</h3>
+            <p class="text-gray-500 text-sm leading-relaxed">{tool.desc}</p>
+          </a>
+        );
+      })}
     </div>
   </main>
 </Layout>

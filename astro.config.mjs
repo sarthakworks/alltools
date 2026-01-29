@@ -37,9 +37,24 @@ export default defineConfig({
         ]
       },
       workbox: {
-        globPatterns: ['**/*.{js,css,html,ico,png,svg,mjs,json}'],
-        navigateFallback: '/404',
+        globPatterns: process.env.NODE_ENV === 'development'
+          ? []
+          : ['**/*.{js,css,html,ico,png,svg,mjs,json}'],
+        navigateFallback: process.env.NODE_ENV === 'development' ? null : '/404',
         maximumFileSizeToCacheInBytes: 5 * 1024 * 1024, // 5MB
+        runtimeCaching: [
+          {
+            urlPattern: /\.(?:png|jpg|jpeg|svg|gif|webp)$/,
+            handler: 'CacheFirst',
+            options: {
+              cacheName: 'images',
+              expiration: {
+                maxEntries: 10,
+                maxAgeSeconds: 30 * 24 * 60 * 60, // 30 Days
+              },
+            },
+          },
+        ],
       },
       devOptions: {
         enabled: true

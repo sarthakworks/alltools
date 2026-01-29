@@ -5,72 +5,35 @@ import {
   Moon, 
   Share2, 
   Menu, 
-  X,
-  FileText,
-  Image as ImageIcon,
-  PenTool,
-  Video,
-  File,
-  Merge,
-  Scissors,
-  Lock,
-  Unlock,
-  Minimize2,
-  Code2,
-  EyeOff,
-  Sparkles,
-  ScanText,
-  FileImage,
-  ImagePlus
+  X
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { allTools, categories as toolCategories } from '../data/tools';
 
 export default function Header() {
   const [activeDropdown, setActiveDropdown] = useState<string | null>(null);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
-  const navItems = [
-    { 
-      label: 'PDF', 
-      id: 'pdf',
-      featured: [
-        { name: 'Merge PDF', icon: Merge, desc: 'Combine multiple PDFs', href: '/pdf-tools/merge', color: 'bg-purple-100 text-purple-600' },
-        { name: 'PDF to Image', icon: FileImage, desc: 'Convert PDF pages to images', href: '/pdf-tools/pdf-to-image', color: 'bg-blue-100 text-blue-600' },
-        { name: 'Image to PDF', icon: ImagePlus, desc: 'Convert images to PDF', href: '/pdf-tools/image-to-pdf', color: 'bg-orange-100 text-orange-600' },
-        { name: 'Split PDF', icon: Scissors, desc: 'Extract pages from PDF', href: '/pdf-tools/split', color: 'bg-yellow-100 text-yellow-600' },
-      ],
-      others: [
-        { name: 'Compress PDF', href: '/pdf-tools/compress' },
-        { name: 'Protect PDF', href: '/pdf-tools/lock-unlock' },
-        { name: 'Unlock PDF', href: '/pdf-tools/lock-unlock' },
-        { name: 'Force Unlock', href: '/pdf-tools/lock-unlock' },
-      ]
-    },
-    { 
-      label: 'Image', 
-      id: 'image',
-      featured: [
-        { name: 'Compress Image', icon: Minimize2, desc: 'Reduce image size', href: '/image-tools/compress', color: 'bg-green-100 text-green-600' },
-        { name: 'Resize Image', icon: ImageIcon, desc: 'Resize & convert images', href: '/image-tools/resize', color: 'bg-pink-100 text-pink-600' },
-      ],
-      others: [
-        { name: 'Image to Base64', icon: Code2, desc: 'Convert to/from Base64', href: '/image-tools/to-base64' },
-        { name: 'Blur & Redact', icon: EyeOff, desc: 'Hide sensitive info', href: '/image-tools/blur' },
-        { name: 'Remove Background', icon: Sparkles, desc: 'AI background removal', href: '/image-tools/remove-bg' },
-        { name: 'Image to Text (OCR)', icon: ScanText, desc: 'Extract text from images', href: '/image-tools/image-to-text' },
-      ]
-    },
-    { 
-      label: 'Write', 
-      id: 'write',
-      featured: [
-        { name: 'AI Writer', icon: PenTool, desc: 'Generate text with AI', href: '/ai-tools', color: 'bg-indigo-100 text-indigo-600' },
-      ],
-      others: []
-    },
-    { label: 'Video', id: 'video' },
-    { label: 'File', id: 'file' },
-  ];
+  // Group tools by category for the dropdowns
+  const navItems = toolCategories.map(cat => {
+    const catTools = allTools.filter(t => t.category === cat.id);
+    return {
+      label: cat.name.replace(' Tools', ''),
+      id: cat.id,
+      href: cat.href,
+      featured: catTools.slice(0, 4).map(t => ({
+        name: t.name,
+        icon: t.icon,
+        desc: t.desc,
+        href: t.href,
+        color: t.color || 'bg-gray-100 text-gray-600'
+      })),
+      others: catTools.slice(4).map(t => ({
+        name: t.name,
+        href: t.href
+      }))
+    };
+  });
 
   return (
     <header className="sticky top-0 z-50 w-full bg-white border-b border-gray-100 shadow-sm" onMouseLeave={() => setActiveDropdown(null)}>
@@ -121,21 +84,24 @@ export default function Header() {
                         <div className="w-1/2 p-4 border-r border-gray-50 bg-white">
                           <h3 className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-3">Featured Tools</h3>
                           <div className="space-y-1">
-                            {item.featured.map((tool) => (
-                              <a 
-                                key={tool.name}
-                                href={tool.href}
-                                className="flex items-start gap-3 p-2 rounded-lg hover:bg-gray-50 transition-colors group"
-                              >
-                                <div className={`w-8 h-8 rounded-lg flex items-center justify-center shrink-0 ${tool.color}`}>
-                                  <tool.icon className="w-4 h-4" />
-                                </div>
-                                <div>
-                                  <div className="text-sm font-medium text-gray-900 group-hover:text-blue-600 transition-colors">{tool.name}</div>
-                                  <div className="text-xs text-gray-500">{tool.desc}</div>
-                                </div>
-                              </a>
-                            ))}
+                            {item.featured.map((tool) => {
+                              const Icon = tool.icon;
+                              return (
+                                <a 
+                                  key={tool.name}
+                                  href={tool.href}
+                                  className="flex items-start gap-3 p-2 rounded-lg hover:bg-gray-50 transition-colors group"
+                                >
+                                  <div className={`w-8 h-8 rounded-lg flex items-center justify-center shrink-0 ${tool.color}`}>
+                                    <Icon className="w-4 h-4" />
+                                  </div>
+                                  <div>
+                                    <div className="text-sm font-medium text-gray-900 group-hover:text-blue-600 transition-colors">{tool.name}</div>
+                                    <div className="text-xs text-gray-500">{tool.desc}</div>
+                                  </div>
+                                </a>
+                              );
+                            })}
                           </div>
                         </div>
 
