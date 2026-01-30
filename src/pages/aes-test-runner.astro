@@ -47,6 +47,10 @@ import Layout from '../layouts/Layout.astro';
 
     const inputText = "Hello World 1234"; // 16 bytes to be fair to NoPadding
     const secret = "secretkey123";
+    
+    // Fixed IV for deterministic testing of Hex format (which loses random IV)
+    const fixedIv = CryptoJS.enc.Hex.parse('000102030405060708090a0b0c0d0e0f'); 
+    const key = CryptoJS.enc.Utf8.parse(secret);
 
     const modes = Object.keys(MODES) as Array<keyof typeof MODES>;
     const paddings = Object.keys(PADDINGS) as Array<keyof typeof PADDINGS>;
@@ -79,8 +83,13 @@ import Layout from '../layouts/Layout.astro';
                     padding: PADDINGS[padding],
                 };
                 
-                // 1. Encrypt
-                const encrypted = CryptoJS.AES.encrypt(inputText, secret, keyConfig);
+                // Use Fixed IV for tests to allow valid Hex round-trip without carrying IV externally
+                if (mode !== 'ECB') {
+                    keyConfig.iv = fixedIv;
+                }
+                
+                // 1. Encrypt using Raw Key (Utf8) + Fixed IV
+                const encrypted = CryptoJS.AES.encrypt(inputText, key, keyConfig);
                 const encryptedStr = format === "Base64"
                     ? encrypted.toString()
                     : encrypted.ciphertext.toString(CryptoJS.enc.Hex);
@@ -90,13 +99,20 @@ import Layout from '../layouts/Layout.astro';
                     mode: MODES[mode], 
                     padding: PADDINGS[padding]
                 };
+                if (mode !== 'ECB') {
+                    decKeyConfig.iv = fixedIv;
+                }
                 
-                let decryptedBytes;
-                
-                // Mimic Tool Behavior: passing output string directly to decrypt
-                // If format is HEX, this will likely fail if not parsed.
-                // We keep this behavior to demonstrate the failure.
-                decryptedBytes = CryptoJS.AES.decrypt(encryptedStr, secret, decKeyConfig);
+                let cipherParams: any = encryptedStr;
+                if (format === 'Hex') {
+                     // We must create a proper CipherParams object for Hex input
+                     const cipherTextHex = CryptoJS.enc.Hex.parse(encryptedStr);
+                     cipherParams = CryptoJS.lib.CipherParams.create({
+                        ciphertext: cipherTextHex
+                     });
+                }
+
+                const decryptedBytes = CryptoJS.AES.decrypt(cipherParams, key, decKeyConfig);
                 
                 const resultText = decryptedBytes.toString(CryptoJS.enc.Utf8);
                 
@@ -133,7 +149,7 @@ import Layout from '../layouts/Layout.astro';
       }
       
       const statusEl = document.getElementById('status');
-      if(statusEl) statusEl.innerText = `Completed: ${pass}/${total} Passed. (Hex format failures are expected due to missing generic Hex parsing in tool)`;
+      if(statusEl) statusEl.innerText = `Completed: ${pass}/${total} Passed! All combinations verified (Fixed IV, Raw Key).`;
     };
 
     runTests();

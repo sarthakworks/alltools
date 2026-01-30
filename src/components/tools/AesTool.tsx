@@ -129,10 +129,24 @@ export default function AesTool() {
       }
 
       setter((prev) => ({ ...prev, output: result }));
-    } catch (err) {
+    } catch (err: any) {
+      let errorMessage = err.message || "Operation failed.";
+
+      // Map common technical errors to user-friendly messages
+      if (errorMessage.includes("Malformed UTF-8")) {
+        errorMessage = "Decryption failed: Malformed UTF-8 data. The key, IV, or mode might be incorrect.";
+      } else if (errorMessage.toLowerCase().includes("cannot read properties of undefined")) {
+        errorMessage = "Configuration Error: Please check your input format, Key, and IV.";
+      } else if (errorMessage === "Operation failed.") {
+        errorMessage = "Operation failed. Check your key, IV, and input format.";
+      }
+      else{
+        errorMessage = err.message ||"Operation failed.";
+      }
+
       setter((prev) => ({
         ...prev,
-        error: "Operation failed. Check your key, IV, and input format.",
+        error: errorMessage,
       }));
       console.error(err);
     }
@@ -169,7 +183,7 @@ export default function AesTool() {
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">Plain Text to Encrypt</label>
               <textarea
-                className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all outline-none resize-y min-h-[120px]"
+                className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all outline-none resize-y min-h-30"
                 placeholder="Enter text here..."
                 value={encState.text}
                 onChange={(e) => updateState(setEncState, "text", e.target.value)}
@@ -224,7 +238,7 @@ export default function AesTool() {
               </div>
               <textarea
                 readOnly
-                className="w-full px-4 py-3 rounded-xl bg-gray-50 border border-gray-200 text-gray-600 resize-y min-h-[120px] font-mono text-sm"
+                className="w-full px-4 py-3 rounded-xl bg-gray-50 border border-gray-200 text-gray-600 resize-y min-h-30 font-mono text-sm"
                 placeholder="Result will appear here..."
                 value={encState.output}
               />
@@ -244,7 +258,7 @@ export default function AesTool() {
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">Encrypted Text to Decrypt</label>
               <textarea
-                className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all outline-none resize-y min-h-[120px]"
+                className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all outline-none resize-y min-h-30"
                 placeholder="Enter encrypted text..."
                 value={decState.text}
                 onChange={(e) => updateState(setDecState, "text", e.target.value)}
@@ -334,9 +348,27 @@ export default function AesTool() {
 
 const CommonOptions = ({ prefix, state, setter }: { prefix: string, state: State, setter: React.Dispatch<React.SetStateAction<State>> }) => {
   const isECB = state.mode === "ECB";
+  const isStreamCipher = ["CFB", "OFB", "CTR"].includes(state.mode);
   
   const updateState = (key: keyof State, value: any) => {
-    setter(prev => ({ ...prev, [key]: value }));
+    setter(prev => {
+        const newState = { ...prev, [key]: value };
+        
+        // Auto-correct combinations when mode changes
+        if (key === 'mode') {
+             if (["CFB", "OFB", "CTR"].includes(value)) {
+                 newState.padding = 'NoPadding';
+             } else {
+                 // Default back to Pkcs7 if switching back to block cipher and currently NoPadding?
+                 // Or keep user selection if valid? 
+                 // It's better UX to reset to a safe default like Pkcs7 if coming from NoPadding which might fail for CBC
+                 if (newState.padding === 'NoPadding') {
+                     newState.padding = 'Pkcs7';
+                 }
+             }
+        }
+        return newState;
+    });
   };
 
   return (
@@ -354,31 +386,35 @@ const CommonOptions = ({ prefix, state, setter }: { prefix: string, state: State
                 ))}
             </select>
         </div>
-        <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Padding</label>
-            <select
-                className="w-full px-3 py-2 rounded-lg border border-gray-200 focus:ring-2 focus:ring-blue-500 outline-none bg-white"
-                value={state.padding}
-                onChange={(e) => updateState("padding", e.target.value)}
-            >
-                {Object.keys(PADDINGS).map((p) => (
-                <option key={p} value={p}>{p}</option>
-                ))}
-            </select>
-        </div>
+        
+        {!isStreamCipher && (
+            <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Padding</label>
+                <select
+                    className="w-full px-3 py-2 rounded-lg border border-gray-200 focus:ring-2 focus:ring-blue-500 outline-none bg-white"
+                    value={state.padding}
+                    onChange={(e) => updateState("padding", e.target.value)}
+                >
+                    {Object.keys(PADDINGS).map((p) => (
+                    <option key={p} value={p}>{p}</option>
+                    ))}
+                </select>
+            </div>
+        )}
       </div>
 
-       <div>
-        <label className="block text-sm font-medium text-gray-700 mb-1">IV (Initialization Vector)</label>
-        <input
-            type="text"
-            className="w-full px-3 py-2 rounded-lg border border-gray-200 focus:ring-2 focus:ring-blue-500 outline-none transition-colors disabled:bg-gray-100 disabled:text-gray-400"
-            placeholder={isECB ? "Not applicable for ECB" : "Optional"}
-            value={state.iv}
-            onChange={(e) => updateState("iv", e.target.value)}
-            disabled={isECB}
-        />
-      </div>
+       {!isECB && (
+           <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">IV (Initialization Vector)</label>
+            <input
+                type="text"
+                className="w-full px-3 py-2 rounded-lg border border-gray-200 focus:ring-2 focus:ring-blue-500 outline-none transition-colors"
+                placeholder="Optional (16 chars)"
+                value={state.iv}
+                onChange={(e) => updateState("iv", e.target.value)}
+            />
+          </div>
+       )}
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
@@ -396,7 +432,14 @@ const CommonOptions = ({ prefix, state, setter }: { prefix: string, state: State
       </div>
 
       <div>
-        <label className="block text-sm font-medium text-gray-700 mb-1">Secret Key</label>
+        <label className="block text-sm font-medium text-gray-700 mb-1">
+            Secret Key 
+            {state.keyType === 'Utf8' && (
+                <span className="text-gray-500 font-normal ml-1">
+                    (requires {parseInt(state.keySize) / 8} chars)
+                </span>
+            )}
+        </label>
         <div className="relative">
             <input
                 type="text"
