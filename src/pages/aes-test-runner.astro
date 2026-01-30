@@ -1,0 +1,141 @@
+---
+import Layout from '../layouts/Layout.astro';
+---
+
+<Layout title="AES Test Runner">
+  <div class="p-8 max-w-full overflow-x-auto">
+    <h1 class="text-2xl font-bold mb-4">AES Combination Tester</h1>
+    <div id="status" class="mb-4 font-mono text-blue-600">Running tests...</div>
+    <table class="w-full border-collapse border border-gray-300 text-sm">
+      <thead>
+        <tr class="bg-gray-100">
+          <th class="border p-2">Mode</th>
+          <th class="border p-2">Padding</th>
+          <th class="border p-2">KeySize (UI)</th>
+          <th class="border p-2">Format</th>
+          <th class="border p-2">Status</th>
+          <th class="border p-2">Message</th>
+        </tr>
+      </thead>
+      <tbody id="results-body">
+      </tbody>
+    </table>
+  </div>
+
+  <script>
+    import CryptoJS from 'crypto-js';
+
+    // Logic replicated from AesTool.tsx to be faithful to the "Tool's" behavior
+    // logic constants
+    const MODES = {
+      CBC: CryptoJS.mode.CBC,
+      ECB: CryptoJS.mode.ECB,
+      CFB: CryptoJS.mode.CFB,
+      OFB: CryptoJS.mode.OFB,
+      CTR: CryptoJS.mode.CTR,
+    };
+
+    const PADDINGS = {
+      PKCS5: CryptoJS.pad.Pkcs7,
+      Pkcs7: CryptoJS.pad.Pkcs7,
+      Iso97971: CryptoJS.pad.Iso97971,
+      AnsiX923: CryptoJS.pad.AnsiX923,
+      Iso10126: CryptoJS.pad.Iso10126,
+      ZeroPadding: CryptoJS.pad.ZeroPadding,
+      NoPadding: CryptoJS.pad.NoPadding,
+    };
+
+    const inputText = "Hello World 1234"; // 16 bytes to be fair to NoPadding
+    const secret = "secretkey123";
+
+    const modes = Object.keys(MODES) as Array<keyof typeof MODES>;
+    const paddings = Object.keys(PADDINGS) as Array<keyof typeof PADDINGS>;
+    const keySizes = ["128", "192", "256"];
+    const formats = ["Base64", "Hex"];
+    
+    const runTests = async () => {
+      const tbody = document.getElementById('results-body');
+      if (!tbody) return;
+
+      let pass = 0;
+      let total = 0;
+      
+      const updateStatus = () => {
+          const el = document.getElementById('status');
+          if(el) el.innerText = `Running... ${total} tests`;
+      }
+
+      for (const mode of modes) {
+        for (const padding of paddings) {
+          for (const keySize of keySizes) {
+            for (const format of formats) {
+              total++;
+              let status = 'PENDING';
+              let msg = '';
+              
+              try {
+                const keyConfig: any = {
+                    mode: MODES[mode],
+                    padding: PADDINGS[padding],
+                };
+                
+                // 1. Encrypt
+                const encrypted = CryptoJS.AES.encrypt(inputText, secret, keyConfig);
+                const encryptedStr = format === "Base64"
+                    ? encrypted.toString()
+                    : encrypted.ciphertext.toString(CryptoJS.enc.Hex);
+
+                // 2. Decrypt
+                const decKeyConfig: any = {
+                    mode: MODES[mode], 
+                    padding: PADDINGS[padding]
+                };
+                
+                let decryptedBytes;
+                
+                // Mimic Tool Behavior: passing output string directly to decrypt
+                // If format is HEX, this will likely fail if not parsed.
+                // We keep this behavior to demonstrate the failure.
+                decryptedBytes = CryptoJS.AES.decrypt(encryptedStr, secret, decKeyConfig);
+                
+                const resultText = decryptedBytes.toString(CryptoJS.enc.Utf8);
+                
+                if (resultText === inputText) {
+                    status = 'PASS';
+                } else {
+                    status = 'FAIL';
+                    msg = `Result mismatch or empty.`;
+                     if (!resultText) msg = "Empty result (decryption failed)";
+                     // Check if empty string result (which is valid for empty input but not ours)
+                     if (decryptedBytes.sigBytes > 0 && !resultText) msg = "Decrypted bytes exist but utf8 parse failed";
+                }
+
+              } catch (e: any) {
+                status = 'ERROR';
+                msg = e.message || String(e);
+              }
+
+              const row = document.createElement('tr');
+              row.className = status === 'PASS' ? 'bg-green-50' : 'bg-red-50';
+              row.innerHTML = `
+                <td class="border p-2">${mode}</td>
+                <td class="border p-2">${padding}</td>
+                <td class="border p-2">${keySize}</td>
+                <td class="border p-2">${format}</td>
+                <td class="border p-2 font-bold ${status === 'PASS' ? 'text-green-600' : 'text-red-600'}">${status}</td>
+                <td class="border p-2 text-xs truncate max-w-xs" title="${msg}">${msg}</td>
+              `;
+              tbody.appendChild(row);
+              if(status === 'PASS') pass++;
+            }
+          }
+        }
+      }
+      
+      const statusEl = document.getElementById('status');
+      if(statusEl) statusEl.innerText = `Completed: ${pass}/${total} Passed. (Hex format failures are expected due to missing generic Hex parsing in tool)`;
+    };
+
+    runTests();
+  </script>
+</Layout>

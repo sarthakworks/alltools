@@ -39,6 +39,9 @@ export const allTools: ToolMetadata[] = [
   { id: 'ai-writer', name: 'AI Writer', desc: 'Generate blog posts & emails with AI', icon: PenTool, href: '/ai-tools/writer', category: 'ai', isNew: true, color: 'bg-purple-50 text-purple-600' },
   { id: 'essay-writer', name: 'Essay Writer', desc: 'Write academic essays offline', icon: FileText, href: '/ai-tools/essay-writer', category: 'ai', isNew: true, color: 'bg-indigo-50 text-indigo-600' },
   { id: 'image-gen', name: 'Image Generator', desc: 'Create AI art from text prompts', icon: ImageIcon, href: '/ai-tools/image-generator', category: 'ai', isNew: true, color: 'bg-pink-50 text-pink-600' },
+
+  // Misc Tools
+  { id: 'aes-encrypt', name: 'AES Encryption', desc: 'Encrypt & Decrypt text using AES', icon: Lock, href: '/misc-tools/aes-encryption', category: 'misc', color: 'bg-red-50 text-red-600' },
 ];
 
 export const categories = [
@@ -55,10 +58,10 @@ export const categories = [
     featured: { name: 'Remove BG', href: '/image-tools/remove-bg' }
   },
   { 
-    id: 'video', name: 'Video Tools', icon: Video, href: '/video-tools',
+    id: 'misc', name: 'Misc Tools', icon: Video, href: '/misc-tools',
     color: 'bg-[#e91e63]', lightColor: 'bg-[#fce4ec]', 
-    count: '10+ tools', desc: 'Solve Your Video Problems',
-    featured: { name: 'Mute Video', href: '/video-tools/mute' }
+    count: '10+ tools', desc: 'Solve Your misc Problems',
+    featured: { name: 'Mute misc', href: '/misc-tools/mute' }
   },
   { 
     id: 'ai', name: 'AI Tools', icon: PenTool, href: '/ai-tools',

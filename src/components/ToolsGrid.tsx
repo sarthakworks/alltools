@@ -3,23 +3,24 @@ import {
   FileText, Image as ImageIcon, Video, PenTool, File, 
   ArrowRight
 } from 'lucide-react';
-import { popularTools } from '../data/tools';
+import { allTools } from '../data/tools';
 
 const CATEGORY_TABS = [
   { id: 'all', label: 'All Tools', icon: null },
   { id: 'pdf', label: 'PDF Tools', icon: FileText },
   { id: 'image', label: 'Image Tools', icon: ImageIcon },
-  { id: 'video', label: 'Video Tools', icon: Video },
-  { id: 'write', label: 'AI Write', icon: PenTool },
+  { id: 'misc', label: 'misc Tools', icon: Video },
+  { id: 'ai', label: 'AI Write', icon: PenTool },
   { id: 'coding', label: 'Coding Tools', icon: File },
 ];
 
 export default function ToolsGrid() {
+
   const [activeTab, setActiveTab] = useState('all');
 
   const filteredTools = activeTab === 'all' 
-    ? popularTools 
-    : popularTools.filter(t => t.category === activeTab);
+    ? allTools 
+    : allTools.filter(t => t.category === activeTab);
 
   return (
     <div className="w-full">
