@@ -1,9 +1,10 @@
+
 import { 
   FileText, Image as ImageIcon, Video, PenTool,
   Merge, Scissors, Lock, Minimize2, 
   ImagePlus, FileImage, 
   EyeOff, FileCode, ScanText, Sparkles,
- Image as LucideImage
+  Image as LucideImage, ArrowRightLeft, Maximize2, GitCompare, AlignLeft
 } from 'lucide-react';
 
 export interface ToolMetadata {
@@ -39,6 +40,16 @@ export const allTools: ToolMetadata[] = [
   { id: 'ai-writer', name: 'AI Writer', desc: 'Generate blog posts & emails with AI', icon: PenTool, href: '/ai-tools/writer', category: 'ai', isNew: true, color: 'bg-purple-50 text-purple-600' },
   { id: 'essay-writer', name: 'Essay Writer', desc: 'Write academic essays offline', icon: FileText, href: '/ai-tools/essay-writer', category: 'ai', isNew: true, color: 'bg-indigo-50 text-indigo-600' },
   { id: 'image-gen', name: 'Image Generator', desc: 'Create AI art from text prompts', icon: ImageIcon, href: '/ai-tools/image-generator', category: 'ai', isNew: true, color: 'bg-pink-50 text-pink-600' },
+
+  // Coding Tools
+  { id: 'json-formatter', name: 'JSON Formatter', desc: 'Beautify & Validate JSON', icon: FileCode, href: '/coding-tools/json-formatter', category: 'coding', isNew: true, color: 'bg-teal-50 text-teal-600' },
+  { id: 'html-formatter', name: 'HTML Formatter', desc: 'Beautify HTML Code', icon: FileCode, href: '/coding-tools/html-formatter', category: 'coding', isNew: true, color: 'bg-orange-50 text-orange-600' },
+  { id: 'sass-to-css', name: 'Sass to CSS', desc: 'Compile Sass/SCSS to CSS', icon: FileCode, href: '/coding-tools/sass-to-css', category: 'coding', isNew: true, color: 'bg-pink-50 text-pink-600' },
+  { id: 'xml-to-json', name: 'XML <-> JSON', desc: 'Convert XML to JSON & vice versa', icon: ArrowRightLeft, href: '/coding-tools/xml-to-json', category: 'coding', isNew: true, color: 'bg-purple-50 text-purple-600' },
+  { id: 'css-formatter', name: 'CSS Formatter', desc: 'Beautify CSS/SCSS/Less', icon: AlignLeft, href: '/coding-tools/css-formatter', category: 'coding', isNew: true, color: 'bg-blue-50 text-blue-600' },
+  { id: 'json-to-js', name: 'JSON to JS Object', desc: 'Convert JSON to JS Object', icon: FileCode, href: '/coding-tools/json-to-js', category: 'coding', isNew: true, color: 'bg-emerald-50 text-emerald-600' },
+  { id: 'unminifier', name: 'Universal Unminifier', desc: 'Unminify JS, CSS, HTML, JSON', icon: Maximize2, href: '/coding-tools/unminifier', category: 'coding', isNew: true, color: 'bg-indigo-50 text-indigo-600' },
+  { id: 'diff-checker', name: 'Diff Checker', desc: 'Compare text differences', icon: GitCompare, href: '/coding-tools/diff-checker', category: 'coding', isNew: true, color: 'bg-cyan-50 text-cyan-600' },
 
   // Misc Tools
   { id: 'aes-encrypt', name: 'AES Encryption', desc: 'Encrypt & Decrypt text using AES', icon: Lock, href: '/misc-tools/aes-encryption', category: 'misc', color: 'bg-red-50 text-red-600' },
