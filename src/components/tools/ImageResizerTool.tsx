@@ -3,8 +3,11 @@ import { FileUpload } from '../ui/file-uploader';
 import { Loader2, FileImage } from 'lucide-react';
 import { cn } from '../../lib/utils';
 import FileSaver from 'file-saver';
+import { useTranslation } from 'react-i18next';
+import '../../i18n';
 
 export default function ImageResizerTool() {
+  const { t } = useTranslation();
   const [file, setFile] = useState<File | null>(null);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const [width, setWidth] = useState(0);
@@ -108,13 +111,13 @@ export default function ImageResizerTool() {
           <div className="space-y-6">
             <div className="p-6 rounded-2xl bg-gray-50 border border-gray-200 space-y-6">
               <div className="flex items-center justify-between">
-                <h3 className="font-bold text-gray-900">Resize Options</h3>
-                <button onClick={reset} className="text-sm text-gray-500 hover:text-gray-900 font-medium">Change File</button>
+                <h3 className="font-bold text-gray-900">{t('tools_ui.image_resizer.options_title')}</h3>
+                <button onClick={reset} className="text-sm text-gray-500 hover:text-gray-900 font-medium">{t('tools_ui.image_resizer.change_file')}</button>
               </div>
 
               <div className="space-y-4">
                 <div className="space-y-2">
-                  <label className="text-sm font-medium text-gray-700">Width (px)</label>
+                  <label className="text-sm font-medium text-gray-700">{t('tools_ui.image_resizer.width_label')}</label>
                   <input 
                     type="number" 
                     value={width} 
@@ -124,7 +127,7 @@ export default function ImageResizerTool() {
                 </div>
 
                 <div className="space-y-2">
-                  <label className="text-sm font-medium text-gray-700">Height (px)</label>
+                  <label className="text-sm font-medium text-gray-700">{t('tools_ui.image_resizer.height_label')}</label>
                   <input 
                     type="number" 
                     value={height} 
@@ -142,7 +145,7 @@ export default function ImageResizerTool() {
                     className="rounded border-gray-300 text-blue-600 focus:ring-blue-500 w-4 h-4"
                   />
                   <label htmlFor="aspect" className="text-sm font-medium text-gray-700 cursor-pointer select-none">
-                    Maintain Aspect Ratio
+                    {t('tools_ui.image_resizer.aspect_ratio')}
                   </label>
                 </div>
               </div>
@@ -152,7 +155,7 @@ export default function ImageResizerTool() {
                 disabled={isProcessing}
                 className="w-full bg-blue-600 hover:bg-blue-700 text-white py-4 rounded-xl font-bold transition-all shadow-lg shadow-blue-500/20 flex items-center justify-center gap-2 transform active:scale-95"
               >
-                {isProcessing ? <Loader2 className="animate-spin w-5 h-5" /> : 'Download Resized Image'}
+                {isProcessing ? <Loader2 className="animate-spin w-5 h-5" /> : t('tools_ui.image_resizer.download_button')}
               </button>
             </div>
 
@@ -162,7 +165,7 @@ export default function ImageResizerTool() {
                 <div className="flex-1 min-w-0">
                   <p className="font-medium text-gray-900 truncate">{file.name}</p>
                   <p className="text-sm text-gray-500">
-                    Original: {originalImageRef.current?.width} x {originalImageRef.current?.height}
+                    {t('tools_ui.image_compressor.original_width')}: {originalImageRef.current?.width} x {originalImageRef.current?.height}
                   </p>
                 </div>
               </div>

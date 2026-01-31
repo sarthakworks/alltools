@@ -6,8 +6,11 @@ import * as parserEstree from "prettier/plugins/estree";
 import * as parserBabel from "prettier/plugins/babel";   // JS/TS
 import * as parserPostcss from "prettier/plugins/postcss"; // CSS
 import { xml2json, json2xml } from 'xml-js';
+import { useTranslation } from 'react-i18next';
+import '../../i18n';
 
 export default function Unminifier() {
+  const { t } = useTranslation();
   const [input, setInput] = useState<string>("");
   const [output, setOutput] = useState<string>("");
   const [error, setError] = useState<string>("");
@@ -16,7 +19,7 @@ export default function Unminifier() {
   const unminify = async () => {
     setError("");
     if (!input.trim()) {
-      setError("Please enter code to unminify.");
+      setError(t('tools_ui.unminifier.error_empty'));
       return;
     }
 
@@ -68,10 +71,10 @@ export default function Unminifier() {
       <div className="text-center mb-10">
         <h1 className="text-3xl font-bold text-gray-900 sm:text-4xl mb-4 flex items-center justify-center gap-3">
           <Maximize2 className="w-10 h-10 text-indigo-600" />
-          Universal Unminifier
+          {t('tools_ui.unminifier.title')}
         </h1>
         <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-          Unpack and deobfuscate minified code (HTML, CSS, JS, JSON, XML).
+          {t('tools_ui.unminifier.description')}
         </p>
       </div>
 
@@ -84,7 +87,12 @@ export default function Unminifier() {
                 <h2 className="font-semibold text-gray-800">Input</h2>
                 <select 
                     value={lang} 
-                    onChange={(e) => setInput("") || setError("") || setOutput("") || setLang(e.target.value)}
+                    onChange={(e) => {
+                      setInput("");
+                      setError("");
+                      setOutput("");
+                      setLang(e.target.value);
+                    }}
                     className="text-sm border border-gray-200 rounded-lg px-2 py-1 bg-white text-gray-600 focus:outline-none focus:border-indigo-500"
                 >
                     <option value="html">HTML</option>
@@ -121,7 +129,7 @@ export default function Unminifier() {
                     onClick={unminify}
                     className="flex items-center gap-1.5 px-3 py-1.5 bg-indigo-600 text-white text-sm font-medium rounded-lg hover:bg-indigo-700 transition-colors shadow-sm shadow-indigo-600/20"
                 >
-                    <Maximize2 className="w-4 h-4" /> Unminify
+                    <Maximize2 className="w-4 h-4" /> {t('tools_ui.unminifier.unminify')}
                 </button>
             </div>
 
@@ -130,7 +138,7 @@ export default function Unminifier() {
                     onClick={copyToClipboard}
                     className="flex items-center gap-1.5 text-xs font-medium text-gray-600 hover:text-indigo-600 transition-colors"
                   >
-                    <Copy className="w-3.5 h-3.5" /> Copy Result
+                    <Copy className="w-3.5 h-3.5" /> {t('tools_ui.common.copy')}
                   </button>
             )}
           </div>
@@ -140,7 +148,7 @@ export default function Unminifier() {
                 <div className="w-full h-full min-h-100 flex items-center justify-center bg-red-50 rounded-xl border border-red-100 p-6 text-center">
                     <div className="max-w-md">
                         <AlertCircle className="w-8 h-8 text-red-500 mx-auto mb-3" />
-                        <h3 className="font-semibold text-red-900 mb-1">Unminify Error</h3>
+                        <h3 className="font-semibold text-red-900 mb-1">{t('tools_ui.unminifier.error_formatting')}</h3>
                         <p className="text-red-600 text-sm font-mono break-all bg-white p-3 rounded-lg border border-red-100 mx-auto inline-block">
                             {error}
                         </p>
@@ -150,7 +158,7 @@ export default function Unminifier() {
                 <textarea
                     readOnly
                     className="w-full grow p-4 rounded-xl border border-gray-200 text-gray-800 font-mono text-sm bg-white min-h-100 outline-none resize-none"
-                    placeholder="Readable code will appear here..."
+                    placeholder={t('tools_ui.unminifier.placeholder_output')}
                     value={output}
                 />
              )}

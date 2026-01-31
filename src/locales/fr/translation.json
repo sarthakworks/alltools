@@ -1,0 +1,459 @@
+{
+    "nav": {
+        "home": "Accueil",
+        "privacy": "Politique de Confidentialité",
+        "tos": "CGU",
+        "contact": "Contact",
+        "blog": "Blog",
+        "about": "À propos",
+        "pdf": "Outils PDF",
+        "image": "Outils Image",
+        "ai": "Outils IA",
+        "coding": "Outils de Code",
+        "misc": "Outils Divers"
+    },
+    "tools": {
+        "pdf": "Outils PDF",
+        "image": "Outils Image",
+        "misc": "Outils Divers",
+        "ai": "Rédaction IA",
+        "coding": "Outils de Code",
+        "all": "Tous les Outils",
+        "featured": "Outils en Vedette",
+        "other": "Autres Outils {{category}}",
+        "see_all": "Voir Tous les Outils {{category}}",
+        "view_tool": "Voir l'Outil",
+        "new": "NOUVEAU"
+    },
+    "hero": {
+        "title": "AllTools",
+        "title_start": "Outils gratuits pour rendre",
+        "title_end": "Simple",
+        "typewriter_words": [
+            "l'Éducation",
+            "le Business",
+            "la Vie",
+            "le Travail",
+            "la Créativité"
+        ],
+        "subtitle": "Outils de conversion en ligne gratuits, PDF et autres utilitaires pratiques pour résoudre tous vos problèmes. Tous les fichiers, traités ou non, restent privés.",
+        "search_button": "Rechercher"
+    },
+    "stats": {
+        "monthly_users": "Utilisateurs mensuels",
+        "tools_available": "Outils disponibles",
+        "pages_processed": "Pages traitées",
+        "reviews": "Avis"
+    },
+    "categories": {
+        "pdf": {
+            "desc": "Gérez vos documents PDF"
+        },
+        "image": {
+            "desc": "Modifier et convertir des images"
+        },
+        "misc": {
+            "desc": "Utilitaires quotidiens utiles"
+        },
+        "ai": {
+            "desc": "La puissance de l'IA pour vos tâches"
+        },
+        "coding": {
+            "desc": "Outils pour développeurs"
+        }
+    },
+    "home": {
+        "free_tools_title": "Des outils gratuits que vous payez habituellement",
+        "free_tools_subtitle": "Sans limites, sans inscription",
+        "pdf_creator_title": "Créateur PDF",
+        "pdf_creator_desc": "Créez des PDF rapidement et facilement avec notre créateur PDF gratuit.",
+        "start_creating": "Commencer à créer",
+        "bg_remover_title": "Suppresseur d'arrière-plan",
+        "bg_remover_desc": "Supprimez ou modifiez l'arrière-plan d'une photo automatiquement.",
+        "remove_bg": "Supprimer l'arrière-plan",
+        "photo_cleanup_title": "Nettoyage photo",
+        "photo_cleanup_desc": "Utilisez l'IA pour supprimer des objets, du texte ou des personnes indésirables d'une image.",
+        "clean_photo": "Nettoyer la photo"
+    },
+    "premium": {
+        "title": "Obtenez plus avec Premium",
+        "subtitle": "Allez plus loin dans vos projets avec des outils premium qui ne vous gênent pas et travaillent plus intelligemment. Créez sans limites, sans publicités ni blocages. Commencez pour seulement 3,99 $ par mois.",
+        "ad_free": "Sans publicité",
+        "unlimited": "Utilisation illimitée",
+        "faster": "Traitement plus rapide",
+        "cta": "Commencer"
+    },
+    "search": {
+        "placeholder": "Rechercher des outils..."
+    },
+    "footer": {
+        "navigate": "Naviguer",
+        "tools": "Outils",
+        "pdf_tools": "Outils PDF",
+        "more": "Plus",
+        "rights": "Tous droits réservés."
+    },
+    "tools_ui": {
+        "common": {
+            "generate": "Générer",
+            "copy": "Copier",
+            "download": "Télécharger",
+            "processing": "Traitement...",
+            "error": "Erreur",
+            "success": "Succès",
+            "offline_result": "Résultat hors ligne",
+            "generated_content_placeholder": "Le contenu généré par l'IA apparaîtra ici",
+            "runs_locally": "S'exécute localement sur votre appareil",
+            "checking_cpu": "Vérification du CPU...",
+            "model_downloading": "Téléchargement du modèle...",
+            "browser_unsupported": "Navigateur non supporté",
+            "model_ready": "Modèle prêt",
+            "recheck": "Revérifier la disponibilité",
+            "load_sample": "Charger un exemple",
+            "clear": "Effacer",
+            "original": "Original",
+            "modified": "Modifié",
+            "format": "Formater",
+            "result_placeholder": "Le résultat apparaîtra ici...",
+            "upload_image": "Télécharger une image",
+            "new_image": "Nouvelle image",
+            "remove_bg": "Supprimer l'arrière-plan"
+        },
+        "ai_essay_writer": {
+            "title": "Config. Essai",
+            "topic_label": "Sujet de l'essai",
+            "topic_placeholder": "ex: L'impact de l'intelligence artificielle sur l'éducation moderne...",
+            "level_label": "Niveau académique",
+            "length_label": "Longueur",
+            "generate_button": "Générer l'essai",
+            "download_and_generate": "Télécharger le modèle et générer",
+            "generating": "Génération...",
+            "essay_draft": "Brouillon de l'essai",
+            "essay_placeholder": "Votre essai apparaîtra ici",
+            "private_offline": "100% Privé & Hors ligne",
+            "downloading_note": "La première exécution nécessite le téléchargement de ~300Mo de données de modèle.",
+            "load_error": "Erreur de chargement",
+            "retry_download": "Réessayer le téléchargement"
+        },
+        "aes_tool": {
+            "title": "Chiffrement et Déchiffrement AES",
+            "subtitle": "Chiffrement de qualité militaire pour vos données textuelles. 100% hors ligne.",
+            "input_label": "Texte d'entrée",
+            "input_placeholder": "Entrez le texte à traiter...",
+            "secret_label": "Phrase secrète",
+            "secret_placeholder": "Entrez un secret fort...",
+            "mode_label": "Mode",
+            "padding_label": "Remplissage",
+            "key_size_label": "Taille de la clé",
+            "iv_label": "IV (Optionnel, Hex)",
+            "encrypt_button": "Chiffrer",
+            "decrypt_button": "Déchiffrer",
+            "output_label": "Sortie",
+            "validation_error": "Veuillez entrer une entrée et une clé secrète.",
+            "error_malformed": "Échec du déchiffrement : Données UTF-8 mal formées. La clé, l'IV ou le mode peuvent être incorrects.",
+            "error_config": "Erreur de configuration : Veuillez vérifier votre format d'entrée, la clé et l'IV.",
+            "error_operation": "L'opération a échoué. Vérifiez votre clé, l'IV et le format d'entrée.",
+            "encrypt_title": "Chiffrement AES",
+            "encrypt_input_label": "Texte clair à chiffrer",
+            "output_format": "Format de sortie",
+            "encrypted_output": "Sortie chiffrée",
+            "decrypt_title": "Déchiffrement AES",
+            "decrypt_input_label": "Texte chiffré à déchiffrer",
+            "decrypt_placeholder": "Entrez le texte chiffré...",
+            "input_format": "Format du texte d'entrée",
+            "decrypted_output": "Sortie déchiffrée"
+        },
+        "css_formatter": {
+            "title": "Formateur CSS",
+            "subtitle": "Nettoyez vos feuilles de style (CSS/SCSS/Less) instantanément.",
+            "input_label": "CSS d'entrée",
+            "input_placeholder": "Collez votre CSS ici...",
+            "formatting_error": "Erreur de formatage"
+        },
+        "diff_checker": {
+            "title": "Comparateur de Différences",
+            "original_label": "Texte Original",
+            "modified_label": "Texte Modifié",
+            "original_placeholder": "Collez le contenu original ici...",
+            "modified_placeholder": "Collez le contenu modifié ici...",
+            "find_diff": "Trouver la différence",
+            "result_title": "Résultat de la différence",
+            "revert_all": "Tout Annuler (Utiliser Gauche)",
+            "accept_all": "Tout Accepter (Utiliser Droite)",
+            "copy_merged": "Copier le résultat fusionné",
+            "status_reverted": "Annulé (Utilise l'original)",
+            "status_modified": "Modifié (Utilise le nouveau) - Cliquez pour Annuler"
+        },
+        "html_formatter": {
+            "title": "Formateur HTML",
+            "subtitle": "Embellissez non seulement votre code HTML, mais aussi votre journée.",
+            "input_label": "HTML d'entrée",
+            "input_placeholder": "Collez votre HTML ici...",
+            "formatting_error": "Erreur de formatage"
+        },
+        "image_bg_remover": {
+            "transparent": "Transparent",
+            "color_fill": "Remplissage couleur",
+            "original_label": "Original",
+            "processed_label": "Arrière-plan supprimé",
+            "empty_state": "Cliquez sur \"Supprimer l'arrière-plan\" pour traiter",
+            "download": "Télécharger PNG"
+        },
+        "ai_image_generator": {
+            "prompt_label": "Description de l'image",
+            "prompt_placeholder": "Une ville futuriste flottant dans les nuages...",
+            "style_label": "Style artistique",
+            "size_label": "Taille",
+            "generate_button": "Générer l'image",
+            "generating": "Création de la magie...",
+            "security_note": "Les images sont générées de manière sécurisée via l'API Pollinations.ai. Aucune clé API requise. Les images sont libres d'utilisation.",
+            "empty_state_title": "Rêvez-le. Voyez-le.",
+            "empty_state_desc": "Entrez une description pour générer une œuvre d'art instantanément."
+        },
+        "ai_writer_tool": {
+            "title": "Paramètres du Générateur Hors Ligne",
+            "topic_label": "Sujet / Prompt",
+            "topic_placeholder": "Sur quoi dois-je écrire ?",
+            "type_label": "Type",
+            "tone_label": "Ton",
+            "generate_button": "Générer Localement",
+            "generating": "Génération (Hors ligne)...",
+            "offline_not_detected": "IA Hors ligne non détectée",
+            "troubleshooting": "Étapes de dépannage :"
+        },
+        "image_base64": {
+            "encode_tab": "Image vers Base64",
+            "decode_tab": "Base64 vers Image",
+            "drop_label": "Cliquez ou Glissez une Image",
+            "formats": "JPG, PNG, GIF, SVG",
+            "output_label": "Sortie Base64",
+            "copied": "Copié !",
+            "copy": "Copier",
+            "placeholder_output": "La chaîne Base64 apparaîtra ici...",
+            "paste_label": "Coller la chaîne Base64",
+            "placeholder_input": "data:image/png;base64,...",
+            "decode_button": "Décoder en Image",
+            "preview_placeholder": "L'aperçu de l'image apparaîtra ici"
+        },
+        "image_blur": {
+            "upload_title": "Télécharger une image à flouter",
+            "instruction": "Cliquez et glissez pour sélectionner une zone - l'effet s'applique automatiquement au relâchement",
+            "settings": "Paramètres",
+            "effect_type": "Type d'effet",
+            "blur": "Flou",
+            "pixelate": "Pixeliser",
+            "intensity": "Intensité",
+            "undo": "Annuler le dernier flou",
+            "reset": "Réinitialiser à l'original",
+            "download": "Télécharger le résultat",
+            "upload_new": "Télécharger une nouvelle image",
+            "light": "Léger",
+            "heavy": "Fort"
+        },
+        "image_compressor": {
+            "success_title": "Compression terminée !",
+            "new_size": "Nouvelle taille :",
+            "saved": "Économisé",
+            "download_button": "Télécharger l'image compressée",
+            "original_preview": "Aperçu de l'image originale",
+            "settings": "Paramètres",
+            "change_file": "Changer de fichier",
+            "quality_label": "Qualité de compression",
+            "resize_label": "Redimensionner l'image",
+            "target_width": "Largeur cible",
+            "original_width": "Original",
+            "aspect_ratio_note": "La hauteur s'ajustera automatiquement pour conserver les proportions",
+            "compress_button": "Compresser l'image",
+            "quality_tip": "💡 Qualité inférieure = taille de fichier plus petite",
+            "quality_recommendation": "Recommandé : 70-80% pour le web (bon équilibre qualité/taille)",
+            "quality_heavy": "Forte",
+            "quality_high": "Haute",
+            "quality_medium": "Moyenne",
+            "quality_low": "Basse",
+            "quality_original": "Originale"
+        },
+        "image_ocr": {
+            "upload_title": "Télécharger une image avec du texte",
+            "extract_button": "Extraire le texte",
+            "loading": "Chargement...",
+            "image_label": "Image",
+            "extracted_label": "Texte extrait",
+            "save_txt": "Enregistrer TXT",
+            "placeholder": "Le texte extrait apparaîtra ici...",
+            "words": "mots",
+            "chars": "caractères",
+            "error_alert": "L'extraction du texte a échoué. Veuillez essayer une autre image."
+        },
+        "image_resizer": {
+            "options_title": "Options de redimensionnement",
+            "change_file": "Changer de fichier",
+            "width_label": "Largeur (px)",
+            "height_label": "Hauteur (px)",
+            "aspect_ratio": "Conserver les proportions",
+            "download_button": "Télécharger l'image redimensionnée"
+        },
+        "image_to_pdf": {
+            "selected_images": "Images sélectionnées",
+            "add_images": "Ajouter des images",
+            "convert_button": "Convertir en PDF",
+            "error_alert": "Échec de la création du PDF à partir des images."
+        },
+        "json_formatter": {
+            "title": "Formateur et Validateur JSON",
+            "description": "Formatez, validez et minifiez vos données JSON instantanément.",
+            "input_label": "JSON d'entrée",
+            "placeholder_input": "Collez un JSON valide ici...",
+            "load_sample": "Charger un exemple",
+            "clear": "Effacer",
+            "indentation": "Indentation :",
+            "indent_2": "2 Espaces",
+            "indent_4": "4 Espaces",
+            "indent_tabs": "Tabulations",
+            "format": "Formater",
+            "minify": "Minifier",
+            "result_label": "Résultat",
+            "error_empty": "Veuillez entrer du JSON à formater.",
+            "error_empty_minify": "Veuillez entrer du JSON à minifier.",
+            "error_invalid": "JSON invalide : "
+        },
+        "json_to_js": {
+            "title": "JSON vers Objet JS",
+            "description": "Convertissez des données JSON en notation Objet JavaScript.",
+            "input_label": "JSON d'entrée",
+            "placeholder_input": "Collez le JSON ici...",
+            "convert": "Convertir",
+            "result_label": "Résultat",
+            "js_object": "Objet JavaScript",
+            "error_empty": "Veuillez entrer un JSON valide."
+        },
+        "sass_to_css": {
+            "title": "SASS/SCSS vers CSS",
+            "description": "Compilez votre code SASS ou SCSS en CSS standard.",
+            "input_label": "Entrée SCSS/SASS",
+            "placeholder_input": "Collez votre code SASS/SCSS ici...",
+            "load_sample": "Charger un exemple",
+            "output_label": "Sortie CSS",
+            "compile": "Compiler en CSS",
+            "error": "Erreur de compilation"
+        },
+        "unminifier": {
+            "title": "Déminificateur de Code",
+            "description": "Déminifiez le code JS, CSS et HTML.",
+            "input_label": "Code d'entrée",
+            "placeholder_input": "Collez le code minifié ici...",
+            "language": "Langage :",
+            "unminify": "Déminifier",
+            "output_label": "Code de sortie",
+            "error_empty": "Veuillez entrer du code à déminifier.",
+            "error_formatting": "Erreur de formatage"
+        },
+        "xml_to_json": {
+            "title": "Convertisseur XML vers JSON",
+            "description": "Transformez des données XML au format JSON.",
+            "input_label": "XML d'entrée",
+            "placeholder_input": "Collez le XML ici...",
+            "convert": "Convertir",
+            "result_label": "Résultat",
+            "error": "Erreur de conversion",
+            "placeholder_output": "Le résultat apparaîtra ici..."
+        }
+    },
+    "tools_data": {
+        "merge-pdf": {
+            "name": "Fusionner PDF",
+            "desc": "Combiner plusieurs PDF en un seul"
+        },
+        "split-pdf": {
+            "name": "Diviser PDF",
+            "desc": "Extraire des pages de votre PDF"
+        },
+        "pdf-to-image": {
+            "name": "PDF en Image",
+            "desc": "Convertir des pages PDF en JPG/PNG"
+        },
+        "image-to-pdf": {
+            "name": "Image en PDF",
+            "desc": "Convertir JPG/PNG en PDF"
+        },
+        "compress-pdf": {
+            "name": "Compresser PDF",
+            "desc": "Réduire la taille du fichier PDF"
+        },
+        "lock-unlock-pdf": {
+            "name": "Verrouiller / Déverrouiller PDF",
+            "desc": "Ajouter ou supprimer des protections PDF"
+        },
+        "compress-image": {
+            "name": "Compresser Image",
+            "desc": "Réduire la taille du fichier image"
+        },
+        "resize-image": {
+            "name": "Redimensionner Image",
+            "desc": "Changer les dimensions de l'image"
+        },
+        "image-to-base64": {
+            "name": "Image en Base64",
+            "desc": "Convertir des images en chaînes Base64"
+        },
+        "blur-image": {
+            "name": "Flouter & Masquer",
+            "desc": "Masquer les informations sensibles avec le flou"
+        },
+        "remove-bg": {
+            "name": "Supprimer l'Arrière-plan",
+            "desc": "Suppression d'arrière-plan par IA"
+        },
+        "image-ocr": {
+            "name": "Image en Texte (OCR)",
+            "desc": "Extraire du texte des images"
+        },
+        "ai-writer": {
+            "name": "Rédacteur IA",
+            "desc": "Générer des articles de blog & e-mails avec l'IA"
+        },
+        "essay-writer": {
+            "name": "Rédacteur d'Essais",
+            "desc": "Rédiger des essais académiques hors ligne"
+        },
+        "image-gen": {
+            "name": "Générateur d'Images",
+            "desc": "Créer de l'art IA à partir de textes"
+        },
+        "json-formatter": {
+            "name": "Formateur JSON",
+            "desc": "Embellir & Valider JSON"
+        },
+        "html-formatter": {
+            "name": "Formateur HTML",
+            "desc": "Embellir le code HTML"
+        },
+        "sass-to-css": {
+            "name": "Sass vers CSS",
+            "desc": "Compiler Sass/SCSS en CSS"
+        },
+        "xml-to-json": {
+            "name": "XML <-> JSON",
+            "desc": "Convertir XML en JSON & vice versa"
+        },
+        "css-formatter": {
+            "name": "Formateur CSS",
+            "desc": "Embellir CSS/SCSS/Less"
+        },
+        "json-to-js": {
+            "name": "JSON vers Objet JS",
+            "desc": "Convertir JSON en objet JS"
+        },
+        "unminifier": {
+            "name": "Déminificateur Universel",
+            "desc": "Déminifier JS, CSS, HTML, JSON"
+        },
+        "diff-checker": {
+            "name": "Vérificateur de Différences",
+            "desc": "Comparer les différences de texte"
+        },
+        "aes-encrypt": {
+            "name": "Chiffrement AES",
+            "desc": "Chiffrer & Déchiffrer du texte avec AES"
+        }
+    }
+}

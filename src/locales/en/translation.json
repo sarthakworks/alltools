@@ -1,0 +1,459 @@
+{
+    "nav": {
+        "home": "Home",
+        "privacy": "Privacy Policy",
+        "tos": "TOS",
+        "contact": "Contact",
+        "blog": "Blog",
+        "about": "About",
+        "pdf": "PDF Tools",
+        "image": "Image Tools",
+        "ai": "AI Tools",
+        "coding": "Coding Tools",
+        "misc": "Misc Tools"
+    },
+    "tools": {
+        "pdf": "PDF Tools",
+        "image": "Image Tools",
+        "misc": "Misc Tools",
+        "ai": "AI Write",
+        "coding": "Coding Tools",
+        "all": "All Tools",
+        "featured": "Featured Tools",
+        "other": "Other {{category}} Tools",
+        "see_all": "See All {{category}} Tools",
+        "view_tool": "View Tool",
+        "new": "NEW"
+    },
+    "hero": {
+        "title": "AllTools",
+        "title_start": "Free Tools to Make",
+        "title_end": "Simple",
+        "typewriter_words": [
+            "Education",
+            "Business",
+            "Life",
+            "Work",
+            "Creativity"
+        ],
+        "subtitle": "We offer PDF, miscellaneous, image and other online tools to make your life easier",
+        "search_button": "Search"
+    },
+    "stats": {
+        "monthly_users": "Monthly Users",
+        "tools_available": "Tools Available",
+        "pages_processed": "Pages Processed",
+        "reviews": "Reviews"
+    },
+    "categories": {
+        "pdf": {
+            "desc": "Manage your PDF documents"
+        },
+        "image": {
+            "desc": "Edit and convert images"
+        },
+        "misc": {
+            "desc": "Useful daily utilities"
+        },
+        "ai": {
+            "desc": "Power of AI for your tasks"
+        },
+        "coding": {
+            "desc": "Tools for developers"
+        }
+    },
+    "home": {
+        "free_tools_title": "Free Tools You’d Usually Pay For",
+        "free_tools_subtitle": "No limits, No Sign-ups",
+        "pdf_creator_title": "PDF Creator",
+        "pdf_creator_desc": "Create PDFs quickly and easily with our free PDF creator.",
+        "start_creating": "Start Creating",
+        "bg_remover_title": "Background Remover",
+        "bg_remover_desc": "Remove or change the background of a photo automatically.",
+        "remove_bg": "Remove BG",
+        "photo_cleanup_title": "Photo Cleanup",
+        "photo_cleanup_desc": "Use AI to remove unwanted objects, texts, people from an image.",
+        "clean_photo": "Clean Photo"
+    },
+    "premium": {
+        "title": "Get more with Premium",
+        "subtitle": "Keep your projects further with premium tools that stay out of your way and work smarter. Create without limits, ads, or roadblocks. Get started for just $3.99 a month.",
+        "ad_free": "Ad-free",
+        "unlimited": "Unlimited usage",
+        "faster": "Faster processing",
+        "cta": "Get Started"
+    },
+    "search": {
+        "placeholder": "Search tools..."
+    },
+    "footer": {
+        "navigate": "Navigate",
+        "tools": "Tools",
+        "pdf_tools": "PDF Tools",
+        "more": "More",
+        "rights": "All rights reserved."
+    },
+    "tools_ui": {
+        "common": {
+            "generate": "Generate",
+            "copy": "Copy",
+            "download": "Download",
+            "processing": "Processing...",
+            "error": "Error",
+            "success": "Success",
+            "offline_result": "Offline Result",
+            "generated_content_placeholder": "AI generated content will appear here",
+            "runs_locally": "Runs locally on your device",
+            "checking_cpu": "Checking CPU...",
+            "model_downloading": "Model Downloading...",
+            "browser_unsupported": "Browser Unsupported",
+            "model_ready": "Model Ready",
+            "recheck": "Re-check Availability",
+            "load_sample": "Load Sample",
+            "clear": "Clear",
+            "original": "Original",
+            "modified": "Modified",
+            "format": "Format",
+            "result_placeholder": "Result will appear here...",
+            "upload_image": "Upload Image",
+            "new_image": "New Image",
+            "remove_bg": "Remove Background"
+        },
+        "ai_essay_writer": {
+            "title": "Essay Config",
+            "topic_label": "Essay Topic",
+            "topic_placeholder": "e.g. The impact of artificial intelligence on modern education...",
+            "level_label": "Academic Level",
+            "length_label": "Length",
+            "generate_button": "Generate Essay",
+            "download_and_generate": "Download Model & Generate",
+            "generating": "Generating...",
+            "essay_draft": "Essay Draft",
+            "essay_placeholder": "Your essay will appear here",
+            "private_offline": "100% Private & Offline",
+            "downloading_note": "First run requires downloading ~300MB of model data.",
+            "load_error": "Load Error",
+            "retry_download": "Retry Download"
+        },
+        "aes_tool": {
+            "title": "AES Encryption & Decryption",
+            "subtitle": "Military-grade encryption for your text data. 100% offline.",
+            "input_label": "Input Text",
+            "input_placeholder": "Enter text to process...",
+            "secret_label": "Secret Passphrase",
+            "secret_placeholder": "Enter a strong secret...",
+            "mode_label": "Mode",
+            "padding_label": "Padding",
+            "key_size_label": "Key Size",
+            "iv_label": "IV (Optional, Hex)",
+            "encrypt_button": "Encrypt",
+            "decrypt_button": "Decrypt",
+            "output_label": "Output",
+            "validation_error": "Please enter input and a secret key.",
+            "error_malformed": "Decryption failed: Malformed UTF-8 data. The key, IV, or mode might be incorrect.",
+            "error_config": "Configuration Error: Please check your input format, Key, and IV.",
+            "error_operation": "Operation failed. Check your key, IV, and input format.",
+            "encrypt_title": "AES Encryption",
+            "encrypt_input_label": "Plain Text to Encrypt",
+            "output_format": "Output Format",
+            "encrypted_output": "Encrypted Output",
+            "decrypt_title": "AES Decryption",
+            "decrypt_input_label": "Encrypted Text to Decrypt",
+            "decrypt_placeholder": "Enter encrypted text...",
+            "input_format": "Input Text Format",
+            "decrypted_output": "Decrypted Output"
+        },
+        "css_formatter": {
+            "title": "CSS Formatter",
+            "subtitle": "Clean up your stylesheets (CSS/SCSS/Less) instantly.",
+            "input_label": "Input CSS",
+            "input_placeholder": "Paste your CSS here...",
+            "formatting_error": "Formatting Error"
+        },
+        "diff_checker": {
+            "title": "Diff Checker",
+            "original_label": "Original Text",
+            "modified_label": "Modified Text",
+            "original_placeholder": "Paste original content here...",
+            "modified_placeholder": "Paste modified content here...",
+            "find_diff": "Find Difference",
+            "result_title": "Difference Result",
+            "revert_all": "Revert All (Use Left)",
+            "accept_all": "Accept All (Use Right)",
+            "copy_merged": "Copy Merged Result",
+            "status_reverted": "Reverted (Using Original)",
+            "status_modified": "Modified (Using New) - Click to Revert"
+        },
+        "html_formatter": {
+            "title": "HTML Formatter",
+            "subtitle": "Beautify not only your HTML code, but your day.",
+            "input_label": "Input HTML",
+            "input_placeholder": "Paste your HTML here...",
+            "formatting_error": "Formatting Error"
+        },
+        "image_bg_remover": {
+            "transparent": "Transparent",
+            "color_fill": "Color Fill",
+            "original_label": "Original",
+            "processed_label": "Background Removed",
+            "empty_state": "Click \"Remove Background\" to process",
+            "download": "Download PNG"
+        },
+        "ai_image_generator": {
+            "prompt_label": "Image Description",
+            "prompt_placeholder": "A futuristic city floating in the clouds...",
+            "style_label": "Art Style",
+            "size_label": "Size",
+            "generate_button": "Generate Image",
+            "generating": "Creating Magic...",
+            "security_note": "Images are generated securely using the Pollinations.ai API. No API keys required. Images are free to use.",
+            "empty_state_title": "Dream it. See it.",
+            "empty_state_desc": "Enter a prompt to generate artwork instantly."
+        },
+        "ai_writer_tool": {
+            "title": "Offline Generator Settings",
+            "topic_label": "Topic / Prompt",
+            "topic_placeholder": "What should I write about?",
+            "type_label": "Type",
+            "tone_label": "Tone",
+            "generate_button": "Generate Locally",
+            "generating": "Generating (Offline)...",
+            "offline_not_detected": "Offline AI Not Detected",
+            "troubleshooting": "Troubleshooting Steps:"
+        },
+        "image_base64": {
+            "encode_tab": "Image to Base64",
+            "decode_tab": "Base64 to Image",
+            "drop_label": "Click or Drag Image",
+            "formats": "JPG, PNG, GIF, SVG",
+            "output_label": "Base64 Output",
+            "copied": "Copied!",
+            "copy": "Copy",
+            "placeholder_output": "Base64 string will appear here...",
+            "paste_label": "Paste Base64 String",
+            "placeholder_input": "data:image/png;base64,...",
+            "decode_button": "Decode to Image",
+            "preview_placeholder": "Image preview will appear here"
+        },
+        "image_blur": {
+            "upload_title": "Upload Image to Blur",
+            "instruction": "Click and drag to select area - effect applies automatically when you release",
+            "settings": "Settings",
+            "effect_type": "Effect Type",
+            "blur": "Blur",
+            "pixelate": "Pixelate",
+            "intensity": "Intensity",
+            "undo": "Undo Last Blur",
+            "reset": "Reset to Original",
+            "download": "Download Result",
+            "upload_new": "Upload New Image",
+            "light": "Light",
+            "heavy": "Heavy"
+        },
+        "image_compressor": {
+            "success_title": "Compression Complete!",
+            "new_size": "New Size:",
+            "saved": "Saved",
+            "download_button": "Download Compressed Image",
+            "original_preview": "Original Image Preview",
+            "settings": "Settings",
+            "change_file": "Change File",
+            "quality_label": "Compression Quality",
+            "resize_label": "Resize Image",
+            "target_width": "Target Width",
+            "original_width": "Original",
+            "aspect_ratio_note": "Height will adjust automatically to maintain aspect ratio",
+            "compress_button": "Compress Image",
+            "quality_tip": "💡 Lower quality = smaller file size",
+            "quality_recommendation": "Recommended: 70-80% for web use (good balance of quality & size)",
+            "quality_heavy": "Heavy",
+            "quality_high": "High",
+            "quality_medium": "Medium",
+            "quality_low": "Low",
+            "quality_original": "Original"
+        },
+        "image_ocr": {
+            "upload_title": "Upload Image with Text",
+            "extract_button": "Extract Text",
+            "loading": "Loading...",
+            "image_label": "Image",
+            "extracted_label": "Extracted Text",
+            "save_txt": "Save TXT",
+            "placeholder": "Extracted text will appear here...",
+            "words": "words",
+            "chars": "characters",
+            "error_alert": "Text extraction failed. Please try a different image."
+        },
+        "image_resizer": {
+            "options_title": "Resize Options",
+            "change_file": "Change File",
+            "width_label": "Width (px)",
+            "height_label": "Height (px)",
+            "aspect_ratio": "Maintain Aspect Ratio",
+            "download_button": "Download Resized Image"
+        },
+        "image_to_pdf": {
+            "selected_images": "Images Selected",
+            "add_images": "Add Images",
+            "convert_button": "Convert to PDF",
+            "error_alert": "Failed to create PDF from images."
+        },
+        "json_formatter": {
+            "title": "JSON Formatter & Validator",
+            "description": "Format, validate, and minify your JSON data instantly.",
+            "input_label": "Input JSON",
+            "placeholder_input": "Paste valid JSON here...",
+            "load_sample": "Load Sample",
+            "clear": "Clear",
+            "indentation": "Indentation:",
+            "indent_2": "2 Spaces",
+            "indent_4": "4 Spaces",
+            "indent_tabs": "Tabs",
+            "format": "Format",
+            "minify": "Minify",
+            "result_label": "Result",
+            "error_empty": "Please enter some JSON to format.",
+            "error_empty_minify": "Please enter some JSON to minify.",
+            "error_invalid": "Invalid JSON: "
+        },
+        "json_to_js": {
+            "title": "JSON to JS Object",
+            "description": "Convert JSON data to JavaScript Object notation.",
+            "input_label": "Input JSON",
+            "placeholder_input": "Paste JSON here...",
+            "convert": "Convert",
+            "result_label": "Result",
+            "js_object": "JavaScript Object",
+            "error_empty": "Please enter valid JSON."
+        },
+        "sass_to_css": {
+            "title": "SASS/SCSS to CSS",
+            "description": "Compile SASS or SCSS code to standard CSS.",
+            "input_label": "SCSS/SASS Input",
+            "placeholder_input": "Paste your SASS/SCSS code here...",
+            "load_sample": "Load Sample",
+            "output_label": "CSS Output",
+            "compile": "Compile to CSS",
+            "error": "Compilation Error"
+        },
+        "unminifier": {
+            "title": "Code Unminifier",
+            "description": "Unminify JS, CSS, and HTML code.",
+            "input_label": "Input Code",
+            "placeholder_input": "Paste minified code here...",
+            "language": "Language:",
+            "unminify": "Unminify",
+            "output_label": "Output Code",
+            "error_empty": "Please enter code to unminify.",
+            "error_formatting": "Formatting Error"
+        },
+        "xml_to_json": {
+            "title": "XML to JSON Converter",
+            "description": "Transform XML data to JSON format.",
+            "input_label": "Input XML",
+            "placeholder_input": "Paste XML here...",
+            "convert": "Convert",
+            "result_label": "Result",
+            "error": "Conversion Error",
+            "placeholder_output": "Result will appear here..."
+        }
+    },
+    "tools_data": {
+        "merge-pdf": {
+            "name": "Merge PDF",
+            "desc": "Combine multiple PDFs into one"
+        },
+        "split-pdf": {
+            "name": "Split PDF",
+            "desc": "Extract pages from your PDF"
+        },
+        "pdf-to-image": {
+            "name": "PDF to Image",
+            "desc": "Convert PDF pages to JPG/PNG"
+        },
+        "image-to-pdf": {
+            "name": "Image to PDF",
+            "desc": "Convert JPG/PNG to PDF"
+        },
+        "compress-pdf": {
+            "name": "Compress PDF",
+            "desc": "Reduce PDF file size"
+        },
+        "lock-unlock-pdf": {
+            "name": "Lock / Unlock PDF",
+            "desc": "Add or remove PDF protections"
+        },
+        "compress-image": {
+            "name": "Compress Image",
+            "desc": "Reduce image file size"
+        },
+        "resize-image": {
+            "name": "Resize Image",
+            "desc": "Change image dimensions"
+        },
+        "image-to-base64": {
+            "name": "Image to Base64",
+            "desc": "Convert images to Base64 strings"
+        },
+        "blur-image": {
+            "name": "Blur & Redact",
+            "desc": "Hide sensitive info with blur"
+        },
+        "remove-bg": {
+            "name": "Remove Background",
+            "desc": "AI-powered background removal"
+        },
+        "image-ocr": {
+            "name": "Image to Text (OCR)",
+            "desc": "Extract text from images"
+        },
+        "ai-writer": {
+            "name": "AI Writer",
+            "desc": "Generate blog posts & emails with AI"
+        },
+        "essay-writer": {
+            "name": "Essay Writer",
+            "desc": "Write academic essays offline"
+        },
+        "image-gen": {
+            "name": "Image Generator",
+            "desc": "Create AI art from text prompts"
+        },
+        "json-formatter": {
+            "name": "JSON Formatter",
+            "desc": "Beautify & Validate JSON"
+        },
+        "html-formatter": {
+            "name": "HTML Formatter",
+            "desc": "Beautify HTML Code"
+        },
+        "sass-to-css": {
+            "name": "Sass to CSS",
+            "desc": "Compile Sass/SCSS to CSS"
+        },
+        "xml-to-json": {
+            "name": "XML <-> JSON",
+            "desc": "Convert XML to JSON & vice versa"
+        },
+        "css-formatter": {
+            "name": "CSS Formatter",
+            "desc": "Beautify CSS/SCSS/Less"
+        },
+        "json-to-js": {
+            "name": "JSON to JS Object",
+            "desc": "Convert JSON to JS Object"
+        },
+        "unminifier": {
+            "name": "Universal Unminifier",
+            "desc": "Unminify JS, CSS, HTML, JSON"
+        },
+        "diff-checker": {
+            "name": "Diff Checker",
+            "desc": "Compare text differences"
+        },
+        "aes-encrypt": {
+            "name": "AES Encryption",
+            "desc": "Encrypt & Decrypt text using AES"
+        }
+    }
+}

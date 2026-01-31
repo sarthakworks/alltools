@@ -20,6 +20,8 @@ import {
   rectSortingStrategy
 } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
+import { useTranslation } from 'react-i18next';
+import '../../i18n';
 
 interface ImageItem {
   id: string;
@@ -66,6 +68,7 @@ function SortableItem({ id, preview, fileName, onRemove }: any) {
 }
 
 export default function ImageToPDFTool() {
+  const { t } = useTranslation();
   const [images, setImages] = useState<ImageItem[]>([]);
   const [isProcessing, setIsProcessing] = useState(false);
   const [activeId, setActiveId] = useState<string | null>(null);
@@ -136,7 +139,7 @@ export default function ImageToPDFTool() {
 
     } catch (error) {
         console.error(error);
-        alert("Failed to create PDF from images.");
+        alert(t('tools_ui.image_to_pdf.error_alert'));
     } finally {
         setIsProcessing(false);
     }
@@ -154,7 +157,7 @@ export default function ImageToPDFTool() {
             <>
                 <div className="bg-gray-50 p-6 rounded-2xl border border-gray-100">
                     <div className="flex justify-between items-center mb-6">
-                        <h3 className="text-lg font-bold text-gray-900">{images.length} Images Selected</h3>
+                        <h3 className="text-lg font-bold text-gray-900">{images.length} {t('tools_ui.image_to_pdf.selected_images')}</h3>
                     </div>
                     
                     <DndContext 
@@ -175,7 +178,7 @@ export default function ImageToPDFTool() {
                                         <div className="w-8 h-8 bg-blue-100 text-blue-600 rounded-full flex items-center justify-center mx-auto mb-2">
                                             <span className="text-xl">+</span>
                                         </div>
-                                        <span className="text-xs text-gray-500 font-medium">Add Images</span>
+                                        <span className="text-xs text-gray-500 font-medium">{t('tools_ui.image_to_pdf.add_images')}</span>
                                     </div>
                                     <input 
                                         id="add-more-img" 
@@ -206,7 +209,7 @@ export default function ImageToPDFTool() {
                     className="w-full py-4 bg-blue-600 hover:bg-blue-700 text-white rounded-xl font-bold text-lg shadow-lg shadow-blue-500/20 flex items-center justify-center gap-2 transition-all"
                 >
                     {isProcessing ? <Loader2 className="animate-spin w-5 h-5" /> : <ArrowDown className="w-5 h-5" />}
-                    Convert to PDF
+                    {t('tools_ui.image_to_pdf.convert_button')}
                 </button>
             </>
         )}

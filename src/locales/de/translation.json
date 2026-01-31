@@ -1,0 +1,459 @@
+{
+    "nav": {
+        "home": "Startseite",
+        "privacy": "Datenschutz",
+        "tos": "AGB",
+        "contact": "Kontakt",
+        "blog": "Blog",
+        "about": "Über uns",
+        "pdf": "PDF Tools",
+        "image": "Bild Tools",
+        "ai": "KI Tools",
+        "coding": "Coding Tools",
+        "misc": "Sonstige Tools"
+    },
+    "tools": {
+        "pdf": "PDF Tools",
+        "image": "Bild Tools",
+        "misc": "Sonstige Tools",
+        "ai": "KI Schreiben",
+        "coding": "Coding Tools",
+        "all": "Alle Tools",
+        "featured": "Beliebte Tools",
+        "other": "Andere {{category}} Tools",
+        "see_all": "Alle {{category}} Tools ansehen",
+        "view_tool": "Tool ansehen",
+        "new": "NEU"
+    },
+    "hero": {
+        "title": "AllTools",
+        "title_start": "Kostenlose Tools für",
+        "title_end": "Einfaches",
+        "typewriter_words": [
+            "Bildung",
+            "Geschäft",
+            "Leben",
+            "Arbeit",
+            "Kreativität"
+        ],
+        "subtitle": "Wir bieten PDF-, Bild- und andere nützliche Online-Tools, um dein Leben einfacher zu machen.",
+        "search_button": "Suchen"
+    },
+    "stats": {
+        "monthly_users": "Monatliche Nutzer",
+        "tools_available": "Verfügbare Tools",
+        "pages_processed": "Verarbeitete Seiten",
+        "reviews": "Bewertungen"
+    },
+    "categories": {
+        "pdf": {
+            "desc": "Verwalte deine PDF-Dokumente"
+        },
+        "image": {
+            "desc": "Bilder bearbeiten und konvertieren"
+        },
+        "misc": {
+            "desc": "Nützliche tägliche Helfer"
+        },
+        "ai": {
+            "desc": "KI-Power für deine Aufgaben"
+        },
+        "coding": {
+            "desc": "Tools für Entwickler"
+        }
+    },
+    "home": {
+        "free_tools_title": "Kostenlose Tools, für die man sonst bezahlt",
+        "free_tools_subtitle": "Keine Limits, Keine Anmeldung",
+        "pdf_creator_title": "PDF Ersteller",
+        "pdf_creator_desc": "Erstelle PDFs schnell und einfach mit unserem kostenlosen PDF-Ersteller.",
+        "start_creating": "Starten",
+        "bg_remover_title": "Hintergrund Entferner",
+        "bg_remover_desc": "Entferne oder ändere den Hintergrund eines Fotos automatisch.",
+        "remove_bg": "Hintergrund entfernen",
+        "photo_cleanup_title": "Foto Bereinigung",
+        "photo_cleanup_desc": "Nutze KI, um unerwünschte Objekte, Text oder Personen aus einem Bild zu entfernen.",
+        "clean_photo": "Foto bereinigen"
+    },
+    "premium": {
+        "title": "Hol mehr raus mit Premium",
+        "subtitle": "Bring deine Projekte weiter mit Premium-Tools, die dir nicht im Weg stehen und intelligenter arbeiten. Erstelle ohne Limits, Werbung oder Blockaden. Starte für nur 3,99 $ im Monat.",
+        "ad_free": "Werbefrei",
+        "unlimited": "Unbegrenzte Nutzung",
+        "faster": "Schnellere Verarbeitung",
+        "cta": "Loslegen"
+    },
+    "search": {
+        "placeholder": "Tools suchen..."
+    },
+    "footer": {
+        "navigate": "Navigieren",
+        "tools": "Tools",
+        "pdf_tools": "PDF Tools",
+        "more": "Mehr",
+        "rights": "Alle Rechte vorbehalten."
+    },
+    "tools_ui": {
+        "common": {
+            "generate": "Generieren",
+            "copy": "Kopieren",
+            "download": "Herunterladen",
+            "processing": "Verarbeitung...",
+            "error": "Fehler",
+            "success": "Erfolg",
+            "offline_result": "Offline-Ergebnis",
+            "generated_content_placeholder": "KI-generierter Inhalt wird hier erscheinen",
+            "runs_locally": "Läuft lokal auf Ihrem Gerät",
+            "checking_cpu": "CPU wird überprüft...",
+            "model_downloading": "Modell wird heruntergeladen...",
+            "browser_unsupported": "Browser nicht unterstützt",
+            "model_ready": "Modell bereit",
+            "recheck": "Verfügbarkeit erneut prüfen",
+            "load_sample": "Beispiel laden",
+            "clear": "Leeren",
+            "original": "Original",
+            "modified": "Modifiziert",
+            "format": "Formatieren",
+            "result_placeholder": "Ergebnis wird hier angezeigt...",
+            "upload_image": "Bild hochladen",
+            "new_image": "Neues Bild",
+            "remove_bg": "Hintergrund entfernen"
+        },
+        "ai_essay_writer": {
+            "title": "Aufsatz-Konfiguration",
+            "topic_label": "Aufsatzthema",
+            "topic_placeholder": "z.B. Der Einfluss von künstlicher Intelligenz auf moderne Bildung...",
+            "level_label": "Akademisches Niveau",
+            "length_label": "Länge",
+            "generate_button": "Aufsatz generieren",
+            "download_and_generate": "Modell laden & generieren",
+            "generating": "Generiere...",
+            "essay_draft": "Aufsatzentwurf",
+            "essay_placeholder": "Ihr Aufsatz wird hier erscheinen",
+            "private_offline": "100% Privat & Offline",
+            "downloading_note": "Der erste Durchlauf erfordert das Herunterladen von ~300MB Modelldaten.",
+            "load_error": "Ladefehler",
+            "retry_download": "Download wiederholen"
+        },
+        "aes_tool": {
+            "title": "AES Verschlüsselung & Entschlüsselung",
+            "subtitle": "Militärtaugliche Verschlüsselung für Ihre Textdaten. 100% offline.",
+            "input_label": "Eingabetext",
+            "input_placeholder": "Text hier eingeben...",
+            "secret_label": "Geheime Passphrase",
+            "secret_placeholder": "Geben Sie ein starkes Geheimnis ein...",
+            "mode_label": "Modus",
+            "padding_label": "Padding",
+            "key_size_label": "Schlüssellänge",
+            "iv_label": "IV (Optional, Hex)",
+            "encrypt_button": "Verschlüsseln",
+            "decrypt_button": "Entschlüsseln",
+            "output_label": "Ausgabe",
+            "validation_error": "Bitte geben Sie Eingabe und einen geheimen Schlüssel ein.",
+            "error_malformed": "Entschlüsselung fehlgeschlagen: Ungültige UTF-8 Daten. Schlüssel, IV oder Modus könnten falsch sein.",
+            "error_config": "Konfigurationsfehler: Bitte prüfen Sie das Eingabeformat, Schlüssel und IV.",
+            "error_operation": "Operation fehlgeschlagen. Prüfen Sie Schlüssel, IV und Eingabeformat.",
+            "encrypt_title": "AES Verschlüsselung",
+            "encrypt_input_label": "Klartext zum Verschlüsseln",
+            "output_format": "Ausgabeformat",
+            "encrypted_output": "Verschlüsselte Ausgabe",
+            "decrypt_title": "AES Entschlüsselung",
+            "decrypt_input_label": "Verschlüsselter Text zum Entschlüsseln",
+            "decrypt_placeholder": "Verschlüsselten Text eingeben...",
+            "input_format": "Eingabetextformat",
+            "decrypted_output": "Entschlüsselte Ausgabe"
+        },
+        "css_formatter": {
+            "title": "CSS Formatierer",
+            "subtitle": "Bereinigen Sie Ihre Stylesheets (CSS/SCSS/Less) sofort.",
+            "input_label": "Eingabe CSS",
+            "input_placeholder": "Fügen Sie Ihr CSS hier ein...",
+            "formatting_error": "Formatierungsfehler"
+        },
+        "diff_checker": {
+            "title": "Diff Checker",
+            "original_label": "Originaltext",
+            "modified_label": "Geänderter Text",
+            "original_placeholder": "Originalinhalt hier einfügen...",
+            "modified_placeholder": "Geänderten Inhalt hier einfügen...",
+            "find_diff": "Unterschied finden",
+            "result_title": "Ergebnis",
+            "revert_all": "Alles zurücksetzen (Links verwenden)",
+            "accept_all": "Alles akzeptieren (Rechts verwenden)",
+            "copy_merged": "Zusammengeführtes Ergebnis kopieren",
+            "status_reverted": "Zurückgesetzt (Verwendet Original)",
+            "status_modified": "Geändert (Verwendet Neu) - Klicken zum Zurücksetzen"
+        },
+        "html_formatter": {
+            "title": "HTML Formatierer",
+            "subtitle": "Verschönern Sie nicht nur Ihren HTML-Code, sondern auch Ihren Tag.",
+            "input_label": "Eingabe HTML",
+            "input_placeholder": "Fügen Sie Ihr HTML hier ein...",
+            "formatting_error": "Formatierungsfehler"
+        },
+        "image_bg_remover": {
+            "transparent": "Transparent",
+            "color_fill": "Farbüllung",
+            "original_label": "Original",
+            "processed_label": "Hintergrund entfernt",
+            "empty_state": "Klicken Sie auf \"Hintergrund entfernen\", um zu starten",
+            "download": "PNG herunterladen"
+        },
+        "ai_image_generator": {
+            "prompt_label": "Bildbeschreibung",
+            "prompt_placeholder": "Eine futuristische Stadt, die in den Wolken schwebt...",
+            "style_label": "Kunststil",
+            "size_label": "Größe",
+            "generate_button": "Bild generieren",
+            "generating": "Erschaffe Magie...",
+            "security_note": "Bilder werden sicher über die Pollinations.ai API generiert. Keine API-Schlüssel erforderlich. Bilder sind frei verwendbar.",
+            "empty_state_title": "Träume es. Sieh es.",
+            "empty_state_desc": "Geben Sie eine Beschreibung ein, um sofort ein Kunstwerk zu generieren."
+        },
+        "ai_writer_tool": {
+            "title": "Offline-Generator Einstellungen",
+            "topic_label": "Thema / Prompt",
+            "topic_placeholder": "Worüber soll ich schreiben?",
+            "type_label": "Typ",
+            "tone_label": "Tonfall",
+            "generate_button": "Lokal generieren",
+            "generating": "Generiere (Offline)...",
+            "offline_not_detected": "Offline-KI nicht erkannt",
+            "troubleshooting": "Schritte zur Fehlerbehebung:"
+        },
+        "image_base64": {
+            "encode_tab": "Bild zu Base64",
+            "decode_tab": "Base64 zu Bild",
+            "drop_label": "Bild klicken oder ziehen",
+            "formats": "JPG, PNG, GIF, SVG",
+            "output_label": "Base64 Ausgabe",
+            "copied": "Kopiert!",
+            "copy": "Kopieren",
+            "placeholder_output": "Base64-String erscheint hier...",
+            "paste_label": "Base64-String einfügen",
+            "placeholder_input": "data:image/png;base64,...",
+            "decode_button": "Zu Bild dekodieren",
+            "preview_placeholder": "Bildvorschau erscheint hier"
+        },
+        "image_blur": {
+            "upload_title": "Bild zum Weichzeichnen hochladen",
+            "instruction": "Klicken und ziehen, um Bereich auszuwählen - Effekt wird beim Loslassen angewendet",
+            "settings": "Einstellungen",
+            "effect_type": "Effekttyp",
+            "blur": "Weichzeichnen",
+            "pixelate": "Verpixeln",
+            "intensity": "Intensität",
+            "undo": "Letzten Schritt rückgängig machen",
+            "reset": "Auf Original zurücksetzen",
+            "download": "Ergebnis herunterladen",
+            "upload_new": "Neues Bild hochladen",
+            "light": "Leicht",
+            "heavy": "Stark"
+        },
+        "image_compressor": {
+            "success_title": "Komprimierung abgeschlossen!",
+            "new_size": "Neue Größe:",
+            "saved": "Gespart",
+            "download_button": "Komprimiertes Bild herunterladen",
+            "original_preview": "Originalvorschau",
+            "settings": "Einstellungen",
+            "change_file": "Datei ändern",
+            "quality_label": "Komprimierungsqualität",
+            "resize_label": "Bildgröße ändern",
+            "target_width": "Zielbreite",
+            "original_width": "Original",
+            "aspect_ratio_note": "Höhe passt sich automatisch an, um das Seitenverhältnis beizubehalten",
+            "compress_button": "Bild komprimieren",
+            "quality_tip": "💡 Niedrigere Qualität = kleinere Dateigröße",
+            "quality_recommendation": "Empfohlen: 70-80% für Web (gutes Verhältnis von Qualität & Größe)",
+            "quality_heavy": "Stark",
+            "quality_high": "Hoch",
+            "quality_medium": "Mittel",
+            "quality_low": "Niedrig",
+            "quality_original": "Original"
+        },
+        "image_ocr": {
+            "upload_title": "Bild mit Text hochladen",
+            "extract_button": "Text extrahieren",
+            "loading": "Laden...",
+            "image_label": "Bild",
+            "extracted_label": "Extrahierter Text",
+            "save_txt": "TXT speichern",
+            "placeholder": "Extrahierter Text erscheint hier...",
+            "words": "Wörter",
+            "chars": "Zeichen",
+            "error_alert": "Textextraktion fehlgeschlagen. Bitte versuchen Sie ein anderes Bild."
+        },
+        "image_resizer": {
+            "options_title": "Größenänderungsoptionen",
+            "change_file": "Datei ändern",
+            "width_label": "Breite (px)",
+            "height_label": "Höhe (px)",
+            "aspect_ratio": "Seitenverhältnis beibehalten",
+            "download_button": "Größenverändertes Bild herunterladen"
+        },
+        "image_to_pdf": {
+            "selected_images": "Ausgewählte Bilder",
+            "add_images": "Bilder hinzufügen",
+            "convert_button": "In PDF konvertieren",
+            "error_alert": "Fehler beim Erstellen des PDFs aus Bildern."
+        },
+        "json_formatter": {
+            "title": "JSON Formatierer & Validator",
+            "description": "Formatieren, validieren und minifizieren Sie Ihre JSON-Daten sofort.",
+            "input_label": "Eingabe JSON",
+            "placeholder_input": "Gültiges JSON hier einfügen...",
+            "load_sample": "Beispiel laden",
+            "clear": "Leeren",
+            "indentation": "Einrückung:",
+            "indent_2": "2 Leerzeichen",
+            "indent_4": "4 Leerzeichen",
+            "indent_tabs": "Tabs",
+            "format": "Formatieren",
+            "minify": "Minifizieren",
+            "result_label": "Ergebnis",
+            "error_empty": "Bitte geben Sie JSON zum Formatieren ein.",
+            "error_empty_minify": "Bitte geben Sie JSON zum Minifizieren ein.",
+            "error_invalid": "Ungültiges JSON: "
+        },
+        "json_to_js": {
+            "title": "JSON zu JS Objekt",
+            "description": "Konvertieren Sie JSON-Daten in JavaScript-Objekt-Notation.",
+            "input_label": "Eingabe JSON",
+            "placeholder_input": "JSON hier einfügen...",
+            "convert": "Konvertieren",
+            "result_label": "Ergebnis",
+            "js_object": "JavaScript Objekt",
+            "error_empty": "Bitte geben Sie gültiges JSON ein."
+        },
+        "sass_to_css": {
+            "title": "SASS/SCSS zu CSS",
+            "description": "Kompilieren Sie SASS oder SCSS Code zu Standard-CSS.",
+            "input_label": "Eingabe SCSS/SASS",
+            "placeholder_input": "SASS/SCSS Code hier einfügen...",
+            "load_sample": "Beispiel laden",
+            "output_label": "CSS Ausgabe",
+            "compile": "Zu CSS kompilieren",
+            "error": "Kompilierungsfehler"
+        },
+        "unminifier": {
+            "title": "Code Unminifier",
+            "description": "Kompinierten JS, CSS und HTML Code entpacken.",
+            "input_label": "Eingabecode",
+            "placeholder_input": "Minifizierten Code hier einfügen...",
+            "language": "Sprache:",
+            "unminify": "Entpacken",
+            "output_label": "Ausgabecode",
+            "error_empty": "Bitte Code zum Entpacken eingeben.",
+            "error_formatting": "Formatierungsfehler"
+        },
+        "xml_to_json": {
+            "title": "XML zu JSON Konverter",
+            "description": "XML-Daten in JSON-Format umwandeln.",
+            "input_label": "Eingabe XML",
+            "placeholder_input": "XML hier einfügen...",
+            "convert": "Konvertieren",
+            "result_label": "Ergebnis",
+            "error": "Konvertierungsfehler",
+            "placeholder_output": "Ergebnis wird hier angezeigt..."
+        }
+    },
+    "tools_data": {
+        "merge-pdf": {
+            "name": "PDF sammenfügen",
+            "desc": "Mehrere PDFs in eine kombinieren"
+        },
+        "split-pdf": {
+            "name": "PDF teilen",
+            "desc": "Seiten aus Ihrer PDF extrahieren"
+        },
+        "pdf-to-image": {
+            "name": "PDF in Bild",
+            "desc": "PDF-Seiten in JPG/PNG konvertieren"
+        },
+        "image-to-pdf": {
+            "name": "Bild in PDF",
+            "desc": "JPG/PNG in PDF konvertieren"
+        },
+        "compress-pdf": {
+            "name": "PDF komprimieren",
+            "desc": "PDF-Dateigröße reduzieren"
+        },
+        "lock-unlock-pdf": {
+            "name": "PDF sperren / entsperren",
+            "desc": "PDF-Schutz hinzufügen oder entfernen"
+        },
+        "compress-image": {
+            "name": "Bild komprimieren",
+            "desc": "Bilddateigröße reduzieren"
+        },
+        "resize-image": {
+            "name": "Bildgröße ändern",
+            "desc": "Bildabmessungen ändern"
+        },
+        "image-to-base64": {
+            "name": "Bild in Base64",
+            "desc": "Bilder in Base64-Strings konvertieren"
+        },
+        "blur-image": {
+            "name": "Weichzeichnen & Schwärzen",
+            "desc": "Sensible Infos durch Weichzeichnen verbergen"
+        },
+        "remove-bg": {
+            "name": "Hintergrund entfernen",
+            "desc": "KI-gestützte Hintergrundentfernung"
+        },
+        "image-ocr": {
+            "name": "Bild zu Text (OCR)",
+            "desc": "Text aus Bildern extrahieren"
+        },
+        "ai-writer": {
+            "name": "KI-Autor",
+            "desc": "Blogposts & E-Mails mit KI erstellen"
+        },
+        "essay-writer": {
+            "name": "Aufsatzschreiber",
+            "desc": "Akademische Aufsätze offline schreiben"
+        },
+        "image-gen": {
+            "name": "Bildgenerator",
+            "desc": "KI-Kunst aus Texteingaben erstellen"
+        },
+        "json-formatter": {
+            "name": "JSON-Formatierer",
+            "desc": "JSON verschönern & validieren"
+        },
+        "html-formatter": {
+            "name": "HTML-Formatierer",
+            "desc": "HTML-Code verschönern"
+        },
+        "sass-to-css": {
+            "name": "Sass in CSS",
+            "desc": "Sass/SCSS in CSS kompilieren"
+        },
+        "xml-to-json": {
+            "name": "XML <-> JSON",
+            "desc": "XML in JSON & umgekehrt konvertieren"
+        },
+        "css-formatter": {
+            "name": "CSS-Formatierer",
+            "desc": "CSS/SCSS/Less verschönern"
+        },
+        "json-to-js": {
+            "name": "JSON in JS-Objekt",
+            "desc": "JSON in JS-Objekt konvertieren"
+        },
+        "unminifier": {
+            "name": "Universeller Entminifizierer",
+            "desc": "JS, CSS, HTML, JSON entminifizieren"
+        },
+        "diff-checker": {
+            "name": "Diff-Checker",
+            "desc": "Textunterschiede vergleichen"
+        },
+        "aes-encrypt": {
+            "name": "AES-Verschlüsselung",
+            "desc": "Text mit AES verschlüsseln & entschlüsseln"
+        }
+    }
+}

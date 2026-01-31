@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Copy, Loader2, Sparkles, Wand2, AlertTriangle, MonitorPlay } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 import { cn } from '../../lib/utils';
 
 // Helper for type safety with the experimental API
@@ -18,6 +19,7 @@ declare global {
 }
 
 export default function AIWriterTool() {
+  const { t } = useTranslation();
   const [topic, setTopic] = useState('');
   const [tone, setTone] = useState('professional');
   const [type, setType] = useState('article');
@@ -90,16 +92,16 @@ export default function AIWriterTool() {
           <div className="flex items-center justify-between">
             <h3 className="font-bold text-gray-900 flex items-center gap-2">
               <Sparkles className="w-5 h-5 text-purple-600" />
-              Offline Generator Settings
+              {t('tools_ui.ai_writer_tool.title')}
             </h3>
             <span className={cn("text-xs font-medium px-2 py-1 rounded-full border", 
               modelStatus === 'ready' ? "bg-green-50 text-green-700 border-green-200" :
               modelStatus === 'unavailable' ? "bg-red-50 text-red-700 border-red-200" :
               "bg-yellow-50 text-yellow-700 border-yellow-200"
             )}>
-              {modelStatus === 'ready' ? 'Model Ready' : 
-               modelStatus === 'checking' ? 'Checking CPU...' :
-               modelStatus === 'downloading' ? 'Model Downloading...' : 'Browser Unsupported'}
+              {modelStatus === 'ready' ? t('tools_ui.common.model_ready') : 
+               modelStatus === 'checking' ? t('tools_ui.common.checking_cpu') :
+               modelStatus === 'downloading' ? t('tools_ui.common.model_downloading') : t('tools_ui.common.browser_unsupported')}
             </span>
           </div>
 
@@ -109,7 +111,7 @@ export default function AIWriterTool() {
                 <AlertTriangle className="w-5 h-5 text-amber-600 shrink-0 mt-0.5" />
                 <div className="text-sm text-amber-800 space-y-3">
                   <div>
-                    <p className="font-bold">Offline AI Not Detected</p>
+                    <p className="font-bold">{t('tools_ui.ai_writer_tool.offline_not_detected')}</p>
                     <p>Status: {
                       !window.ai ? "'window.ai' is undefined (Flag disabled/Old Chrome)" : 
                       !window.ai.languageModel ? "'languageModel' API missing" : 
@@ -118,7 +120,7 @@ export default function AIWriterTool() {
                   </div>
                   
                   <div className="bg-white/50 p-3 rounded-lg border border-amber-100">
-                    <p className="font-bold mb-2">Troubleshooting Steps:</p>
+                    <p className="font-bold mb-2">{t('tools_ui.ai_writer_tool.troubleshooting')}</p>
                     <ol className="list-decimal pl-4 space-y-2 opacity-90">
                       <li>
                         <div className="flex items-center gap-2 flex-wrap">
@@ -163,7 +165,7 @@ export default function AIWriterTool() {
                     onClick={checkAvailability}
                     className="flex items-center gap-2 px-3 py-1.5 bg-amber-100 hover:bg-amber-200 text-amber-900 rounded-lg text-xs font-semibold transition-colors"
                   >
-                    <MonitorPlay className="w-3 h-3" /> Re-check Availability
+                    <MonitorPlay className="w-3 h-3" /> {t('tools_ui.common.recheck')}
                   </button>
                 </div>
               </div>
@@ -171,11 +173,11 @@ export default function AIWriterTool() {
           ) : (
             <div className="space-y-5">
               <div className="space-y-2">
-                <label className="text-sm font-medium text-gray-700">Topic / Prompt</label>
+                <label className="text-sm font-medium text-gray-700">{t('tools_ui.ai_writer_tool.topic_label')}</label>
                 <textarea 
                   value={topic}
                   onChange={(e) => setTopic(e.target.value)}
-                  placeholder="What should I write about?"
+                  placeholder={t('tools_ui.ai_writer_tool.topic_placeholder')}
                   rows={4}
                   className="w-full bg-white border border-gray-200 rounded-xl px-4 py-3 text-gray-900 focus:outline-none focus:ring-2 focus:ring-purple-500 transition-all resize-none shadow-sm placeholder:text-gray-400"
                 />
@@ -183,7 +185,7 @@ export default function AIWriterTool() {
 
               <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-2">
-                  <label className="text-sm font-medium text-gray-700">Type</label>
+                  <label className="text-sm font-medium text-gray-700">{t('tools_ui.ai_writer_tool.type_label')}</label>
                   <div className="relative">
                     <select 
                       value={type}
@@ -200,7 +202,7 @@ export default function AIWriterTool() {
                 </div>
 
                 <div className="space-y-2">
-                  <label className="text-sm font-medium text-gray-700">Tone</label>
+                  <label className="text-sm font-medium text-gray-700">{t('tools_ui.ai_writer_tool.tone_label')}</label>
                   <div className="relative">
                     <select 
                       value={tone}
@@ -230,11 +232,11 @@ export default function AIWriterTool() {
               >
                 {isGenerating ? (
                   <>
-                    <Loader2 className="animate-spin w-5 h-5" /> Generating (Offline)...
+                    <Loader2 className="animate-spin w-5 h-5" /> {t('tools_ui.ai_writer_tool.generating')}
                   </>
                 ) : (
                   <>
-                    <MonitorPlay className="w-5 h-5" /> Generate Locally
+                    <MonitorPlay className="w-5 h-5" /> {t('tools_ui.ai_writer_tool.generate_button')}
                   </>
                 )}
               </button>
@@ -247,12 +249,12 @@ export default function AIWriterTool() {
         {result ? (
           <div className="flex-1 bg-white border border-gray-200 rounded-2xl overflow-hidden flex flex-col animate-in fade-in shadow-sm">
             <div className="p-4 border-b border-gray-100 flex items-center justify-between bg-gray-50">
-              <span className="text-sm font-medium text-gray-500">Offline Result</span>
+              <span className="text-sm font-medium text-gray-500">{t('tools_ui.common.offline_result')}</span>
               <button 
                 onClick={copyToClipboard}
                 className="text-xs font-medium text-blue-600 hover:text-blue-700 flex items-center gap-1.5 transition-colors bg-blue-50 px-3 py-1.5 rounded-full"
               >
-                <Copy className="w-3.5 h-3.5" /> Copy
+                <Copy className="w-3.5 h-3.5" /> {t('tools_ui.common.copy')}
               </button>
             </div>
             <div className="flex-1 p-8 overflow-y-auto custom-scrollbar bg-white">
@@ -267,8 +269,8 @@ export default function AIWriterTool() {
           <div className="flex-1 bg-gray-50 border-2 border-dashed border-gray-200 rounded-2xl flex items-center justify-center text-gray-400 p-8 text-center">
             <div>
               <Sparkles className="w-12 h-12 mx-auto mb-4 opacity-50 text-gray-300" />
-              <p className="font-medium text-gray-500">AI generated content will appear here</p>
-              <p className="text-xs text-gray-400 mt-2">Runs locally on your device</p>
+              <p className="font-medium text-gray-500">{t('tools_ui.common.generated_content_placeholder')}</p>
+              <p className="text-xs text-gray-400 mt-2">{t('tools_ui.common.runs_locally')}</p>
             </div>
           </div>
         )}

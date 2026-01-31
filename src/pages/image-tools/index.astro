@@ -1,29 +1,15 @@
 ---
-import { allTools } from '../../data/tools';
+import ToolCategoryList from '../../components/tools/ToolCategoryList';
 import Layout from '../../layouts/Layout.astro';
-const tools = allTools.filter(t => t.category === 'image');
 ---
 
 <Layout title="Image Tools - AllTools">
   <main class="container mx-auto px-4 py-12">
     <div class="mb-12 text-center max-w-2xl mx-auto">
       <h1 class="text-3xl font-bold text-gray-900 mb-4">Image Tools</h1>
-      <p class="text-gray-500">Edit, resize, and compress images directly in your browser. No upload needed.</p>
+      <p class="text-gray-500">Process images right in your browser. Compress, resize, convert and edit images securely without uploading to any server.</p>
     </div>
 
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-      {tools.map(tool => {
-        const Icon = tool.icon;
-        return (
-          <a href={tool.href} class="block p-8 rounded-2xl bg-white shadow-sm border border-gray-100 hover:shadow-md hover:-translate-y-1 transition-all group">
-            <div class={`w-12 h-12 ${tool.color} rounded-lg flex items-center justify-center mb-6`}>
-                <Icon size={24} />
-            </div>
-            <h3 class="text-xl font-semibold text-gray-900 mb-2 group-hover:text-blue-600 transition-colors">{tool.name}</h3>
-            <p class="text-gray-500 text-sm leading-relaxed">{tool.desc}</p>
-          </a>
-        );
-      })}
-    </div>
+    <ToolCategoryList category="image" client:load />
   </main>
 </Layout>

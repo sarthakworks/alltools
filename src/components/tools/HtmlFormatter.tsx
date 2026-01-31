@@ -2,8 +2,11 @@ import React, { useState } from 'react';
 import { Copy, FileCode, AlignLeft, AlertCircle } from 'lucide-react';
 import * as prettier from "prettier/standalone";
 import * as parserHtml from "prettier/plugins/html";
+import { useTranslation } from 'react-i18next';
+import '../../i18n';
 
 export default function HtmlFormatter() {
+  const { t } = useTranslation();
   const [input, setInput] = useState<string>("");
   const [output, setOutput] = useState<string>("");
   const [error, setError] = useState<string>("");
@@ -25,7 +28,7 @@ export default function HtmlFormatter() {
       });
       setOutput(formatted);
     } catch (err: any) {
-      setError(`Formatting Error: ${err.message}`);
+      setError(`${t('tools_ui.html_formatter.formatting_error')}: ${err.message}`);
     }
   };
 
@@ -45,10 +48,10 @@ export default function HtmlFormatter() {
       <div className="text-center mb-10">
         <h1 className="text-3xl font-bold text-gray-900 sm:text-4xl mb-4 flex items-center justify-center gap-3">
           <FileCode className="w-10 h-10 text-orange-600" />
-          HTML Formatter
+          {t('tools_ui.html_formatter.title')}
         </h1>
         <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-          Beautify not only your HTML code, but your day.
+          {t('tools_ui.html_formatter.subtitle')}
         </p>
       </div>
 
@@ -57,19 +60,19 @@ export default function HtmlFormatter() {
         {/* Input Section */}
         <div className="bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden flex flex-col h-full">
           <div className="bg-gray-50/50 px-6 py-4 border-b border-gray-100 flex items-center justify-between">
-            <h2 className="font-semibold text-gray-800">Input HTML</h2>
+            <h2 className="font-semibold text-gray-800">{t('tools_ui.html_formatter.input_label')}</h2>
             <button 
               onClick={loadSample}
               className="text-xs font-medium text-orange-600 hover:text-orange-700 bg-orange-50 px-3 py-1.5 rounded-full transition-colors"
             >
-              Load Sample
+              {t('tools_ui.common.load_sample')}
             </button>
           </div>
           
           <div className="p-4 grow flex flex-col">
             <textarea
               className="w-full grow p-4 rounded-xl border border-gray-200 focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all outline-none resize-none font-mono text-sm bg-gray-50 min-h-100"
-              placeholder="Paste your HTML here..."
+              placeholder={t('tools_ui.html_formatter.input_placeholder')}
               value={input}
               onChange={(e) => setInput(e.target.value)}
               spellCheck={false}
@@ -94,7 +97,7 @@ export default function HtmlFormatter() {
                     onClick={formatHtml}
                     className="flex items-center gap-1.5 px-3 py-1.5 bg-orange-600 text-white text-sm font-medium rounded-lg hover:bg-orange-700 transition-colors shadow-sm shadow-orange-600/20"
                 >
-                    <AlignLeft className="w-4 h-4" /> Format
+                    <AlignLeft className="w-4 h-4" /> {t('tools_ui.common.format')}
                 </button>
             </div>
 
@@ -103,7 +106,7 @@ export default function HtmlFormatter() {
                     onClick={copyToClipboard}
                     className="flex items-center gap-1.5 text-xs font-medium text-gray-600 hover:text-orange-600 transition-colors"
                   >
-                    <Copy className="w-3.5 h-3.5" /> Copy Result
+                    <Copy className="w-3.5 h-3.5" /> {t('tools_ui.common.copy')}
                   </button>
             )}
           </div>
@@ -113,7 +116,7 @@ export default function HtmlFormatter() {
                 <div className="w-full h-full min-h-100 flex items-center justify-center bg-red-50 rounded-xl border border-red-100 p-6 text-center">
                     <div className="max-w-md">
                         <AlertCircle className="w-8 h-8 text-red-500 mx-auto mb-3" />
-                        <h3 className="font-semibold text-red-900 mb-1">Formatting Error</h3>
+                        <h3 className="font-semibold text-red-900 mb-1">{t('tools_ui.html_formatter.formatting_error')}</h3>
                         <p className="text-red-600 text-sm font-mono break-all bg-white p-3 rounded-lg border border-red-100 mx-auto inline-block">
                             {error}
                         </p>
@@ -123,7 +126,7 @@ export default function HtmlFormatter() {
                 <textarea
                     readOnly
                     className="w-full grow p-4 rounded-xl border border-gray-200 text-gray-800 font-mono text-sm bg-white min-h-100 outline-none resize-none"
-                    placeholder="Result will appear here..."
+                    placeholder={t('tools_ui.common.result_placeholder')}
                     value={output}
                 />
              )}

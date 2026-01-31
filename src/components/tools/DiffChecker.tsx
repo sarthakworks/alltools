@@ -1,6 +1,8 @@
 import React, { useState, useMemo } from 'react';
 import { Copy, GitCompare, Trash2, ArrowRightLeft, ArrowRight, RotateCcw, Check } from 'lucide-react';
 import * as Diff from 'diff';
+import { useTranslation } from 'react-i18next';
+import '../../i18n';
 
 interface DiffRow {
   leftLineNumber: number | null;
@@ -13,6 +15,7 @@ interface DiffRow {
 }
 
 export default function DiffChecker() {
+  const { t } = useTranslation();
   const [original, setOriginal] = useState<string>("");
   const [modified, setModified] = useState<string>("");
   const [diffRows, setDiffRows] = useState<DiffRow[]>([]);
@@ -206,20 +209,20 @@ console.log(add(1, 2));`);
       <div className="flex items-center justify-between mb-8">
          <h1 className="text-2xl font-bold text-gray-900 flex items-center gap-2">
             <GitCompare className="w-8 h-8 text-cyan-600" />
-            Diff Checker
+            {t('tools_ui.diff_checker.title')}
          </h1>
          <div className="flex gap-3">
              <button 
                 onClick={clear} 
                 className="px-4 py-2 text-sm font-medium text-gray-600 bg-white border border-gray-200 rounded-lg hover:bg-gray-50 flex items-center gap-2"
              >
-                 <Trash2 className="w-4 h-4" /> Clear
+                 <Trash2 className="w-4 h-4" /> {t('tools_ui.common.clear')}
              </button>
              <button
                  onClick={loadSample}
                  className="px-4 py-2 text-sm font-medium text-cyan-600 bg-cyan-50 rounded-lg hover:bg-cyan-100 flex items-center gap-2"
              >
-                 Load Sample
+                 {t('tools_ui.common.load_sample')}
              </button>
          </div>
       </div>
@@ -228,13 +231,13 @@ console.log(add(1, 2));`);
         {/* Original */}
         <div className="flex flex-col border border-gray-200 rounded-xl overflow-hidden bg-white shadow-sm flex-1 h-full w-full">
              <div className="px-4 py-2 bg-gray-50 border-b border-gray-100 flex justify-between items-center">
-                 <span className="text-xs font-semibold text-gray-500 uppercase tracking-wider">Original Text</span>
+                 <span className="text-xs font-semibold text-gray-500 uppercase tracking-wider">{t('tools_ui.diff_checker.original_label')}</span>
              </div>
              <textarea 
                 className="flex-grow p-4 outline-none resize-none font-mono text-xs leading-5 bg-white"
                 value={original}
                 onChange={(e) => setOriginal(e.target.value)}
-                placeholder="Paste original content here..."
+                placeholder={t('tools_ui.diff_checker.original_placeholder')}
                 spellCheck={false}
              />
         </div>
@@ -251,13 +254,13 @@ console.log(add(1, 2));`);
         {/* Modified */}
         <div className="flex flex-col border border-gray-200 rounded-xl overflow-hidden bg-white shadow-sm flex-1 h-full w-full">
              <div className="px-4 py-2 bg-gray-50 border-b border-gray-100 flex justify-between items-center">
-                 <span className="text-xs font-semibold text-gray-500 uppercase tracking-wider">Modified Text</span>
+                 <span className="text-xs font-semibold text-gray-500 uppercase tracking-wider">{t('tools_ui.diff_checker.modified_label')}</span>
              </div>
              <textarea 
                 className="flex-grow p-4 outline-none resize-none font-mono text-xs leading-5 bg-white"
                 value={modified}
                 onChange={(e) => setModified(e.target.value)}
-                placeholder="Paste modified content here..."
+                placeholder={t('tools_ui.diff_checker.modified_placeholder')}
                 spellCheck={false}
              />
         </div>
@@ -268,7 +271,7 @@ console.log(add(1, 2));`);
                 onClick={handleDifference}
                 className="flex items-center gap-2 px-8 py-3 bg-cyan-600 text-white font-semibold rounded-xl hover:bg-cyan-700 transition-colors shadow-lg shadow-cyan-600/20 text-lg"
             >
-                <GitCompare className="w-5 h-5" /> Find Difference
+                <GitCompare className="w-5 h-5" /> {t('tools_ui.diff_checker.find_diff')}
             </button>
       </div>
 
@@ -276,7 +279,7 @@ console.log(add(1, 2));`);
           <div className="border border-gray-200 rounded-xl overflow-hidden bg-white shadow-sm mb-12">
               <div className="px-4 py-3 bg-gray-50 border-b border-gray-200 flex justify-between items-center flex-wrap gap-4">
                   <div className="flex items-center gap-4">
-                    <span className="text-xs font-bold text-gray-700 uppercase tracking-wider">Difference Result</span>
+                    <span className="text-xs font-bold text-gray-700 uppercase tracking-wider">{t('tools_ui.diff_checker.result_title')}</span>
                     <div className="flex gap-2">
                          {computedStats.removals > 0 && (
                              <span className="text-xs font-bold text-red-600 bg-red-50 px-2 py-0.5 rounded-full border border-red-100">
@@ -293,14 +296,14 @@ console.log(add(1, 2));`);
                   
                   <div className="flex items-center gap-2 ml-auto">
                        <button onClick={revertAll} className="px-3 py-1.5 text-xs font-medium bg-white text-gray-700 border border-gray-200 rounded-md hover:bg-gray-50 hover:border-gray-300 transition-colors flex items-center gap-1.5 shadow-sm">
-                          <RotateCcw className="w-3.5 h-3.5" /> Revert All (Use Left)
+                          <RotateCcw className="w-3.5 h-3.5" /> {t('tools_ui.diff_checker.revert_all')}
                       </button>
                       <button onClick={acceptAll} className="px-3 py-1.5 text-xs font-medium bg-white text-gray-700 border border-gray-200 rounded-md hover:bg-gray-50 hover:border-gray-300 transition-colors flex items-center gap-1.5 shadow-sm">
-                          <Check className="w-3.5 h-3.5" /> Accept All (Use Right)
+                          <Check className="w-3.5 h-3.5" /> {t('tools_ui.diff_checker.accept_all')}
                       </button>
                       <div className="h-6 w-px bg-gray-300 mx-2"></div>
                        <button onClick={copyMerged} className="px-4 py-1.5 text-xs font-bold bg-cyan-600 text-white rounded-md hover:bg-cyan-700 flex items-center gap-1.5 shadow-sm shadow-cyan-600/20">
-                          <Copy className="w-3.5 h-3.5" /> Copy Merged Result
+                          <Copy className="w-3.5 h-3.5" /> {t('tools_ui.diff_checker.copy_merged')}
                       </button>
                   </div>
               </div>
@@ -334,7 +337,7 @@ console.log(add(1, 2));`);
                               // OR we just assume Right Panel = Merged Panel.
                               
                               let rightRenderContent = row.rightContent;
-                              let rightRenderType = row.rightType;
+                              let rightRenderType: string = row.rightType;
                               let leftRenderOpacity = 'opacity-100';
                               
                               if (selection === 'left' && isModified) {
@@ -378,7 +381,7 @@ console.log(add(1, 2));`);
                                                     ? 'bg-green-600 text-white ring-2 ring-green-100 scale-110' // Active: Solid Green
                                                     : 'bg-white border border-gray-200 text-gray-400 hover:text-green-600 hover:border-green-300' // Inactive: Outline
                                                 }`}
-                                                title={selection === 'left' ? "Reverted (Using Original)" : "Modified (Using New) - Click to Revert"}
+                                                title={selection === 'left' ? t('tools_ui.diff_checker.status_reverted') : t('tools_ui.diff_checker.status_modified')}
                                               >
                                                   <ArrowRight className="w-3.5 h-3.5" />
                                               </button>

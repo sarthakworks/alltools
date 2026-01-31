@@ -1,0 +1,459 @@
+{
+    "nav": {
+        "home": "Home",
+        "privacy": "Privacy",
+        "tos": "Termini",
+        "contact": "Contatti",
+        "blog": "Blog",
+        "about": "Chi siamo",
+        "pdf": "Strumenti PDF",
+        "image": "Strumenti Immagine",
+        "ai": "Strumenti IA",
+        "coding": "Strumenti di Codifica",
+        "misc": "Strumenti Vari"
+    },
+    "tools": {
+        "pdf": "Strumenti PDF",
+        "image": "Strumenti Immagine",
+        "misc": "Strumenti Vari",
+        "ai": "Scrittura IA",
+        "coding": "Strumenti di Codifica",
+        "all": "Tutti gli Strumenti",
+        "featured": "Strumenti in Evidenza",
+        "other": "Altri Strumenti {{category}}",
+        "see_all": "Vedi Tutti gli Strumenti {{category}}",
+        "view_tool": "Vedi Strumento",
+        "new": "NUOVO"
+    },
+    "hero": {
+        "title": "AllTools",
+        "title_start": "Strumenti Gratuiti per",
+        "title_end": "Semplice",
+        "typewriter_words": [
+            "Istruzione",
+            "Business",
+            "Vita",
+            "Lavoro",
+            "Creatività"
+        ],
+        "subtitle": "Offriamo strumenti PDF, immagini e altre utility online per semplificarti la vita, completamente gratis.",
+        "search_button": "Cerca"
+    },
+    "stats": {
+        "monthly_users": "Utenti Mensili",
+        "tools_available": "Strumenti Disponibili",
+        "pages_processed": "Pagine Elaborate",
+        "reviews": "Recensioni"
+    },
+    "categories": {
+        "pdf": {
+            "desc": "Gestisci i tuoi documenti PDF"
+        },
+        "image": {
+            "desc": "Modifica e converti immagini"
+        },
+        "misc": {
+            "desc": "Utilità quotidiane utili"
+        },
+        "ai": {
+            "desc": "Potenza dell'IA per i tuoi compiti"
+        },
+        "coding": {
+            "desc": "Strumenti per sviluppatori"
+        }
+    },
+    "home": {
+        "free_tools_title": "Strumenti Gratuiti che Solitamente Paghi",
+        "free_tools_subtitle": "Nessun limite, Nessuna registrazione",
+        "pdf_creator_title": "Creatore PDF",
+        "pdf_creator_desc": "Crea PDF velocemente e facilmente con il nostro creatore PDF gratuito.",
+        "start_creating": "Inizia a Creare",
+        "bg_remover_title": "Rimuovi Sfondo",
+        "bg_remover_desc": "Rimuovi o cambia lo sfondo di una foto automaticamente.",
+        "remove_bg": "Rimuovi Sfondo",
+        "photo_cleanup_title": "Pulizia Foto",
+        "photo_cleanup_desc": "Usa l'IA per rimuovere oggetti indesiderati, testi o persone da un'immagine.",
+        "clean_photo": "Pulisci Foto"
+    },
+    "premium": {
+        "title": "Ottieni di più con Premium",
+        "subtitle": "Porta i tuoi progetti oltre con strumenti premium che non ti intralciano e lavorano in modo più intelligente. Crea senza limiti, pubblicità o blocchi. Inizia per soli $3.99 al mese.",
+        "ad_free": "Senza Pubblicità",
+        "unlimited": "Utilizzo Illimitato",
+        "faster": "Elaborazione più veloce",
+        "cta": "Inizia Ora"
+    },
+    "search": {
+        "placeholder": "Cerca strumenti..."
+    },
+    "footer": {
+        "navigate": "Naviga",
+        "tools": "Strumenti",
+        "pdf_tools": "Strumenti PDF",
+        "more": "Altro",
+        "rights": "Tutti i diritti riservati."
+    },
+    "tools_ui": {
+        "common": {
+            "generate": "Genera",
+            "copy": "Copia",
+            "download": "Scarica",
+            "processing": "Elaborazione...",
+            "error": "Errore",
+            "success": "Successo",
+            "offline_result": "Risultato Offline",
+            "generated_content_placeholder": "Il contenuto generato dall'IA apparirà qui",
+            "runs_locally": "Esegue localmente sul tuo dispositivo",
+            "checking_cpu": "Controllo CPU...",
+            "model_downloading": "Scaricamento Modello...",
+            "browser_unsupported": "Browser non supportato",
+            "model_ready": "Modello Pronto",
+            "recheck": "Ricontrolla Disponibilità",
+            "load_sample": "Carica Esempio",
+            "clear": "Pulisci",
+            "original": "Originale",
+            "modified": "Modificato",
+            "format": "Formatta",
+            "result_placeholder": "Il risultato apparirà qui...",
+            "upload_image": "Carica Immagine",
+            "new_image": "Nuova Immagine",
+            "remove_bg": "Rimuovi Sfondo"
+        },
+        "ai_essay_writer": {
+            "title": "Config. Saggio",
+            "topic_label": "Argomento Saggio",
+            "topic_placeholder": "es. L'impatto dell'intelligenza artificiale sull'educazione moderna...",
+            "level_label": "Livello Accademico",
+            "length_label": "Lunghezza",
+            "generate_button": "Genera Saggio",
+            "download_and_generate": "Scarica Modello & Genera",
+            "generating": "Generazione...",
+            "essay_draft": "Bozza Saggio",
+            "essay_placeholder": "Il tuo saggio apparirà qui",
+            "private_offline": "100% Privato & Offline",
+            "downloading_note": "La prima esecuzione richiede il download di ~300MB di dati del modello.",
+            "load_error": "Errore di Caricamento",
+            "retry_download": "Riprova Download"
+        },
+        "aes_tool": {
+            "title": "Crittografia & Decrittografia AES",
+            "subtitle": "Crittografia di grado militare per i tuoi dati di testo. 100% offline.",
+            "input_label": "Testo Input",
+            "input_placeholder": "Inserisci testo da elaborare...",
+            "secret_label": "Frase Segreta",
+            "secret_placeholder": "Inserisci un segreto robusto...",
+            "mode_label": "Modalità",
+            "padding_label": "Padding",
+            "key_size_label": "Dimensione Chiave",
+            "iv_label": "IV (Opzionale, Hex)",
+            "encrypt_button": "Crittografa",
+            "decrypt_button": "Decrittografa",
+            "output_label": "Output",
+            "validation_error": "Per favore inserisci input e una chiave segreta.",
+            "error_malformed": "Decrittografia fallita: Dati UTF-8 malformati. La chiave, IV, o modalità potrebbero essere errati.",
+            "error_config": "Errore Configurazione: Controlla il formato di input, Chiave e IV.",
+            "error_operation": "Operazione fallita. Controlla chiave, IV e formato input.",
+            "encrypt_title": "Crittografia AES",
+            "encrypt_input_label": "Testo in Chiaro da Crittografare",
+            "output_format": "Formato Output",
+            "encrypted_output": "Output Crittografato",
+            "decrypt_title": "Decrittografia AES",
+            "decrypt_input_label": "Testo Crittografato da Decrittografare",
+            "decrypt_placeholder": "Inserisci testo crittografato...",
+            "input_format": "Formato Testo Input",
+            "decrypted_output": "Output Decrittografato"
+        },
+        "css_formatter": {
+            "title": "Formatter CSS",
+            "subtitle": "Pulisci i tuoi fogli di stile (CSS/SCSS/Less) istantaneamente.",
+            "input_label": "Input CSS",
+            "input_placeholder": "Incolla il tuo CSS qui...",
+            "formatting_error": "Errore di Formattazione"
+        },
+        "diff_checker": {
+            "title": "Diff Checker",
+            "original_label": "Testo Originale",
+            "modified_label": "Testo Modificato",
+            "original_placeholder": "Incolla contenuto originale qui...",
+            "modified_placeholder": "Incolla contenuto modificato qui...",
+            "find_diff": "Trova Differenze",
+            "result_title": "Risultato Differenze",
+            "revert_all": "Ripristina Tutto (Usa Sinistra)",
+            "accept_all": "Accetta Tutto (Usa Destra)",
+            "copy_merged": "Copia Risultato Unito",
+            "status_reverted": "Ripristinato (Usa Originale)",
+            "status_modified": "Modificato (Usa Nuovo) - Clicca per Ripristinare"
+        },
+        "html_formatter": {
+            "title": "Formatter HTML",
+            "subtitle": "Abbellisci non solo il tuo codice HTML, ma la tua giornata.",
+            "input_label": "Input HTML",
+            "input_placeholder": "Incolla il tuo HTML qui...",
+            "formatting_error": "Errore di Formattazione"
+        },
+        "image_bg_remover": {
+            "transparent": "Trasparente",
+            "color_fill": "Riempimento Colore",
+            "original_label": "Originale",
+            "processed_label": "Sfondo Rimosso",
+            "empty_state": "Clicca \"Rimuovi Sfondo\" per elaborare",
+            "download": "Scarica PNG"
+        },
+        "ai_image_generator": {
+            "prompt_label": "Descrizione Immagine",
+            "prompt_placeholder": "Una città futuristica fluttuante tra le nuvole...",
+            "style_label": "Stile Artistico",
+            "size_label": "Dimensione",
+            "generate_button": "Genera Immagine",
+            "generating": "Creando Magia...",
+            "security_note": "Le immagini sono generate in modo sicuro usando l'API Pollinations.ai. Nessuna chiave API richiesta. Le immagini sono libere da usare.",
+            "empty_state_title": "Soglalo. Vedilo.",
+            "empty_state_desc": "Inserisci una descrizione per generare arte istantaneamente."
+        },
+        "ai_writer_tool": {
+            "title": "Impostazioni Generatore Offline",
+            "topic_label": "Argomento / Prompt",
+            "topic_placeholder": "Su cosa dovrei scrivere?",
+            "type_label": "Tipo",
+            "tone_label": "Tono",
+            "generate_button": "Genera Localmente",
+            "generating": "Generando (Offline)...",
+            "offline_not_detected": "IA Offline Non Rilevata",
+            "troubleshooting": "Passaggi Risoluzione Problemi:"
+        },
+        "image_base64": {
+            "encode_tab": "Immagine a Base64",
+            "decode_tab": "Base64 a Immagine",
+            "drop_label": "Clicca o Trascina Immagine",
+            "formats": "JPG, PNG, GIF, SVG",
+            "output_label": "Output Base64",
+            "copied": "Copiato!",
+            "copy": "Copia",
+            "placeholder_output": "La stringa Base64 apparirà qui...",
+            "paste_label": "Incolla Stringa Base64",
+            "placeholder_input": "data:image/png;base64,...",
+            "decode_button": "Decodifica in Immagine",
+            "preview_placeholder": "L'anteprima immagine apparirà qui"
+        },
+        "image_blur": {
+            "upload_title": "Carica Immagine da Sfocare",
+            "instruction": "Clicca e trascina per selezionare area - l'effetto si applica automaticamente al rilascio",
+            "settings": "Impostazioni",
+            "effect_type": "Tipo Effetto",
+            "blur": "Sfocatura",
+            "pixelate": "Pixelato",
+            "intensity": "Intensità",
+            "undo": "Annulla Ultima Sfocatura",
+            "reset": "Reimposta a Originale",
+            "download": "Scarica Risultato",
+            "upload_new": "Carica Nuova Immagine",
+            "light": "Leggero",
+            "heavy": "Pesante"
+        },
+        "image_compressor": {
+            "success_title": "Compressione Completata!",
+            "new_size": "Nuova Dimensione:",
+            "saved": "Risparmiato",
+            "download_button": "Scarica Immagine Compressa",
+            "original_preview": "Anteprima Originale",
+            "settings": "Impostazioni",
+            "change_file": "Cambia File",
+            "quality_label": "Qualità Compressione",
+            "resize_label": "Ridimensiona Immagine",
+            "target_width": "Larghezza Obiettivo",
+            "original_width": "Originale",
+            "aspect_ratio_note": "L'altezza si adatterà automaticamente per mantenere le proporzioni",
+            "compress_button": "Comprimi Immagine",
+            "quality_tip": "💡 Qualità inferiore = dimensione file minore",
+            "quality_recommendation": "Raccomandato: 70-80% per web (buon bilanciamento qualità & dimensione)",
+            "quality_heavy": "Pesante",
+            "quality_high": "Alta",
+            "quality_medium": "Media",
+            "quality_low": "Bassa",
+            "quality_original": "Originale"
+        },
+        "image_ocr": {
+            "upload_title": "Carica Immagine con Testo",
+            "extract_button": "Estrai Testo",
+            "loading": "Caricamento...",
+            "image_label": "Immagine",
+            "extracted_label": "Testo Estratto",
+            "save_txt": "Salva TXT",
+            "placeholder": "Il testo estratto apparirà qui...",
+            "words": "parole",
+            "chars": "caratteri",
+            "error_alert": "Estrazione testo fallita. Riprova con un'altra immagine."
+        },
+        "image_resizer": {
+            "options_title": "Opzioni Ridimensionamento",
+            "change_file": "Cambia File",
+            "width_label": "Larghezza (px)",
+            "height_label": "Altezza (px)",
+            "aspect_ratio": "Mantieni Proporzioni",
+            "download_button": "Scarica Immagine Ridimensionata"
+        },
+        "image_to_pdf": {
+            "selected_images": "Immagini Selezionate",
+            "add_images": "Aggiungi Immagini",
+            "convert_button": "Converti in PDF",
+            "error_alert": "Impossibile creare PDF dalle immagini."
+        },
+        "json_formatter": {
+            "title": "Formatter & Validatore JSON",
+            "description": "Formatta, valida e minifica i tuoi dati JSON istantaneamente.",
+            "input_label": "Input JSON",
+            "placeholder_input": "Incolla JSON valido qui...",
+            "load_sample": "Carica Esempio",
+            "clear": "Pulisci",
+            "indentation": "Indentazione:",
+            "indent_2": "2 Spazi",
+            "indent_4": "4 Spazi",
+            "indent_tabs": "Tabulazioni",
+            "format": "Formatta",
+            "minify": "Minifica",
+            "result_label": "Risultato",
+            "error_empty": "Per favore inserisci del JSON da formattare.",
+            "error_empty_minify": "Per favore inserisci del JSON da minificare.",
+            "error_invalid": "JSON non valido: "
+        },
+        "json_to_js": {
+            "title": "Da JSON a JS Object",
+            "description": "Converti dati JSON in notazione Oggetto JavaScript.",
+            "input_label": "Input JSON",
+            "placeholder_input": "Incolla JSON qui...",
+            "convert": "Converti",
+            "result_label": "Risultato",
+            "js_object": "Oggetto JavaScript",
+            "error_empty": "Per favore inserisci JSON valido."
+        },
+        "sass_to_css": {
+            "title": "Da SASS/SCSS a CSS",
+            "description": "Compila codice SASS o SCSS in CSS standard.",
+            "input_label": "Input SCSS/SASS",
+            "placeholder_input": "Incolla il tuo codice SASS/SCSS qui...",
+            "load_sample": "Carica Esempio",
+            "output_label": "Output CSS",
+            "compile": "Compila in CSS",
+            "error": "Errore Compilazione"
+        },
+        "unminifier": {
+            "title": "Unminifier Codice",
+            "description": "Rendi leggibile codice JS, CSS e HTML.",
+            "input_label": "Input Codice",
+            "placeholder_input": "Incolla codice minificato qui...",
+            "language": "Linguaggio:",
+            "unminify": "Unminify",
+            "output_label": "Codice Output",
+            "error_empty": "Inserisci codice da rendere leggibile.",
+            "error_formatting": "Errore Formattazione"
+        },
+        "xml_to_json": {
+            "title": "Convertitore da XML a JSON",
+            "description": "Trasforma dati XML in formato JSON.",
+            "input_label": "Input XML",
+            "placeholder_input": "Incolla XML qui...",
+            "convert": "Converti",
+            "result_label": "Risultato",
+            "error": "Errore Conversione",
+            "placeholder_output": "Il risultato apparirà qui..."
+        }
+    },
+    "tools_data": {
+        "merge-pdf": {
+            "name": "Unisci PDF",
+            "desc": "Combina più PDF in uno"
+        },
+        "split-pdf": {
+            "name": "Dividi PDF",
+            "desc": "Estrai pagine dal tuo PDF"
+        },
+        "pdf-to-image": {
+            "name": "PDF in Immagine",
+            "desc": "Converti pagine PDF in JPG/PNG"
+        },
+        "image-to-pdf": {
+            "name": "Immagine in PDF",
+            "desc": "Converti JPG/PNG in PDF"
+        },
+        "compress-pdf": {
+            "name": "Comprimi PDF",
+            "desc": "Riduci la dimensione del file PDF"
+        },
+        "lock-unlock-pdf": {
+            "name": "Blocca / Sblocca PDF",
+            "desc": "Aggiungi o rimuovi protezioni PDF"
+        },
+        "compress-image": {
+            "name": "Comprimi Immagine",
+            "desc": "Riduci la dimensione del file immagine"
+        },
+        "resize-image": {
+            "name": "Ridimensiona Immagine",
+            "desc": "Cambia le dimensioni dell'immagine"
+        },
+        "image-to-base64": {
+            "name": "Immagine in Base64",
+            "desc": "Converti immagini in stringhe Base64"
+        },
+        "blur-image": {
+            "name": "Sfoca & Oscura",
+            "desc": "Nascondi informazioni sensibili con la sfocatura"
+        },
+        "remove-bg": {
+            "name": "Rimuovi Sfondo",
+            "desc": "Rimozione sfondo basata su IA"
+        },
+        "image-ocr": {
+            "name": "Immagine in Testo (OCR)",
+            "desc": "Estrai testo dalle immagini"
+        },
+        "ai-writer": {
+            "name": "Scrittore IA",
+            "desc": "Genera post blog & email con l'IA"
+        },
+        "essay-writer": {
+            "name": "Scrittore di Saggi",
+            "desc": "Scrivi saggi accademici offline"
+        },
+        "image-gen": {
+            "name": "Generatore di Immagini",
+            "desc": "Crea arte IA da prompt di testo"
+        },
+        "json-formatter": {
+            "name": "Formattatore JSON",
+            "desc": "Abbellisci & Valida JSON"
+        },
+        "html-formatter": {
+            "name": "Formattatore HTML",
+            "desc": "Abbellisci codice HTML"
+        },
+        "sass-to-css": {
+            "name": "Sass in CSS",
+            "desc": "Compila Sass/SCSS in CSS"
+        },
+        "xml-to-json": {
+            "name": "XML <-> JSON",
+            "desc": "Converti XML in JSON & viceversa"
+        },
+        "css-formatter": {
+            "name": "Formattatore CSS",
+            "desc": "Abbellisci CSS/SCSS/Less"
+        },
+        "json-to-js": {
+            "name": "JSON in Oggetto JS",
+            "desc": "Converti JSON in oggetto JS"
+        },
+        "unminifier": {
+            "name": "Unminifier Universale",
+            "desc": "Unminifica JS, CSS, HTML, JSON"
+        },
+        "diff-checker": {
+            "name": "Diff Checker",
+            "desc": "Confronta differenze di testo"
+        },
+        "aes-encrypt": {
+            "name": "Crittografia AES",
+            "desc": "Crittografa & Decrittografa testo usando AES"
+        }
+    }
+}

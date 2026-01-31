@@ -1,8 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { Copy, FileCode, ArrowRight, AlertCircle, Loader2 } from 'lucide-react';
 import * as sass from 'sass';
+import { useTranslation } from 'react-i18next';
+import '../../i18n';
 
 export default function SassToCss() {
+  const { t } = useTranslation();
   const [input, setInput] = useState<string>("");
   const [output, setOutput] = useState<string>("");
   const [error, setError] = useState<string>("");
@@ -18,7 +21,7 @@ export default function SassToCss() {
     setError("");
     setLoading(true);
     if (!input.trim()) {
-      setError("Please enter SCSS/Sass code.");
+      setError(t('tools_ui.sass_to_css.error_empty'));
       setLoading(false);
       return;
     }
@@ -61,10 +64,10 @@ export default function SassToCss() {
       <div className="text-center mb-10">
         <h1 className="text-3xl font-bold text-gray-900 sm:text-4xl mb-4 flex items-center justify-center gap-3">
           <FileCode className="w-10 h-10 text-pink-600" />
-          Sass to CSS
+          {t('tools_ui.sass_to_css.title')}
         </h1>
         <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-          Compile your Sass/SCSS code to standard CSS instantly.
+          {t('tools_ui.sass_to_css.description')}
         </p>
       </div>
 
@@ -73,12 +76,12 @@ export default function SassToCss() {
         {/* Input Section */}
         <div className="bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden flex flex-col h-full">
           <div className="bg-gray-50/50 px-6 py-4 border-b border-gray-100 flex items-center justify-between">
-            <h2 className="font-semibold text-gray-800">Input SCSS</h2>
+            <h2 className="font-semibold text-gray-800">{t('tools_ui.sass_to_css.input_label')}</h2>
             <button 
               onClick={loadSample}
               className="text-xs font-medium text-pink-600 hover:text-pink-700 bg-pink-50 px-3 py-1.5 rounded-full transition-colors"
             >
-              Load Sample
+              {t('tools_ui.common.load_sample')}
             </button>
           </div>
           
@@ -112,7 +115,7 @@ export default function SassToCss() {
                     className="flex items-center gap-1.5 px-3 py-1.5 bg-pink-600 text-white text-sm font-medium rounded-lg hover:bg-pink-700 transition-colors shadow-sm shadow-pink-600/20 disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                     {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : <ArrowRight className="w-4 h-4" />}
-                    Compile
+                    {t('tools_ui.sass_to_css.compile')}
                 </button>
             </div>
 
@@ -121,7 +124,7 @@ export default function SassToCss() {
                     onClick={copyToClipboard}
                     className="flex items-center gap-1.5 text-xs font-medium text-gray-600 hover:text-pink-600 transition-colors"
                   >
-                    <Copy className="w-3.5 h-3.5" /> Copy Result
+                    <Copy className="w-3.5 h-3.5" /> {t('tools_ui.common.copy')}
                   </button>
             )}
           </div>
@@ -131,7 +134,7 @@ export default function SassToCss() {
                 <div className="w-full h-full min-h-100 flex items-center justify-center bg-red-50 rounded-xl border border-red-100 p-6 text-center">
                     <div className="max-w-md">
                         <AlertCircle className="w-8 h-8 text-red-500 mx-auto mb-3" />
-                        <h3 className="font-semibold text-red-900 mb-1">Compilation Error</h3>
+                        <h3 className="font-semibold text-red-900 mb-1">{t('tools_ui.sass_to_css.error')}</h3>
                         <p className="text-red-600 text-sm font-mono break-all bg-white p-3 rounded-lg border border-red-100 mx-auto inline-block">
                             {error}
                         </p>
@@ -141,7 +144,7 @@ export default function SassToCss() {
                 <textarea
                     readOnly
                     className="w-full grow p-4 rounded-xl border border-gray-200 text-gray-800 font-mono text-sm bg-white min-h-100 outline-none resize-none"
-                    placeholder="CSS result will appear here..."
+                    placeholder={t('tools_ui.sass_to_css.output_label')}
                     value={output}
                 />
              )}

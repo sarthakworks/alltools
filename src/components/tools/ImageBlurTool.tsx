@@ -1,8 +1,11 @@
 import React, { useRef, useState, useEffect, useCallback } from 'react';
 import { Download, EyeOff, Upload, RotateCcw, MousePointerClick } from 'lucide-react';
 import { FileUpload } from '../ui/file-uploader';
+import { useTranslation } from 'react-i18next';
+import '../../i18n';
 
 export default function ImageBlurTool() {
+  const { t } = useTranslation();
   const [src, setSrc] = useState<string | null>(null);
   const [baseImage, setBaseImage] = useState<HTMLImageElement | null>(null);
   const [history, setHistory] = useState<string[]>([]); // Stack of image states
@@ -197,8 +200,10 @@ export default function ImageBlurTool() {
         setCurrentPos({ x: 0, y: 0 });
         
         // Clear overlay
-        const overlayCtx = overlayCanvasRef.current?.getContext('2d');
-        overlayCtx?.clearRect(0, 0, overlayCanvasRef.current.width, overlayCanvasRef.current.height);
+        if (overlayCanvasRef.current) {
+             const overlayCtx = overlayCanvasRef.current.getContext('2d');
+             overlayCtx?.clearRect(0, 0, overlayCanvasRef.current.width, overlayCanvasRef.current.height);
+        }
       };
     });
   };
@@ -244,8 +249,10 @@ export default function ImageBlurTool() {
       setCompletedCrop(null);
       setStartPos({ x: 0, y: 0 });
       setCurrentPos({ x: 0, y: 0 });
-      const overlayCtx = overlayCanvasRef.current?.getContext('2d');
-      overlayCtx?.clearRect(0, 0, overlayCanvasRef.current.width, overlayCanvasRef.current.height);
+      if (overlayCanvasRef.current) {
+        const overlayCtx = overlayCanvasRef.current.getContext('2d');
+        overlayCtx?.clearRect(0, 0, overlayCanvasRef.current.width, overlayCanvasRef.current.height);
+      }
     };
   };
 
@@ -256,7 +263,7 @@ export default function ImageBlurTool() {
           onFilesSelected={handleFilesSelected}
           accept={{ 'image/*': ['.jpg', '.jpeg', '.png', '.webp', '.gif'] }}
           multiple={false}
-          title="Upload Image to Blur"
+          title={t('tools_ui.image_blur.upload_title')}
         />
       ) : (
         <div className="flex flex-col lg:flex-row gap-6 w-full max-w-7xl">
@@ -264,7 +271,7 @@ export default function ImageBlurTool() {
           <div className="flex-1">
             <p className="text-center text-sm text-gray-500 mb-4 bg-blue-50 py-2 px-4 rounded-lg border border-blue-100">
               <MousePointerClick size={14} className="inline mr-2" />
-              Click and drag to select area - effect applies automatically when you release
+              {t('tools_ui.image_blur.instruction')}
             </p>
 
             {/* Canvas Container */}
@@ -291,23 +298,23 @@ export default function ImageBlurTool() {
           {/* Right: Controls Sidebar */}
           <div className="w-full lg:w-80 shrink-0">
             <div className="bg-white p-6 rounded-xl border border-gray-100 shadow-lg sticky top-6 space-y-6">
-              <h3 className="text-lg font-bold text-gray-900">Settings</h3>
+              <h3 className="text-lg font-bold text-gray-900">{t('tools_ui.image_blur.settings')}</h3>
 
               {/* Blur Type */}
               <div>
-                <label className="text-sm font-medium text-gray-700 mb-2 block">Effect Type</label>
+                <label className="text-sm font-medium text-gray-700 mb-2 block">{t('tools_ui.image_blur.effect_type')}</label>
                 <div className="flex bg-gray-100 p-1 rounded-lg">
                   <button 
                     onClick={() => setBlurType('blur')}
                     className={`flex-1 px-3 py-2 rounded text-sm font-semibold transition-all ${blurType === 'blur' ? 'bg-white text-blue-600 shadow-sm' : 'text-gray-600'}`}
                   >
-                    Blur
+                    {t('tools_ui.image_blur.blur')}
                   </button>
                   <button 
                     onClick={() => setBlurType('pixelate')}
                     className={`flex-1 px-3 py-2 rounded text-sm font-semibold transition-all ${blurType === 'pixelate' ? 'bg-white text-purple-600 shadow-sm' : 'text-gray-600'}`}
                   >
-                    Pixelate
+                    {t('tools_ui.image_blur.pixelate')}
                   </button>
                 </div>
               </div>
@@ -315,7 +322,7 @@ export default function ImageBlurTool() {
               {/* Intensity Slider */}
               <div>
                 <div className="flex justify-between items-center mb-2">
-                  <label className="text-sm font-medium text-gray-700">Intensity</label>
+                  <label className="text-sm font-medium text-gray-700">{t('tools_ui.image_blur.intensity')}</label>
                   <span className="text-sm font-bold text-blue-600">{blurIntensity}</span>
                 </div>
                 <input
@@ -327,8 +334,8 @@ export default function ImageBlurTool() {
                   className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-blue-600"
                 />
                 <div className="flex justify-between text-xs text-gray-500 mt-1">
-                  <span>Light</span>
-                  <span>Heavy</span>
+                  <span>{t('tools_ui.image_blur.light')}</span>
+                  <span>{t('tools_ui.image_blur.heavy')}</span>
                 </div>
               </div>
 
@@ -338,14 +345,14 @@ export default function ImageBlurTool() {
                   disabled={history.length <= 1} 
                   className="w-full flex items-center justify-center gap-2 px-4 py-3 bg-orange-600 text-white hover:bg-orange-700 rounded-lg font-bold text-sm disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
                 >
-                  <RotateCcw size={18} /> Undo Last Blur
+                  <RotateCcw size={18} /> {t('tools_ui.image_blur.undo')}
                 </button>
                 
                 <button 
                   onClick={reset} 
                   className="w-full flex items-center justify-center gap-2 px-4 py-3 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-lg font-medium text-sm transition-colors"
                 >
-                  <RotateCcw size={18} /> Reset to Original
+                  <RotateCcw size={18} /> {t('tools_ui.image_blur.reset')}
                 </button>
               </div>
 
@@ -354,14 +361,14 @@ export default function ImageBlurTool() {
                   onClick={downloadImage} 
                   className="w-full flex items-center justify-center gap-2 px-4 py-3 bg-gray-900 text-white hover:bg-black rounded-lg font-bold text-sm transition-colors"
                 >
-                  <Download size={18} /> Download Result
+                  <Download size={18} /> {t('tools_ui.image_blur.download')}
                 </button>
 
                 <button 
                   onClick={() => window.location.reload()} 
                   className="w-full flex items-center justify-center gap-2 px-4 py-3 border-2 border-gray-300 hover:border-gray-400 text-gray-700 rounded-lg font-medium text-sm transition-colors"
                 >
-                  <Upload size={18} /> Upload New Image
+                  <Upload size={18} /> {t('tools_ui.image_blur.upload_new')}
                 </button>
               </div>
             </div>

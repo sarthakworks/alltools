@@ -2,8 +2,11 @@ import React, { useState } from 'react';
 import { Upload, Copy, FileText, Loader2, Languages } from 'lucide-react';
 import { createWorker } from 'tesseract.js';
 import { FileUpload } from '../ui/file-uploader';
+import { useTranslation } from 'react-i18next';
+import '../../i18n';
 
 export default function ImageOCRTool() {
+  const { t } = useTranslation();
   const [image, setImage] = useState<string | null>(null);
   const [extractedText, setExtractedText] = useState('');
   const [isProcessing, setIsProcessing] = useState(false);
@@ -43,7 +46,7 @@ export default function ImageOCRTool() {
       await worker.terminate();
     } catch (error) {
       console.error('OCR failed:', error);
-      alert('Text extraction failed. Please try a different image.');
+      alert(t('tools_ui.image_ocr.error_alert'));
     } finally {
       setIsProcessing(false);
     }
@@ -76,14 +79,14 @@ export default function ImageOCRTool() {
           onFilesSelected={handleFilesSelected}
           accept={{ 'image/*': ['.jpg', '.jpeg', '.png', '.webp', '.gif'] }}
           multiple={false}
-          title="Upload Image with Text"
+          title={t('tools_ui.image_ocr.upload_title')}
         />
       ) : (
         <div className="space-y-6">
           {/* Controls */}
           <div className="bg-white p-4 rounded-2xl border border-gray-100 shadow-sm flex flex-wrap gap-4 items-center justify-between">
             <button onClick={() => window.location.reload()} className="text-sm text-gray-600 hover:text-gray-900 font-medium">
-              ← New Image
+              ← {t('tools_ui.image_blur.upload_new')}
             </button>
 
             <div className="flex items-center gap-4">
@@ -115,12 +118,12 @@ export default function ImageOCRTool() {
                 {isProcessing ? (
                   <>
                     <Loader2 className="animate-spin w-5 h-5" />
-                    {progress > 0 ? `${progress}%` : 'Loading...'}
+                    {progress > 0 ? `${progress}%` : t('tools_ui.image_ocr.loading')}
                   </>
                 ) : (
                   <>
                     <FileText size={18} />
-                    Extract Text
+                    {t('tools_ui.image_ocr.extract_button')}
                   </>
                 )}
               </button>
@@ -132,30 +135,30 @@ export default function ImageOCRTool() {
             {/* Image Preview */}
             <div className="bg-white rounded-2xl border border-gray-200 overflow-hidden shadow-sm">
               <div className="bg-gray-50 border-b border-gray-200 p-3 px-4">
-                <span className="text-xs font-bold text-gray-500 uppercase tracking-wide">Image</span>
+                <span className="text-xs font-bold text-gray-500 uppercase tracking-wide">{t('tools_ui.image_ocr.image_label')}</span>
               </div>
-              <div className="p-6 bg-gray-50 flex items-center justify-center min-h-[500px]">
-                <img src={image} alt="Upload" className="max-w-full max-h-[500px] object-contain rounded-lg border border-gray-200 bg-white" />
+              <div className="p-6 bg-gray-50 flex items-center justify-center min-h-125">
+                <img src={image} alt="Upload" className="max-w-full max-h-125 object-contain rounded-lg border border-gray-200 bg-white" />
               </div>
             </div>
 
             {/* Extracted Text */}
             <div className="bg-white rounded-2xl border border-gray-200 overflow-hidden shadow-sm flex flex-col">
               <div className="bg-green-50 border-b border-green-200 p-3 px-4 flex justify-between items-center">
-                <span className="text-xs font-bold text-green-600 uppercase tracking-wide">Extracted Text</span>
+                <span className="text-xs font-bold text-green-600 uppercase tracking-wide">{t('tools_ui.image_ocr.extracted_label')}</span>
                 {extractedText && (
                   <div className="flex gap-2">
                     <button 
                       onClick={handleCopy}
                       className={`text-xs flex items-center gap-1 px-3 py-1.5 rounded-lg transition-colors font-semibold ${copySuccess ? 'bg-green-100 text-green-700' : 'bg-white text-gray-600 hover:bg-gray-50 border border-gray-200'}`}
                     >
-                      {copySuccess ? 'Copied!' : <><Copy size={12}/> Copy</>}
+                      {copySuccess ? t('tools_ui.image_base64.copied') : <><Copy size={12}/> {t('tools_ui.image_base64.copy')}</>}
                     </button>
                     <button 
                       onClick={downloadText}
                       className="text-xs flex items-center gap-1 px-3 py-1.5 rounded-lg bg-white text-gray-600 hover:bg-gray-50 border border-gray-200 font-semibold"
                     >
-                      <FileText size={12}/> Save TXT
+                      <FileText size={12}/> {t('tools_ui.image_ocr.save_txt')}
                     </button>
                   </div>
                 )}
@@ -163,12 +166,12 @@ export default function ImageOCRTool() {
               <textarea 
                 readOnly
                 value={extractedText}
-                placeholder="Extracted text will appear here..."
-                className="flex-1 w-full p-6 text-sm text-gray-700 focus:outline-none resize-none min-h-[500px] font-mono leading-relaxed"
+                placeholder={t('tools_ui.image_ocr.placeholder')}
+                className="flex-1 w-full p-6 text-sm text-gray-700 focus:outline-none resize-none min-h-125 font-mono leading-relaxed"
               />
               {extractedText && (
                 <div className="border-t border-gray-100 p-3 bg-gray-50 text-xs text-gray-500 text-center">
-                  {extractedText.split(/\s+/).length} words • {extractedText.length} characters
+                  {extractedText.split(/\s+/).length} {t('tools_ui.image_ocr.words')} • {extractedText.length} {t('tools_ui.image_ocr.chars')}
                 </div>
               )}
             </div>

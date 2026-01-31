@@ -4,8 +4,11 @@ import { FileUpload } from '../ui/file-uploader';
 import { ArrowDown, Check, FileImage, Loader2 } from 'lucide-react';
 import { cn } from '../../lib/utils';
 import FileSaver from 'file-saver';
+import { useTranslation } from 'react-i18next';
+import '../../i18n';
 
 export default function ImageCompressorTool() {
+  const { t } = useTranslation();
   const [file, setFile] = useState<File | null>(null);
   const [compressedFile, setCompressedFile] = useState<File | null>(null);
   const [isProcessing, setIsProcessing] = useState(false);
@@ -58,7 +61,7 @@ export default function ImageCompressorTool() {
       setCompressedFile(compressed);
     } catch (error) {
       console.error('Error compressing image:', error);
-      alert('Failed to compress image.');
+      alert(t('tools_ui.image_compressor.error_alert') || 'Failed to compress image.');
     } finally {
       setIsProcessing(false);
     }
@@ -97,10 +100,10 @@ export default function ImageCompressorTool() {
                    <div className="inline-flex p-3 rounded-full bg-green-100 text-green-600 mb-2">
                      <Check className="w-8 h-8" />
                    </div>
-                   <h3 className="text-2xl font-bold text-gray-900">Compression Complete!</h3>
+                   <h3 className="text-2xl font-bold text-gray-900">{t('tools_ui.image_compressor.success_title')}</h3>
                    <div className="flex items-center justify-center gap-4 text-sm bg-white py-2 rounded-lg border border-green-100 mx-4">
-                     <span className="text-gray-600">New Size: <span className="text-gray-900 font-mono font-bold">{formatSize(compressedFile.size)}</span></span>
-                     <span className="text-green-600 font-bold bg-green-50 px-2 py-0.5 rounded">Saved {getSavings()}%</span>
+                     <span className="text-gray-600">{t('tools_ui.image_compressor.new_size')} <span className="text-gray-900 font-mono font-bold">{formatSize(compressedFile.size)}</span></span>
+                     <span className="text-green-600 font-bold bg-green-50 px-2 py-0.5 rounded">{t('tools_ui.image_compressor.saved')} {getSavings()}%</span>
                    </div>
                  </div>
 
@@ -109,7 +112,7 @@ export default function ImageCompressorTool() {
                    className="w-full bg-gray-900 text-white hover:bg-black py-4 rounded-xl font-bold text-lg shadow-xl shadow-gray-200 flex items-center justify-center gap-2 transition-all transform hover:-translate-y-0.5"
                  >
                    <ArrowDown className="w-5 h-5" />
-                   Download Compressed Image
+                   {t('tools_ui.image_compressor.download_button')}
                  </button>
                </div>
              ) : (
@@ -132,13 +135,13 @@ export default function ImageCompressorTool() {
           <div className="space-y-6">
             <div className="p-6 rounded-xl bg-gray-50 border border-gray-200 space-y-6">
               <div className="flex items-center justify-between">
-                <h3 className="font-bold text-gray-900">Settings</h3>
-                <button onClick={() => setFile(null)} className="text-sm text-gray-500 hover:text-gray-900 font-medium">Change File</button>
+                <h3 className="font-bold text-gray-900">{t('tools_ui.image_compressor.settings')}</h3>
+                <button onClick={() => setFile(null)} className="text-sm text-gray-500 hover:text-gray-900 font-medium">{t('tools_ui.image_compressor.change_file')}</button>
               </div>
 
               <div className="space-y-4">
                 <div className="flex items-center justify-between">
-                  <label className="text-sm font-medium text-gray-700">Compression Quality</label>
+                  <label className="text-sm font-medium text-gray-700">{t('tools_ui.image_compressor.quality_label')}</label>
                   <span className="text-2xl font-bold text-blue-600">{Math.round(quality * 100)}%</span>
                 </div>
                 
@@ -154,16 +157,16 @@ export default function ImageCompressorTool() {
                 
                 {/* Quality Labels */}
                 <div className="flex justify-between text-xs text-gray-500 font-medium -mt-2">
-                  <span>10%<br/>Heavy</span>
-                  <span>30%<br/>High</span>
-                  <span>50%<br/>Medium</span>
-                  <span>70%<br/>Low</span>
-                  <span>100%<br/>Original</span>
+                  <span>10%<br/>{t('tools_ui.image_compressor.quality_heavy')}</span>
+                  <span>30%<br/>{t('tools_ui.image_compressor.quality_high')}</span>
+                  <span>50%<br/>{t('tools_ui.image_compressor.quality_medium')}</span>
+                  <span>70%<br/>{t('tools_ui.image_compressor.quality_low')}</span>
+                  <span>100%<br/>{t('tools_ui.image_compressor.quality_original')}</span>
                 </div>
 
                 <div className="bg-blue-50 border border-blue-200 rounded-lg p-3 text-xs text-blue-800">
-                  <p className="font-semibold mb-1">💡 Lower quality = smaller file size</p>
-                  <p className="text-blue-700">Recommended: 70-80% for web use (good balance of quality & size)</p>
+                  <p className="font-semibold mb-1">{t('tools_ui.image_compressor.quality_tip')}</p>
+                  <p className="text-blue-700">{t('tools_ui.image_compressor.quality_recommendation')}</p>
                 </div>
               </div>
 
@@ -176,14 +179,14 @@ export default function ImageCompressorTool() {
                     onChange={(e) => setEnableResize(e.target.checked)}
                     className="w-4 h-4 accent-blue-600 cursor-pointer"
                   />
-                  <span className="text-sm font-medium text-gray-700 group-hover:text-gray-900">Resize Image</span>
+                  <span className="text-sm font-medium text-gray-700 group-hover:text-gray-900">{t('tools_ui.image_compressor.resize_label')}</span>
                 </label>
                 
                 {enableResize && imageWidth > 0 && (
                   <div className="pl-7 space-y-2 animate-in fade-in slide-in-from-top-2">
                     <div className="flex items-center justify-between">
-                      <label className="text-xs text-gray-600">Target Width: {targetWidth}px</label>
-                      <span className="text-xs text-gray-500">(Original: {imageWidth}px)</span>
+                      <label className="text-xs text-gray-600">{t('tools_ui.image_compressor.target_width')}: {targetWidth}px</label>
+                      <span className="text-xs text-gray-500">({t('tools_ui.image_compressor.original_width')}: {imageWidth}px)</span>
                     </div>
                     <input 
                       type="range" 
@@ -194,7 +197,7 @@ export default function ImageCompressorTool() {
                       onChange={(e) => setTargetWidth(parseInt(e.target.value))}
                       className="w-full accent-blue-600 h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer"
                     />
-                    <p className="text-xs text-gray-500">Height will adjust automatically to maintain aspect ratio</p>
+                    <p className="text-xs text-gray-500">{t('tools_ui.image_compressor.aspect_ratio_note')}</p>
                   </div>
                 )}
               </div>
@@ -204,7 +207,7 @@ export default function ImageCompressorTool() {
                 disabled={isProcessing}
                 className="w-full bg-blue-600 hover:bg-blue-700 text-white py-3 rounded-xl font-bold transition-colors flex items-center justify-center gap-2 shadow-lg shadow-blue-500/20"
               >
-                {isProcessing ? <Loader2 className="animate-spin w-5 h-5" /> : 'Compress Image'}
+                {isProcessing ? <Loader2 className="animate-spin w-5 h-5" /> : t('tools_ui.image_compressor.compress_button')}
               </button>
             </div>
 
@@ -213,7 +216,7 @@ export default function ImageCompressorTool() {
                 <FileImage className="w-5 h-5 text-blue-500" />
                 <div className="flex-1 min-w-0">
                   <p className="font-medium text-gray-900 truncate">{file.name}</p>
-                  <p className="text-sm text-gray-500">Original: {formatSize(file.size)}</p>
+                  <p className="text-sm text-gray-500">{t('tools_ui.image_compressor.original_width')}: {formatSize(file.size)}</p>
                 </div>
               </div>
             </div>

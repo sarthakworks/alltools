@@ -1,9 +1,11 @@
 import React, { useState } from 'react';
 import { Upload, Download, Loader2, Palette, Sparkles } from 'lucide-react';
 import { removeBackground } from '@imgly/background-removal';
+import { useTranslation } from 'react-i18next';
 import { FileUpload } from '../ui/file-uploader';
 
 export default function ImageBGRemoverTool() {
+  const { t } = useTranslation();
   const [originalImage, setOriginalImage] = useState<string | null>(null);
   const [processedImage, setProcessedImage] = useState<string | null>(null);
   const [isProcessing, setIsProcessing] = useState(false);
@@ -96,7 +98,7 @@ export default function ImageBGRemoverTool() {
           onFilesSelected={handleFilesSelected}
           accept={{ 'image/*': ['.jpg', '.jpeg', '.png', '.webp', '.gif'] }}
           multiple={false}
-          title="Upload Image"
+          title={t('tools_ui.common.upload_image')}
         />
       ) : (
         <div className="space-y-6">
@@ -105,7 +107,7 @@ export default function ImageBGRemoverTool() {
             <div className="flex flex-wrap gap-4 items-center justify-between">
               <div className="flex items-center gap-4">
                 <button onClick={() => window.location.reload()} className="text-sm text-gray-600 hover:text-gray-900 font-medium">
-                  ← New Image
+                  ← {t('tools_ui.common.new_image')}
                 </button>
                 
                 <div className="w-px h-6 bg-gray-200"></div>
@@ -116,13 +118,13 @@ export default function ImageBGRemoverTool() {
                     onClick={() => setBgType('transparent')}
                     className={`px-4 py-2 rounded text-sm font-semibold transition-all ${bgType === 'transparent' ? 'bg-white text-blue-600 shadow-sm' : 'text-gray-600'}`}
                   >
-                    Transparent
+                    {t('tools_ui.image_bg_remover.transparent')}
                   </button>
                   <button 
                     onClick={() => setBgType('color')}
                     className={`px-4 py-2 rounded text-sm font-semibold transition-all ${bgType === 'color' ? 'bg-white text-purple-600 shadow-sm' : 'text-gray-600'}`}
                   >
-                    Color Fill
+                    {t('tools_ui.image_bg_remover.color_fill')}
                   </button>
                 </div>
 
@@ -142,17 +144,17 @@ export default function ImageBGRemoverTool() {
               <button 
                 onClick={processImage}
                 disabled={isProcessing}
-                className="bg-gradient-to-r from-purple-600 to-blue-600 text-white px-6 py-3 rounded-xl font-bold hover:from-purple-700 hover:to-blue-700 transition-all shadow-lg disabled:opacity-50 flex items-center gap-2"
+                className="bg-linear-to-r from-purple-600 to-blue-600 text-white px-6 py-3 rounded-xl font-bold hover:from-purple-700 hover:to-blue-700 transition-all shadow-lg disabled:opacity-50 flex items-center gap-2"
               >
                 {isProcessing ? (
                   <>
                     <Loader2 className="animate-spin w-5 h-5" />
-                    Processing...
+                    {t('tools_ui.common.processing')}
                   </>
                 ) : (
                   <>
                     <Sparkles size={18} />
-                    Remove Background
+                    {t('tools_ui.common.remove_bg')}
                   </>
                 )}
               </button>
@@ -164,25 +166,25 @@ export default function ImageBGRemoverTool() {
             {/* Original */}
             <div className="bg-white rounded-2xl border border-gray-200 overflow-hidden shadow-sm">
               <div className="bg-gray-50 border-b border-gray-200 p-3 px-4">
-                <span className="text-xs font-bold text-gray-500 uppercase tracking-wide">Original</span>
+                <span className="text-xs font-bold text-gray-500 uppercase tracking-wide">{t('tools_ui.image_bg_remover.original_label')}</span>
               </div>
-              <div className="p-6 bg-[url('/checker.png')] bg-repeat flex items-center justify-center min-h-[400px]">
-                <img src={originalImage} alt="Original" className="max-w-full max-h-[500px] object-contain" />
+              <div className="p-6 bg-[url('/checker.png')] bg-repeat flex items-center justify-center min-h-100">
+                <img src={originalImage} alt="Original" className="max-w-full max-h-125 object-contain" />
               </div>
             </div>
 
             {/* Processed */}
             <div className="bg-white rounded-2xl border border-gray-200 overflow-hidden shadow-sm">
-              <div className="bg-gradient-to-r from-purple-50 to-blue-50 border-b border-purple-200 p-3 px-4">
-                <span className="text-xs font-bold text-purple-600 uppercase tracking-wide">Background Removed</span>
+              <div className="bg-linear-to-r from-purple-50 to-blue-50 border-b border-purple-200 p-3 px-4">
+                <span className="text-xs font-bold text-purple-600 uppercase tracking-wide">{t('tools_ui.image_bg_remover.processed_label')}</span>
               </div>
-              <div className={`p-6 ${bgType === 'transparent' ? 'bg-[url(\'/checker.png\')] bg-repeat' : ''} flex items-center justify-center min-h-[400px]`} style={bgType === 'color' ? { backgroundColor: bgColor } : {}}>
+              <div className={`p-6 ${bgType === 'transparent' ? 'bg-[url(\'/checker.png\')] bg-repeat' : ''} flex items-center justify-center min-h-100`} style={bgType === 'color' ? { backgroundColor: bgColor } : {}}>
                 {processedImage ? (
-                  <img src={processedImage} alt="Processed" className="max-w-full max-h-[500px] object-contain" />
+                  <img src={processedImage} alt="Processed" className="max-w-full max-h-125 object-contain" />
                 ) : (
                   <div className="text-center text-gray-400">
                     <Sparkles size={48} className="mx-auto mb-2 opacity-50" />
-                    <p className="text-sm">Click "Remove Background" to process</p>
+                    <p className="text-sm">{t('tools_ui.image_bg_remover.empty_state')}</p>
                   </div>
                 )}
               </div>
@@ -196,7 +198,7 @@ export default function ImageBGRemoverTool() {
                 className="bg-gray-900 text-white px-8 py-4 rounded-xl font-bold hover:bg-black transition-colors shadow-xl flex items-center gap-2 mx-auto"
               >
                 <Download size={20} />
-                Download PNG
+                {t('tools_ui.image_bg_remover.download')}
               </button>
             </div>
           )}

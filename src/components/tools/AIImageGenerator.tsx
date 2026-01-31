@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Download, Loader2, Image as ImageIcon, Sparkles, RefreshCw, Smartphone, Monitor } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 import { cn } from '../../lib/utils';
 
 const STYLES = [
@@ -17,6 +18,7 @@ const RATIOS = [
 ];
 
 export default function AIImageGenerator() {
+  const { t } = useTranslation();
   const [prompt, setPrompt] = useState('');
   const [style, setStyle] = useState(STYLES[0].id);
   const [ratio, setRatio] = useState(RATIOS[0].id);
@@ -75,11 +77,11 @@ export default function AIImageGenerator() {
       <div className="space-y-6">
         <div className="p-6 rounded-2xl bg-white border border-gray-200 shadow-sm space-y-6">
           <div className="space-y-2">
-            <label className="text-sm font-medium text-gray-700">Image Description</label>
+            <label className="text-sm font-medium text-gray-700">{t('tools_ui.ai_image_generator.prompt_label')}</label>
             <textarea 
               value={prompt}
               onChange={(e) => setPrompt(e.target.value)}
-              placeholder="A futuristic city floating in the clouds..."
+              placeholder={t('tools_ui.ai_image_generator.prompt_placeholder')}
               rows={3}
               className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 text-gray-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-all resize-none shadow-sm placeholder:text-gray-400"
             />
@@ -87,7 +89,7 @@ export default function AIImageGenerator() {
 
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-2">
-              <label className="text-sm font-medium text-gray-700">Art Style</label>
+              <label className="text-sm font-medium text-gray-700">{t('tools_ui.ai_image_generator.style_label')}</label>
               <select 
                 value={style}
                 onChange={(e) => setStyle(e.target.value)}
@@ -100,7 +102,7 @@ export default function AIImageGenerator() {
             </div>
 
             <div className="space-y-2">
-              <label className="text-sm font-medium text-gray-700">Size</label>
+              <label className="text-sm font-medium text-gray-700">{t('tools_ui.ai_image_generator.size_label')}</label>
               <div className="grid grid-cols-3 gap-2">
                 {RATIOS.map((r) => {
                   const Icon = r.icon;
@@ -132,11 +134,11 @@ export default function AIImageGenerator() {
           >
             {isLoading ? (
               <>
-                <Loader2 className="animate-spin w-5 h-5" /> Creating Magic...
+                <Loader2 className="animate-spin w-5 h-5" /> {t('tools_ui.ai_image_generator.generating')}
               </>
             ) : (
               <>
-                <Sparkles className="w-5 h-5" /> Generate Image
+                <Sparkles className="w-5 h-5" /> {t('tools_ui.ai_image_generator.generate_button')}
               </>
             )}
           </button>
@@ -144,7 +146,7 @@ export default function AIImageGenerator() {
 
         <div className="p-4 bg-indigo-50 rounded-xl text-xs text-indigo-800 border border-indigo-100 flex gap-2">
            <ImageIcon className="w-4 h-4 shrink-0 mt-0.5" />
-           <p>Images are generated securely using the Pollinations.ai API. No API keys required. Images are free to use.</p>
+           <p>{t('tools_ui.ai_image_generator.security_note')}</p>
         </div>
       </div>
 
@@ -169,7 +171,7 @@ export default function AIImageGenerator() {
                       onClick={downloadImage}
                       className="bg-white/10 hover:bg-white/20 backdrop-blur-md text-white px-4 py-2 rounded-lg font-medium text-sm flex items-center gap-2 transition-colors border border-white/10"
                     >
-                      <Download className="w-4 h-4" /> Download
+                      <Download className="w-4 h-4" /> {t('tools_ui.common.download')}
                     </button>
                   </div>
                </div>
@@ -185,8 +187,8 @@ export default function AIImageGenerator() {
           <div className="flex-1 bg-gray-50 border-2 border-dashed border-gray-200 rounded-2xl flex items-center justify-center text-gray-400 p-8 text-center min-h-96">
             <div>
               <Sparkles className="w-16 h-16 mx-auto mb-4 opacity-50 text-pink-300" />
-              <p className="font-medium text-gray-500 text-lg">Dream it. See it.</p>
-              <p className="text-sm text-gray-400 mt-2">Enter a prompt to generate artwork instantly.</p>
+              <p className="font-medium text-gray-500 text-lg">{t('tools_ui.ai_image_generator.empty_state_title')}</p>
+              <p className="text-sm text-gray-400 mt-2">{t('tools_ui.ai_image_generator.empty_state_desc')}</p>
             </div>
           </div>
         )}

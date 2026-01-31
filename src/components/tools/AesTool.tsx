@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import CryptoJS from 'crypto-js';
 import { Copy, Lock, Unlock } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
+import '../../i18n';
 
 // Types and Enums
 const MODES = {
@@ -50,6 +52,7 @@ const defaultState: State = {
 };
 
 export default function AesTool() {
+  const { t } = useTranslation();
   const [encState, setEncState] = useState<State>({ ...defaultState });
   const [decState, setDecState] = useState<State>({ ...defaultState, format: "Utf8" });
 
@@ -62,7 +65,7 @@ export default function AesTool() {
     if (!state.text || !state.secret) {
       setter((prev) => ({
         ...prev,
-        error: `Please enter ${isEncrypt ? 'plain text' : 'cipher text'} and a secret key.`,
+        error: t('tools_ui.aes_tool.validation_error'),
       }));
       return;
     }
@@ -134,11 +137,11 @@ export default function AesTool() {
 
       // Map common technical errors to user-friendly messages
       if (errorMessage.includes("Malformed UTF-8")) {
-        errorMessage = "Decryption failed: Malformed UTF-8 data. The key, IV, or mode might be incorrect.";
+        errorMessage = t('tools_ui.aes_tool.error_malformed');
       } else if (errorMessage.toLowerCase().includes("cannot read properties of undefined")) {
-        errorMessage = "Configuration Error: Please check your input format, Key, and IV.";
+        errorMessage = t('tools_ui.aes_tool.error_config');
       } else if (errorMessage === "Operation failed.") {
-        errorMessage = "Operation failed. Check your key, IV, and input format.";
+        errorMessage = t('tools_ui.aes_tool.error_operation');
       }
       else{
         errorMessage = err.message ||"Operation failed.";
@@ -163,9 +166,9 @@ export default function AesTool() {
   return (
     <div className="max-w-7xl mx-auto p-4 sm:p-6 lg:p-8">
       <div className="text-center mb-10">
-        <h1 className="text-3xl font-bold text-gray-900 sm:text-4xl mb-4">AES Encryption & Decryption</h1>
+        <h1 className="text-3xl font-bold text-gray-900 sm:text-4xl mb-4">{t('tools_ui.aes_tool.title')}</h1>
         <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-          Securely encrypt and decrypt text using the Advanced Encryption Standard (AES) algorithm right in your browser.
+          {t('tools_ui.aes_tool.subtitle')}
         </p>
       </div>
 
@@ -175,16 +178,16 @@ export default function AesTool() {
         <div className="bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden">
           <div className="bg-blue-50/50 px-6 py-4 border-b border-blue-100 flex items-center justify-between">
             <h2 className="text-xl font-semibold text-gray-800 flex items-center gap-2">
-              <Lock className="w-5 h-5 text-blue-600" /> AES Encryption
+              <Lock className="w-5 h-5 text-blue-600" /> {t('tools_ui.aes_tool.encrypt_title')}
             </h2>
           </div>
           
           <div className="p-6 space-y-6">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">Plain Text to Encrypt</label>
+              <label className="block text-sm font-medium text-gray-700 mb-2">{t('tools_ui.aes_tool.encrypt_input_label')}</label>
               <textarea
                 className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all outline-none resize-y min-h-30"
-                placeholder="Enter text here..."
+                placeholder={t('tools_ui.aes_tool.input_placeholder')}
                 value={encState.text}
                 onChange={(e) => updateState(setEncState, "text", e.target.value)}
               />
@@ -193,7 +196,7 @@ export default function AesTool() {
             <CommonOptions prefix="enc" state={encState} setter={setEncState} />
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">Output Format</label>
+              <label className="block text-sm font-medium text-gray-700 mb-2">{t('tools_ui.aes_tool.output_format')}</label>
               <div className="flex gap-4">
                 {["Base64", "Hex"].map((fmt) => (
                   <label key={fmt} className="flex items-center gap-2 cursor-pointer">
@@ -215,7 +218,7 @@ export default function AesTool() {
               onClick={() => process(true)}
               className="w-full py-3 px-4 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-xl transition-colors shadow-lg shadow-blue-600/20 flex items-center justify-center gap-2 cursor-pointer"
             >
-              <Lock className="w-4 h-4" /> Encrypt
+              <Lock className="w-4 h-4" /> {t('tools_ui.common.encrypt')}
             </button>
 
             {encState.error && (
@@ -226,20 +229,20 @@ export default function AesTool() {
 
             <div>
               <div className="flex items-center justify-between mb-2">
-                <label className="block text-sm font-medium text-gray-700">Encrypted Output</label>
+                <label className="block text-sm font-medium text-gray-700">{t('tools_ui.aes_tool.encrypted_output')}</label>
                  {encState.output && (
                   <button 
                     onClick={() => copyToClipboard(encState.output)}
                     className="text-xs flex items-center gap-1 text-blue-600 hover:text-blue-700 font-medium cursor-pointer"
                   >
-                    <Copy className="w-3 h-3" /> Copy
+                    <Copy className="w-3 h-3" /> {t('tools_ui.common.copy')}
                   </button>
                  )}
               </div>
               <textarea
                 readOnly
                 className="w-full px-4 py-3 rounded-xl bg-gray-50 border border-gray-200 text-gray-600 resize-y min-h-30 font-mono text-sm"
-                placeholder="Result will appear here..."
+                placeholder={t('tools_ui.common.result_placeholder')}
                 value={encState.output}
               />
             </div>
@@ -250,16 +253,16 @@ export default function AesTool() {
         <div className="bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden">
           <div className="bg-green-50/50 px-6 py-4 border-b border-green-100 flex items-center justify-between">
              <h2 className="text-xl font-semibold text-gray-800 flex items-center gap-2">
-              <Unlock className="w-5 h-5 text-green-600" /> AES Decryption
+              <Unlock className="w-5 h-5 text-green-600" /> {t('tools_ui.aes_tool.decrypt_title')}
             </h2>
           </div>
           
           <div className="p-6 space-y-6">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">Encrypted Text to Decrypt</label>
+              <label className="block text-sm font-medium text-gray-700 mb-2">{t('tools_ui.aes_tool.decrypt_input_label')}</label>
               <textarea
                 className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all outline-none resize-y min-h-30"
-                placeholder="Enter encrypted text..."
+                placeholder={t('tools_ui.aes_tool.decrypt_placeholder')}
                 value={decState.text}
                 onChange={(e) => updateState(setDecState, "text", e.target.value)}
               />
@@ -269,7 +272,7 @@ export default function AesTool() {
             
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Input Text Format</label>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">{t('tools_ui.aes_tool.input_format')}</label>
                    <div className="flex gap-4">
                     {["Base64", "Hex"].map((fmt) => (
                       <label key={fmt} className="flex items-center gap-2 cursor-pointer">
@@ -288,7 +291,7 @@ export default function AesTool() {
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Output Format</label>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">{t('tools_ui.aes_tool.output_format')}</label>
                    <div className="flex gap-4">
                     {["Utf8", "Base64"].map((fmt) => (
                       <label key={fmt} className="flex items-center gap-2 cursor-pointer">
@@ -311,7 +314,7 @@ export default function AesTool() {
               onClick={() => process(false)}
               className="w-full py-3 px-4 bg-green-600 hover:bg-green-700 text-white font-semibold rounded-xl transition-colors shadow-lg shadow-green-600/20 flex items-center justify-center gap-2 cursor-pointer"
             >
-              <Unlock className="w-4 h-4" /> Decrypt
+              <Unlock className="w-4 h-4" /> {t('tools_ui.common.decrypt')}
             </button>
 
             {decState.error && (
@@ -322,20 +325,20 @@ export default function AesTool() {
 
             <div>
                <div className="flex items-center justify-between mb-2">
-                <label className="block text-sm font-medium text-gray-700">Decrypted Output</label>
+                <label className="block text-sm font-medium text-gray-700">{t('tools_ui.aes_tool.decrypted_output')}</label>
                  {decState.output && (
                   <button 
                     onClick={() => copyToClipboard(decState.output)}
                     className="text-xs flex items-center gap-1 text-green-600 hover:text-green-700 font-medium cursor-pointer"
                   >
-                    <Copy className="w-3 h-3" /> Copy
+                    <Copy className="w-3 h-3" /> {t('tools_ui.common.copy')}
                   </button>
                  )}
               </div>
               <textarea
                 readOnly
-                className="w-full px-4 py-3 rounded-xl bg-gray-50 border border-gray-200 text-gray-600 resize-y min-h-[120px] font-mono text-sm"
-                placeholder="Result will appear here..."
+                className="w-full px-4 py-3 rounded-xl bg-gray-50 border border-gray-200 text-gray-600 resize-y min-h-30 font-mono text-sm"
+                placeholder={t('tools_ui.common.result_placeholder')}
                 value={decState.output}
               />
             </div>
