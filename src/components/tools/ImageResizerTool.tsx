@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { FileUpload } from '../ui/file-uploader';
+import { FileUpload } from '../common/fileUploader';
 import { Loader2, FileImage } from 'lucide-react';
 import { cn } from '../../lib/utils';
 import FileSaver from 'file-saver';

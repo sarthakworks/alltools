@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { PDFDocument } from 'pdf-lib';
-import { FileUpload } from '../ui/file-uploader';
+import { FileUpload } from '../common/fileUploader';
 import { Lock, Unlock, Loader2, Download, ShieldCheck, ShieldAlert, X } from 'lucide-react';
 import FileSaver from 'file-saver';
 

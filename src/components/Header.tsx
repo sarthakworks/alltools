@@ -6,10 +6,12 @@ import {
   Share2, 
   Menu, 
   X,
-  Languages
+  Languages,
+  ChevronRight
 } from 'lucide-react';
 import { categories, allTools } from '../data/tools';
 import LanguageSwitcher from './LanguageSwitcher';
+import { useToolSearch } from './common/searchAlgo';
 import '../i18n';
 import { useTranslation } from 'react-i18next';
 
@@ -18,6 +20,17 @@ export default function Header() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isLangSwitcherOpen, setIsLangSwitcherOpen] = useState(false);
   const { t } = useTranslation();
+
+  // Use shared search hook
+  const {
+    searchQuery,
+    showDropdown,
+    setShowDropdown,
+    filteredTools,
+    searchRef,
+    handleSearchChange,
+    handleToolClick
+  } = useToolSearch(allTools);
 
   // Group tools by category for the dropdowns
   const navItems = categories.map(cat => {
@@ -146,7 +159,7 @@ export default function Header() {
         <div className="flex items-center gap-3">
           
           {/* Search Bar */}
-          <div className="hidden md:flex relative group">
+          <div ref={searchRef} className="hidden md:flex relative group">
             <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
               <Search className="h-4 w-4 text-gray-400 group-focus-within:text-blue-500 transition-colors" />
             </div>
@@ -154,8 +167,44 @@ export default function Header() {
               type="text"
               aria-label="Search tools"
               placeholder={t('search.placeholder')}
+              value={searchQuery}
+              onChange={handleSearchChange}
+              onFocus={() => searchQuery.trim() && setShowDropdown(true)}
               className="block w-64 pl-9 pr-3 py-2 border border-gray-200 rounded-lg leading-5 bg-gray-50 text-gray-900 placeholder-gray-400 focus:outline-none focus:bg-white focus:ring-2 focus:ring-blue-100 focus:border-blue-500 sm:text-sm transition-all"
             />
+            
+            {/* Search Dropdown */}
+            {showDropdown && (
+              <div className="absolute top-full left-0 right-0 mt-2 bg-white rounded-lg shadow-xl border border-gray-200 max-h-96 overflow-y-auto z-50">
+                {filteredTools.length > 0 ? (
+                  <div className="py-2">
+                    {filteredTools.slice(0, 8).map((tool) => (
+                      <button
+                        key={tool.id}
+                        onClick={() => handleToolClick(tool.href)}
+                        className="w-full px-4 py-3 hover:bg-gray-50 flex items-start gap-3 text-left transition-colors"
+                      >
+                        <div className={`flex-shrink-0 w-10 h-10 flex items-center justify-center ${tool.color || 'bg-gray-100'}  rounded-lg`}>
+                          <tool.icon className="w-5 h-5" />
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          <div className="font-medium text-gray-900 text-sm">
+                            {tool.name}
+                          </div>
+                          <div className="text-xs text-gray-500 truncate">
+                            {tool.desc}
+                          </div>
+                        </div>
+                      </button>
+                    ))}
+                  </div>
+                ) : (
+                  <div className="px-4 py-8 text-center">
+                    <p className="text-sm text-gray-500">No tools found</p>
+                  </div>
+                )}
+              </div>
+            )}
           </div>
 
           <div className="w-px h-6 bg-gray-200 mx-1 hidden md:block"></div>
@@ -202,12 +251,6 @@ export default function Header() {
             className="lg:hidden border-t border-gray-100 bg-white overflow-hidden"
           >
             <div className="p-4 space-y-4">
-              <input
-                type="text"
-                aria-label="Search tools"
-                placeholder={t('search.placeholder')}
-                className="block w-full pl-4 pr-3 py-2 border border-gray-200 rounded-lg bg-gray-50 focus:ring-2 focus:ring-blue-100 focus:border-blue-500"
-              />
               <nav className="flex flex-col space-y-2">
                 {navItems.map(item => (
                   <a 
@@ -216,7 +259,7 @@ export default function Header() {
                     className="flex items-center justify-between px-3 py-2 rounded-lg text-gray-700 hover:bg-gray-50 font-medium"
                   >
                     {t(`nav.${item.id}`, { defaultValue: item.label })}
-                    <ChevronDown className="w-4 h-4 text-gray-400" />
+                    <ChevronRight className="w-4 h-4 text-gray-400" />
                   </a>
                 ))}
               </nav>

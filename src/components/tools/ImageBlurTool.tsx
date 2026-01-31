@@ -1,6 +1,6 @@
 import React, { useRef, useState, useEffect, useCallback } from 'react';
 import { Download, EyeOff, Upload, RotateCcw, MousePointerClick } from 'lucide-react';
-import { FileUpload } from '../ui/file-uploader';
+import { FileUpload } from '../common/fileUploader';
 import { useTranslation } from 'react-i18next';
 import '../../i18n';
 

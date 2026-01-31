@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { PDFDocument } from 'pdf-lib';
-import { FileUpload } from '../ui/file-uploader';
+import { FileUpload } from '../common/fileUploader';
 import { ArrowDown, Loader2, X, Image as ImageIcon } from 'lucide-react';
 import FileSaver from 'file-saver';
 import {

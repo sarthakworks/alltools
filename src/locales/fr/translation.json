@@ -77,8 +77,11 @@
         "clean_photo": "Nettoyer la photo"
     },
     "premium": {
-        "title": "Obtenez plus avec Premium",
-        "subtitle": "Allez plus loin dans vos projets avec des outils premium qui ne vous gênent pas et travaillent plus intelligemment. Créez sans limites, sans publicités ni blocages. Commencez pour seulement 3,99 $ par mois.",
+        "title": "Outils entièrement gratuits et éthiques",
+        "subtitle": "Notre application est entièrement gratuite sans frais cachés. Nous ne suivons pas vos données, n'utilisons aucun dark pattern et sommes entièrement open-source. Profitez d'une utilisation illimitée avec un traitement plus rapide, tout en respectant votre vie privée. Conçu pour le plaisir—nous n'assumons aucune responsabilité légale quant à l'utilisation.",
+        "no_tracking": "Aucun suivi",
+        "open_source": "Open source",
+        "no_dark_patterns": "Aucun dark pattern",
         "ad_free": "Sans publicité",
         "unlimited": "Utilisation illimitée",
         "faster": "Traitement plus rapide",

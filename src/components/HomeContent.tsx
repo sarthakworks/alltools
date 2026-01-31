@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Search, ArrowRight, FileText, Image as ImageIcon, Zap, CheckCircle, Shield, PenTool } from 'lucide-react';
+import { Search, ArrowRight, FileText, Image as ImageIcon, Zap, CheckCircle, Shield, PenTool, MegaphoneOff, Infinity} from 'lucide-react';
 import ToolsGrid from './ToolsGrid';
-import { categories, stats } from '../data/tools';
+import { categories, stats, allTools, popularTools } from '../data/tools';
+import { useToolSearch } from './common/searchAlgo';
 import '../i18n';
 
 export default function HomeContent() {
@@ -10,6 +11,17 @@ export default function HomeContent() {
   const [currentWordIndex, setCurrentWordIndex] = useState(0);
   const typewriterWords = t('hero.typewriter_words', { returnObjects: true, defaultValue: ['Education', 'Business', 'Life', 'Work', 'Creativity'] }) as string[];
   const words = Array.isArray(typewriterWords) ? typewriterWords : ['Education'];
+
+  // Use shared search hook
+  const {
+    searchQuery,
+    showDropdown,
+    setShowDropdown,
+    filteredTools,
+    searchRef,
+    handleSearchChange,
+    handleToolClick
+  } = useToolSearch(allTools);
 
   // Typewriter effect
   useEffect(() => {
@@ -43,19 +55,79 @@ export default function HomeContent() {
           </p>
 
           {/* Search Bar */}
-          <div className="max-w-2xl mx-auto relative mb-16 px-4">
+          <div ref={searchRef} className="max-w-2xl mx-auto relative mb-16 px-4">
             <div className="relative group">
               <div className="absolute inset-y-0 left-0 pl-6 flex items-center pointer-events-none">
                  <Search className="h-6 w-6 text-blue-500" />
               </div>
               <input
                 type="text"
-                placeholder={t('search.placeholder', { defaultValue: 'Search' })}
+                value={searchQuery}
+                onChange={handleSearchChange}
+                onFocus={() => searchQuery.trim() && setShowDropdown(true)}
+                placeholder={t('search.placeholder', { defaultValue: 'Search tools...' })}
                 className="w-full pl-16 pr-32 py-5 rounded-full border border-gray-200 shadow-lg shadow-blue-500/5 text-lg focus:outline-none focus:ring-4 focus:ring-blue-100 focus:border-blue-500 transition-all"
               />
-              <button className="absolute right-2 top-2 bottom-2 bg-blue-600 text-white px-8 rounded-full font-semibold hover:bg-blue-700 transition-colors shadow-md">
+              <button 
+                onClick={() => filteredTools.length > 0 && handleToolClick(filteredTools[0].href)}
+                className="absolute right-2 top-2 bottom-2 bg-blue-600 text-white px-8 rounded-full font-semibold hover:bg-blue-700 transition-colors shadow-md"
+              >
                 {t('hero.search_button', { defaultValue: 'Search' })}
               </button>
+
+              {/* Search Dropdown */}
+              {showDropdown && (
+                <div className="absolute top-full left-0 right-0 mt-2 bg-white rounded-2xl shadow-2xl border border-gray-100 max-h-96 overflow-y-auto z-50">
+                  {filteredTools.length > 0 ? (
+                    <div className="p-2">
+                      {filteredTools.slice(0, 8).map((tool) => (
+                        <button
+                          key={tool.id}
+                          onClick={() => handleToolClick(tool.href)}
+                          className="w-full flex items-center gap-4 p-4 rounded-xl hover:bg-gray-50 transition-colors text-left group"
+                        >
+                          <div className={`w-12 h-12 rounded-lg ${tool.color || 'bg-gray-100'} flex items-center justify-center flex-shrink-0`}>
+                            <tool.icon className="w-6 h-6" />
+                          </div>
+                          <div className="flex-1 min-w-0">
+                            <div className="font-semibold text-gray-900 group-hover:text-blue-600 transition-colors">
+                              {tool.name}
+                            </div>
+                            <div className="text-sm text-gray-500 truncate">{tool.desc}</div>
+                          </div>
+                          <ArrowRight className="w-5 h-5 text-gray-400 group-hover:text-blue-600 group-hover:translate-x-1 transition-all flex-shrink-0" />
+                        </button>
+                      ))}
+                    </div>
+                  ) : (
+                    <div className="p-6 text-center">
+                      <p className="text-gray-500 font-medium mb-4">
+                        Sorry, couldn't find what you're looking for
+                      </p>
+                      <p className="text-sm text-gray-400 mb-4">Try these popular tools:</p>
+                      <div className="grid grid-cols-1 gap-2">
+                        {popularTools.slice(0, 5).map((tool) => (
+                          <button
+                            key={tool.id}
+                            onClick={() => handleToolClick(tool.href)}
+                            className="flex items-center gap-3 p-3 rounded-lg hover:bg-gray-50 transition-colors text-left group"
+                          >
+                            <div className={`w-10 h-10 rounded-lg ${tool.color || 'bg-gray-100'} flex items-center justify-center flex-shrink-0`}>
+                              <tool.icon className="w-5 h-5" />
+                            </div>
+                            <div className="flex-1 min-w-0">
+                              <div className="text-sm font-medium text-gray-700 group-hover:text-blue-600">
+                                {tool.name}
+                              </div>
+                            </div>
+                            <ArrowRight className="w-4 h-4 text-gray-400 group-hover:text-blue-600 group-hover:translate-x-1 transition-all" />
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+                </div>
+              )}
             </div>
           </div>
 
@@ -96,21 +168,7 @@ export default function HomeContent() {
           </div>
         </div>
       </section>
-
-      {/* Stats Bar */}
-      <div className="bg-[#f3f7fa] border-y border-gray-100 py-8">
-          <div className="container mx-auto px-4">
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-8 divide-x divide-gray-200/50">
-              {stats.map((stat) => (
-                <div key={stat.label} className="text-center px-4">
-                  <div className="text-3xl md:text-4xl font-bold text-blue-600 mb-1">{stat.value}</div>
-                  <div className="text-xs md:text-sm font-semibold text-gray-400 uppercase tracking-widest">{t(`stats.${stat.label.toLowerCase().replace(/ /g, '_')}`, { defaultValue: stat.label })}</div>
-                </div>
-              ))}
-            </div>
-          </div>
-      </div>
-
+      
       {/* Popular Tools Section */}
       <section className="bg-gray-50 py-24">
           <div className="container mx-auto px-4">
@@ -185,26 +243,35 @@ export default function HomeContent() {
         </div>
       </section>
 
-      {/* Premium CTA Section */}
+      {/* Free & Ethical Section */}
       <section className="bg-gradient-to-r from-blue-600 to-blue-800 text-white py-24 overflow-hidden relative">
         <div className="container mx-auto px-4 relative z-10 flex flex-col md:flex-row items-center justify-between gap-12 max-w-6xl mx-auto">
           <div className="max-w-xl">
-            <h2 className="text-4xl font-bold mb-4">{t('premium.title', { defaultValue: 'Get more with Premium' })}</h2>
+            <h2 className="text-4xl font-bold mb-4">{t('premium.title', { defaultValue: 'Fully Free & Ethical Tools' })}</h2>
             <p className="text-blue-100 text-lg mb-8 leading-relaxed">
-              {t('premium.subtitle', { defaultValue: 'Keep your projects further with premium tools that stay out of your way and work smarter. Create without limits, ads, or roadblocks. Get started for just $3.99 a month.' })}
+              {t('premium.subtitle', { defaultValue: 'Our app is completely free with no hidden costs. We don\'t track your data, use no dark patterns, and are fully open-source. Enjoy unlimited usage with faster processing, all while respecting your privacy. Built for fun—we take no legal responsibility for usage.' })}
             </p>
-            <div className="flex flex-wrap gap-4 mb-8">
-               <div className="flex items-center gap-2 bg-white/10 px-4 py-2 rounded-full text-sm font-medium">
-                 <Shield className="w-4 h-4" /> {t('premium.ad_free', { defaultValue: 'Ad-free' })}
+            <div className="flex flex-wrap gap-3 mb-8">
+               <div className="flex items-center gap-2 bg-white/10 px-4 py-2 rounded-full text-sm font-medium backdrop-blur-sm">
+                 <Shield className="w-4 h-4" /> {t('premium.no_tracking', { defaultValue: 'No tracking' })}
                </div>
-               <div className="flex items-center gap-2 bg-white/10 px-4 py-2 rounded-full text-sm font-medium">
-                 <CheckCircle className="w-4 h-4" /> {t('premium.unlimited', { defaultValue: 'Unlimited usage' })}
+               <div className="flex items-center gap-2 bg-white/10 px-4 py-2 rounded-full text-sm font-medium backdrop-blur-sm">
+                 <PenTool className="w-4 h-4" /> {t('premium.open_source', { defaultValue: 'Open source' })}
                </div>
-               <div className="flex items-center gap-2 bg-white/10 px-4 py-2 rounded-full text-sm font-medium">
-                 <Zap className="w-4 h-4" /> {t('premium.faster', { defaultValue: 'Faster processing' })}
+               <div className="flex items-center gap-2 bg-white/10 px-4 py-2 rounded-full text-sm font-medium backdrop-blur-sm">
+                 <CheckCircle className="w-4 h-4" /> {t('premium.no_dark_patterns', { defaultValue: 'No dark patterns' })}
+               </div>
+               <div className="flex items-center gap-2 bg-white/10 px-4 py-2 rounded-full text-sm font-medium backdrop-blur-sm">
+                 <MegaphoneOff className="w-4 h-4" /> {t('premium.ad_free', { defaultValue: 'Ad-free' })}
+               </div>
+               <div className="flex items-center gap-2 bg-white/10 px-4 py-2 rounded-full text-sm font-medium backdrop-blur-sm">
+                 <Infinity className="w-4 h-4" /> {t('premium.unlimited', { defaultValue: 'Unlimited usage' })}
                </div>
             </div>
-            <button className="bg-white text-blue-700 font-bold px-8 py-3 rounded-xl shadow-lg hover:bg-blue-50 transition-colors">
+            <button 
+              onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+              className="bg-white text-blue-700 font-bold px-8 py-3 rounded-xl shadow-lg hover:bg-blue-50 transition-colors"
+            >
               {t('premium.cta', { defaultValue: 'Get Started' })}
             </button>
           </div>

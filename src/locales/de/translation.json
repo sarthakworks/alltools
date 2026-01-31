@@ -77,8 +77,11 @@
         "clean_photo": "Foto bereinigen"
     },
     "premium": {
-        "title": "Hol mehr raus mit Premium",
-        "subtitle": "Bring deine Projekte weiter mit Premium-Tools, die dir nicht im Weg stehen und intelligenter arbeiten. Erstelle ohne Limits, Werbung oder Blockaden. Starte für nur 3,99 $ im Monat.",
+        "title": "Vollständig kostenlose & ethische Tools",
+        "subtitle": "Unsere App ist völlig kostenlos ohne versteckte Kosten. Wir verfolgen Ihre Daten nicht, verwenden keine Dark Patterns und sind vollständig Open-Source. Genießen Sie unbegrenzte Nutzung mit schnellerer Verarbeitung, unter Wahrung Ihrer Privatsphäre. Zum Spaß gebaut—wir übernehmen keine rechtliche Verantwortung für die Nutzung.",
+        "no_tracking": "Kein Tracking",
+        "open_source": "Open Source",
+        "no_dark_patterns": "Keine Dark Patterns",
         "ad_free": "Werbefrei",
         "unlimited": "Unbegrenzte Nutzung",
         "faster": "Schnellere Verarbeitung",

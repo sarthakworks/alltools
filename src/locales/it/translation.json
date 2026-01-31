@@ -77,12 +77,15 @@
         "clean_photo": "Pulisci Foto"
     },
     "premium": {
-        "title": "Ottieni di più con Premium",
-        "subtitle": "Porta i tuoi progetti oltre con strumenti premium che non ti intralciano e lavorano in modo più intelligente. Crea senza limiti, pubblicità o blocchi. Inizia per soli $3.99 al mese.",
-        "ad_free": "Senza Pubblicità",
-        "unlimited": "Utilizzo Illimitato",
+        "title": "Strumenti completamente gratuiti ed etici",
+        "subtitle": "La nostra app è completamente gratuita senza costi nascosti. Non tracciamo i tuoi dati, non usiamo dark pattern e siamo completamente open-source. Goditi un utilizzo illimitato con elaborazione più veloce, rispettando la tua privacy. Creato per divertimento—non ci assumiamo responsabilità legali per l'uso.",
+        "no_tracking": "Nessun tracciamento",
+        "open_source": "Open source",
+        "no_dark_patterns": "Nessun dark pattern",
+        "ad_free": "Senza pubblicità",
+        "unlimited": "Utilizzo illimitato",
         "faster": "Elaborazione più veloce",
-        "cta": "Inizia Ora"
+        "cta": "Inizia"
     },
     "search": {
         "placeholder": "Cerca strumenti..."

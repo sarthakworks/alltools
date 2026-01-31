@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Upload, Copy, FileText, Loader2, Languages } from 'lucide-react';
 import { createWorker } from 'tesseract.js';
-import { FileUpload } from '../ui/file-uploader';
+import { FileUpload } from '../common/fileUploader';
 import { useTranslation } from 'react-i18next';
 import '../../i18n';
 

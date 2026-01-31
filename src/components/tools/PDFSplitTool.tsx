@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { PDFDocument } from 'pdf-lib';
 import JSZip from 'jszip';
-import { FileUpload } from '../ui/file-uploader';
+import { FileUpload } from '../common/fileUploader';
 import { ArrowDown, FileText, Loader2, X, Move, Shuffle, Grid, List, Scissors } from 'lucide-react';
 import { cn } from '../../lib/utils';
 import FileSaver from 'file-saver';

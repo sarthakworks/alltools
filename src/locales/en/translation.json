@@ -77,8 +77,11 @@
         "clean_photo": "Clean Photo"
     },
     "premium": {
-        "title": "Get more with Premium",
-        "subtitle": "Keep your projects further with premium tools that stay out of your way and work smarter. Create without limits, ads, or roadblocks. Get started for just $3.99 a month.",
+        "title": "Fully Free & Ethical Tools",
+        "subtitle": "Our app is completely free with no hidden costs. We don't track your data, use no dark patterns, and are fully open-source. Enjoy unlimited usage with faster processing, all while respecting your privacy. Built for fun—we take no legal responsibility for usage.",
+        "no_tracking": "No tracking",
+        "open_source": "Open source",
+        "no_dark_patterns": "No dark patterns",
         "ad_free": "Ad-free",
         "unlimited": "Unlimited usage",
         "faster": "Faster processing",

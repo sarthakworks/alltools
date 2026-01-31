@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import imageCompression from 'browser-image-compression';
-import { FileUpload } from '../ui/file-uploader';
+import { FileUpload } from '../common/fileUploader';
 import { ArrowDown, Check, FileImage, Loader2 } from 'lucide-react';
 import { cn } from '../../lib/utils';
 import FileSaver from 'file-saver';
