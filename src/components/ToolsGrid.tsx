@@ -6,6 +6,7 @@ import '../i18n';
 
 export default function ToolsGrid() {
   const [activeTab, setActiveTab] = useState('all');
+  const [isExpanded, setIsExpanded] = useState(false);
   const { t } = useTranslation();
 
   const tabs = [
@@ -17,9 +18,17 @@ export default function ToolsGrid() {
     }))
   ];
 
+  const handleTabChange = (id: string) => {
+    setActiveTab(id);
+    setIsExpanded(false);
+  };
+
   const filteredTools = activeTab === 'all'
     ? popularTools
     : allTools.filter(tool => tool.category === activeTab);
+
+  const displayedTools = isExpanded ? filteredTools : filteredTools.slice(0, 9);
+  const showSeeAllButton = filteredTools.length > 9 && !isExpanded;
 
   return (
     <section className="py-20 bg-gray-50">
@@ -30,7 +39,7 @@ export default function ToolsGrid() {
           {tabs.map(tab => (
             <button
               key={tab.id}
-              onClick={() => setActiveTab(tab.id)}
+              onClick={() => handleTabChange(tab.id)}
               className={`flex items-center gap-2 px-6 py-3 rounded-full text-sm font-semibold transition-all duration-200
                 ${activeTab === tab.id
                   ? 'bg-blue-600 text-white shadow-lg shadow-blue-500/20'
@@ -44,7 +53,7 @@ export default function ToolsGrid() {
 
         {/* Grid */}
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-6xl mx-auto">
-          {filteredTools.map((tool) => (
+          {displayedTools.map((tool) => (
             <a
               key={tool.name}
               href={tool.href}
@@ -69,11 +78,16 @@ export default function ToolsGrid() {
           ))}
         </div>
 
-        <div className="text-center mt-12">
-          <button className="border border-blue-200 text-blue-600 hover:bg-blue-50 font-semibold px-8 py-3 rounded-xl transition-colors">
-            {t('tools.see_all', { category: activeTab === 'all' ? '' : tabs.find(t => t.id === activeTab)?.label })}
-          </button>
-        </div>
+        {showSeeAllButton && (
+          <div className="text-center mt-12">
+            <button 
+              onClick={() => setIsExpanded(true)}
+              className="border border-blue-200 text-blue-600 hover:bg-blue-50 font-semibold px-8 py-3 rounded-xl transition-colors"
+            >
+              {t('tools.see_all', { category: activeTab === 'all' ? '' : tabs.find(t => t.id === activeTab)?.label })}
+            </button>
+          </div>
+        )}
 
       </div>
     </section>

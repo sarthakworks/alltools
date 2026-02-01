@@ -158,7 +158,7 @@ export default function HomeContent() {
                        <span className="text-gray-400 text-[10px] font-bold uppercase tracking-wider leading-tight">{t('tools.featured_label', { defaultValue: 'Featured' })}</span>
                        <span className="text-gray-400 text-[10px] font-bold uppercase tracking-wider leading-tight">{t('tools.tool_label', { defaultValue: 'Tool' })} :</span>
                     </div>
-                    <span className={`text-[10px] font-bold bg-white px-3 py-2 rounded-xl shadow-sm hover:shadow-md transition-all truncate text-center min-w-[90px] ${cat.color.replace('bg-', 'text-').replace('[#', 'text-[#')}`}>
+                    <span className={`text-[10px] font-bold px-3 py-1.5 rounded-lg transition-all truncate text-center min-w-22.5 bg-gray-50 text-gray-600 group-hover:bg-blue-50 group-hover:text-blue-600`}>
                       {t(`tools_data.${cat.featured.name.toLowerCase().replace(/ /g, '-').replace('(', '').replace(')', '').replace(/'/g, '')}.name`, { defaultValue: cat.featured.name })}
                     </span>
                   </div>
@@ -207,7 +207,7 @@ export default function HomeContent() {
                    {t('home.start_creating', { defaultValue: 'Start Creating' })} <ArrowRight className="w-4 h-4" />
                  </span>
               </div>
-              <div className="absolute top-1/2 right-[-50px] w-64 h-64 bg-white/40 rounded-full blur-3xl group-hover:bg-white/60 transition-colors"></div>
+              <div className="absolute top-1/2 -right-12.5 w-64 h-64 bg-white/40 rounded-full blur-3xl group-hover:bg-white/60 transition-colors"></div>
             </div>
 
             {/* Background Remover */}
@@ -237,7 +237,7 @@ export default function HomeContent() {
                    {t('home.clean_photo', { defaultValue: 'Clean Photo' })} <ArrowRight className="w-4 h-4" />
                  </span>
               </div>
-              <div className="absolute top-0 right-[-20px] w-32 h-32 bg-green-200/40 rounded-full blur-xl"></div>
+              <div className="absolute top-0 -right-5 w-32 h-32 bg-green-200/40 rounded-full blur-xl"></div>
             </div>
           </div>
         </div>
