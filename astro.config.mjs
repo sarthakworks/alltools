@@ -7,8 +7,8 @@ import AstroPWA from '@vite-pwa/astro';
 
 // https://astro.build/config
 export default defineConfig({
-  site: 'https://sarthakworks.github.io',
-  base: '/alltools',
+  site: process.env.NODE_ENV === 'production' ? 'https://sarthakworks.github.io' : undefined,
+  base: '/',
   build: {
     assets: 'astro'
   },
