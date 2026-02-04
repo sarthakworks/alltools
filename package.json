@@ -6,7 +6,9 @@
     "dev": "astro dev",
     "build": "astro build",
     "preview": "astro preview",
-    "astro": "astro"
+    "astro": "astro",
+    "predeploy": "npm run build",
+    "deploy": "gh-pages -d dist"
   },
   "dependencies": {
     "@astrojs/check": "^0.9.6",
@@ -52,5 +54,8 @@
     "typescript": "^5.9.3",
     "workbox-window": "^7.4.0",
     "xml-js": "^1.6.11"
+  },
+  "devDependencies": {
+    "gh-pages": "^6.3.0"
   }
 }

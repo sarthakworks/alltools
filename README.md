@@ -41,3 +41,30 @@ All commands are run from the root of the project, from a terminal:
 ## 👀 Want to learn more?
 
 Feel free to check [our documentation](https://docs.astro.build) or jump into our [Discord server](https://astro.build/chat).
+
+## 🚀 Deployment (GitHub Pages)
+
+This project is configured to deploy automatically to GitHub Pages using `gh-pages`.
+
+### Prerequisites
+1. Ensure your remote `origin` points to your GitHub repository.
+2. Ensure you have write permissions to the repository.
+
+### How to Deploy
+Run the following command in your terminal:
+
+```sh
+npm run deploy
+```
+
+### What happens behind the scenes?
+1. **Build**: The `predeploy` script runs `npm run build`, creating a production-ready `dist/` folder.
+2. **Push**: The `deploy` script uses `gh-pages` to push the contents of `dist/` to a `gh-pages` branch on your repository.
+3. **Publish**: GitHub detects the push to `gh-pages` branch and publishes your site (if GitHub Pages settings are correct).
+
+### GitHub Settings
+Go to **Settings > Pages** in your GitHub repository:
+- **Source**: Deploy from a branch
+- **Branch**: `gh-pages` / `/ (root)`
+
+The site will be live at `https://sarthakworks.github.io/alltools`.
