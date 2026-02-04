@@ -57,6 +57,14 @@ export default function Header() {
 
   return (
     <header className="sticky top-0 z-50 w-full bg-white border-b border-gray-100 shadow-sm" onMouseLeave={() => setActiveDropdown(null)}>
+      {/* Development Ticker */}
+      <div className="bg-linear-to-r from-blue-600 to-indigo-600 px-4 py-1.5 text-center">
+        <p className="text-[10px] font-medium text-white uppercase tracking-widest flex items-center justify-center gap-2">
+          <span>🚧</span>
+          App in development: Some features may not work as expected
+          <span>🚧</span>
+        </p>
+      </div>
       <div className="container mx-auto px-4 h-16 flex items-center justify-between">
         
         {/* Left Section: Logo & Nav */}
@@ -211,6 +219,7 @@ export default function Header() {
 
           {/* Action Icons */}
           <div className="flex items-center gap-2">
+          <div className="relative">
             <button 
               aria-label="Switch Language"
               onClick={() => setIsLangSwitcherOpen(true)}
@@ -220,6 +229,7 @@ export default function Header() {
                <span className="text-xs font-semibold capitalize tracking-wider">{t('currentLanguage', { defaultValue: 'EN' })}</span>
             </button>
             <LanguageSwitcher isOpen={isLangSwitcherOpen} onClose={() => setIsLangSwitcherOpen(false)} />
+          </div>
 
             <button 
               aria-label="Share page"

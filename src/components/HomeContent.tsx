@@ -188,57 +188,57 @@ export default function HomeContent() {
               <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-2">{t('home.free_tools_title', { defaultValue: 'Free Tools You’d Usually Pay For' })}</h2>
               <p className="text-gray-500">{t('home.free_tools_subtitle', { defaultValue: 'No limits, No Sign-ups' })}</p>
             </div>
-            <div className="flex gap-2">
+            <div className="flex gap-2 hidden">
               <button className="p-2 rounded-full border border-gray-100 hover:bg-gray-50" aria-label="Previous"><ArrowRight className="w-5 h-5 rotate-180 text-gray-400" /></button>
               <button className="p-2 rounded-full bg-blue-600 text-white" aria-label="Next"><ArrowRight className="w-5 h-5" /></button>
             </div>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-6xl mx-auto">
-            {/* PDF Creator */}
-            <div className="bg-blue-50 rounded-3xl p-8 h-80 relative overflow-hidden group hover:shadow-lg transition-all cursor-pointer">
+            {/* Image to PDF */}
+            <a href="/pdf-tools/image-to-pdf" className="bg-blue-50 rounded-3xl p-8 h-80 relative overflow-hidden group hover:shadow-lg transition-all block">
               <div className="relative z-10">
                  <div className="w-12 h-12 bg-white rounded-xl shadow-sm flex items-center justify-center mb-6 text-blue-600">
-                    <FileText className="w-6 h-6" />
+                    <ImageIcon className="w-6 h-6" />
                  </div>
-                 <h3 className="text-2xl font-bold text-gray-900 mb-2">{t('home.pdf_creator_title', { defaultValue: 'PDF Creator' })}</h3>
-                 <p className="text-gray-600 text-sm mb-6">{t('home.pdf_creator_desc', { defaultValue: 'Create PDFs quickly and easily with our free PDF creator.' })}</p>
+                 <h3 className="text-2xl font-bold text-gray-900 mb-2">{t('tools_data.image-to-pdf.name', { defaultValue: 'Image to PDF' })}</h3>
+                 <p className="text-gray-600 text-sm mb-6">{t('tools_data.image-to-pdf.desc', { defaultValue: 'Convert JPG/PNG to PDF' })}</p>
                  <span className="text-blue-600 font-semibold text-sm flex items-center gap-1 group-hover:translate-x-1 transition-transform">
                    {t('home.start_creating', { defaultValue: 'Start Creating' })} <ArrowRight className="w-4 h-4" />
                  </span>
               </div>
               <div className="absolute top-1/2 -right-12.5 w-64 h-64 bg-white/40 rounded-full blur-3xl group-hover:bg-white/60 transition-colors"></div>
-            </div>
+            </a>
 
             {/* Background Remover */}
-            <div className="bg-purple-50 rounded-3xl p-8 h-80 relative overflow-hidden group hover:shadow-lg transition-all cursor-pointer">
+            <a href="/image-tools/remove-bg" className="bg-purple-50 rounded-3xl p-8 h-80 relative overflow-hidden group hover:shadow-lg transition-all block">
               <div className="relative z-10">
                  <div className="w-12 h-12 bg-white rounded-xl shadow-sm flex items-center justify-center mb-6 text-purple-600">
-                    <ImageIcon className="w-6 h-6" />
+                    <Infinity className="w-6 h-6" />
                  </div>
-                 <h3 className="text-2xl font-bold text-gray-900 mb-2">{t('home.bg_remover_title', { defaultValue: 'Background Remover' })}</h3>
-                 <p className="text-gray-600 text-sm mb-6">{t('home.bg_remover_desc', { defaultValue: 'Remove or change the background of a photo automatically.' })}</p>
+                 <h3 className="text-2xl font-bold text-gray-900 mb-2">{t('tools_data.remove-bg.name', { defaultValue: 'Remove Background' })}</h3>
+                 <p className="text-gray-600 text-sm mb-6">{t('tools_data.remove-bg.desc', { defaultValue: 'AI-powered background removal' })}</p>
                  <span className="text-purple-600 font-semibold text-sm flex items-center gap-1 group-hover:translate-x-1 transition-transform">
                    {t('home.remove_bg', { defaultValue: 'Remove BG' })} <ArrowRight className="w-4 h-4" />
                  </span>
               </div>
               <div className="absolute bottom-0 right-0 w-40 h-40 bg-purple-200/30 rounded-full blur-2xl"></div>
-            </div>
+            </a>
 
-            {/* Photo Cleanup */}
-            <div className="bg-green-50 rounded-3xl p-8 h-80 relative overflow-hidden group hover:shadow-lg transition-all cursor-pointer">
+            {/* Compress Image (Replaces Photo Cleanup) */}
+            <a href="/image-tools/compress" className="bg-green-50 rounded-3xl p-8 h-80 relative overflow-hidden group hover:shadow-lg transition-all block">
               <div className="relative z-10">
                  <div className="w-12 h-12 bg-white rounded-xl shadow-sm flex items-center justify-center mb-6 text-green-600">
                     <Zap className="w-6 h-6" />
                  </div>
-                 <h3 className="text-2xl font-bold text-gray-900 mb-2">{t('home.photo_cleanup_title', { defaultValue: 'Photo Cleanup' })}</h3>
-                 <p className="text-gray-600 text-sm mb-6">{t('home.photo_cleanup_desc', { defaultValue: 'Use AI to remove unwanted objects, texts, people from an image.' })}</p>
+                 <h3 className="text-2xl font-bold text-gray-900 mb-2">{t('tools_data.compress-image.name', { defaultValue: 'Compress Image' })}</h3>
+                 <p className="text-gray-600 text-sm mb-6">{t('tools_data.compress-image.desc', { defaultValue: 'Reduce image file size' })}</p>
                  <span className="text-green-600 font-semibold text-sm flex items-center gap-1 group-hover:translate-x-1 transition-transform">
                    {t('home.clean_photo', { defaultValue: 'Clean Photo' })} <ArrowRight className="w-4 h-4" />
                  </span>
               </div>
               <div className="absolute top-0 -right-5 w-32 h-32 bg-green-200/40 rounded-full blur-xl"></div>
-            </div>
+            </a>
           </div>
         </div>
       </section>

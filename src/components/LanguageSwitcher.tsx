@@ -29,21 +29,18 @@ export default function LanguageSwitcher({ isOpen, onClose }: LanguageSwitcherPr
     <AnimatePresence>
       {isOpen && (
         <>
-          {/* Backdrop */}
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
+          {/* Invisible Backdrop to handle click outside */}
+          <div
             onClick={onClose}
-            className="fixed inset-0 bg-black/20 backdrop-blur-sm z-50"
+            className="fixed inset-0 z-40 bg-transparent cursor-default"
           />
           
-          {/* Modal */}
+          {/* Dropdown */}
           <motion.div
-            initial={{ opacity: 0, scale: 0.95, y: -20 }}
+            initial={{ opacity: 0, scale: 0.95, y: 10 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
-            exit={{ opacity: 0, scale: 0.95, y: -20 }}
-            className="fixed top-20 right-4 md:right-20 z-50 bg-white rounded-2xl shadow-xl border border-gray-100 p-4 w-48"
+            exit={{ opacity: 0, scale: 0.95, y: 10 }}
+            className="absolute top-full right-0 mt-2 z-50 bg-white rounded-xl shadow-xl border border-gray-100 p-4 w-48"
           >
             <div className="flex justify-between items-center mb-2 px-1">
               <span className="text-xs font-semibold text-gray-400 uppercase tracking-wider">Select Language</span>
@@ -56,7 +53,7 @@ export default function LanguageSwitcher({ isOpen, onClose }: LanguageSwitcherPr
                 <button
                   key={lang.code}
                   onClick={() => changeLanguage(lang.code)}
-                  className={`w-full py-2 px-4 rounded-full text-sm font-medium transition-all ${
+                  className={`w-full py-2 px-4 rounded-full text-sm font-medium transition-all text-left ${
                     i18n.language === lang.code
                       ? 'bg-blue-600 text-white shadow-lg shadow-blue-500/30'
                       : 'bg-white text-gray-700 border border-gray-100 hover:bg-gray-50'
