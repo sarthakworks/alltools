@@ -80,3 +80,4 @@ export default defineConfig({
     }
   }
 });
+// eslint-disable-next-line no-undef
