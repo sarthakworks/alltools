@@ -9,6 +9,9 @@ import AstroPWA from '@vite-pwa/astro';
 export default defineConfig({
   site: 'https://sarthakworks.github.io',
   base: '/alltools',
+  build: {
+    assets: 'astro'
+  },
   integrations: [
     react(),
     compressor({
