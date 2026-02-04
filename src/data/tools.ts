@@ -4,7 +4,7 @@ import {
   Merge, Scissors, Lock, Minimize2, 
   ImagePlus, FileImage, 
   EyeOff, FileCode, ScanText, Sparkles,
-  Image as LucideImage, ArrowRightLeft, Maximize2, GitCompare, AlignLeft
+  Image as LucideImage, ArrowRightLeft, Maximize2, GitCompare, AlignLeft, Briefcase
 } from 'lucide-react';
 
 export interface ToolMetadata {
@@ -54,6 +54,7 @@ export const allTools: ToolMetadata[] = [
 
   // Misc Tools
   { id: 'aes-encrypt', name: 'AES Encryption', desc: 'Encrypt & Decrypt text using AES', icon: Lock, href: '/misc-tools/aes-encryption', category: 'misc', color: 'bg-red-50 text-red-600', search_keys: 'encrypt, decrypt, security, aes, cipher, crypto' },
+  { id: 'portfolio', name: 'Portfolio / About Me', desc: 'My work experience & skills', icon: Briefcase, href: '/portfolio', category: 'misc', color: 'bg-blue-50 text-blue-600', search_keys: 'portfolio, about, resume, cv, work, experience, sarthak' },
 ];
 
 export const categories = [

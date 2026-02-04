@@ -3,11 +3,11 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { 
   Search, 
   ChevronDown, 
-  Share2, 
   Menu, 
   X,
   Languages,
-  ChevronRight
+  ChevronRight,
+  User
 } from 'lucide-react';
 import { categories, allTools } from '../data/tools';
 import LanguageSwitcher from './LanguageSwitcher';
@@ -231,12 +231,13 @@ export default function Header() {
             <LanguageSwitcher isOpen={isLangSwitcherOpen} onClose={() => setIsLangSwitcherOpen(false)} />
           </div>
 
-            <button 
-              aria-label="Share page"
-              className="p-2 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-full transition-colors md:block hidden"
+            <a 
+              href="/portfolio"
+              className="hidden md:flex items-center gap-1 px-3 py-1.5 text-sm font-medium text-blue-600 hover:text-blue-700 bg-blue-50 hover:bg-blue-100 rounded-lg transition-all"
             >
-              <Share2 className="w-5 h-5" />
-            </button>
+              <User className="w-4 h-4" />
+              <span>{t('nav.about_me', { defaultValue: 'About Me' })}</span>
+            </a>
           </div>
 
 

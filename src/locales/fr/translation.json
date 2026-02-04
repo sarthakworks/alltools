@@ -11,7 +11,9 @@
         "image": "Outils Image",
         "ai": "Outils IA",
         "coding": "Outils de Code",
-        "misc": "Outils Divers"
+        "misc": "Outils Divers",
+        "about_me": "À propos de moi",
+        "portfolio": "Portfolio"
     },
     "tools": {
         "pdf": "Outils PDF",
@@ -458,6 +460,10 @@
         "aes-encrypt": {
             "name": "Chiffrement AES",
             "desc": "Chiffrer & Déchiffrer du texte avec AES"
+        },
+        "portfolio": {
+            "name": "Portfolio / À propos de moi",
+            "desc": "Mon expérience professionnelle et mes compétences"
         }
     }
 }

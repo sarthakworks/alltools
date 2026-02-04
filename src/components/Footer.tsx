@@ -22,10 +22,10 @@ export default function Footer() {
             <p className="text-gray-500 mb-6 leading-relaxed">
               {t('hero.subtitle')}
             </p>
-            <div className="flex items-center gap-1 text-xs font-semibold text-gray-400">
+            <a  href="/portfolio" className="flex items-center gap-1 text-xs font-semibold text-gray-400">
                <div className="bg-blue-600 text-white p-1 rounded">S</div>
                <span>Sarthak Bansal</span>
-            </div>
+            </a>
           </div>
 
           {/* Navigate */}
@@ -33,11 +33,8 @@ export default function Footer() {
             <h3 className="font-bold text-gray-900 mb-4">{t('footer.navigate')}</h3>
             <ul className="space-y-3 text-gray-500">
               <li><a href="/" className="hover:text-blue-600 transition-colors">{t('nav.home')}</a></li>
-              <li><a href="/privacy" className="hover:text-blue-600 transition-colors">{t('nav.privacy')}</a></li>
-              <li><a href="/tos" className="hover:text-blue-600 transition-colors">{t('nav.tos')}</a></li>
-              <li><a href="/contact" className="hover:text-blue-600 transition-colors">{t('nav.contact')}</a></li>
-              <li><a href="/blog" className="hover:text-blue-600 transition-colors">{t('nav.blog')}</a></li>
-              <li><a href="/about" className="hover:text-blue-600 transition-colors">{t('nav.about')}</a></li>
+              <li><a href="/privacy" className="hover:text-blue-600 transition-colors hidden">{t('nav.privacy')}</a></li>
+              <li><a href="/portfolio" className="hover:text-blue-600 transition-colors">{t('nav.about')}</a></li>
             </ul>
           </div>
 

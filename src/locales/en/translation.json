@@ -11,7 +11,9 @@
         "image": "Image Tools",
         "ai": "AI Tools",
         "coding": "Coding Tools",
-        "misc": "Misc Tools"
+        "misc": "Misc Tools",
+        "about_me": "About Me",
+        "portfolio": "Portfolio"
     },
     "tools": {
         "pdf": "PDF Tools",
@@ -458,6 +460,10 @@
         "aes-encrypt": {
             "name": "AES Encryption",
             "desc": "Encrypt & Decrypt text using AES"
+        },
+        "portfolio": {
+            "name": "Portfolio / About Me",
+            "desc": "My work experience & skills"
         }
     }
 }

@@ -1,0 +1,237 @@
+---
+import Layout from '../../layouts/Layout.astro';
+---
+
+<Layout title="Portfolio | Sarthak Bansal">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+    <div class="grid grid-cols-1 lg:grid-cols-[70%_30%] gap-12">
+      
+      {/* 70% Left Column - Experience Timeline */}
+      <div class="space-y-16">
+        <section>
+          <h1 class="text-5xl font-extrabold text-gray-900 mb-2 tracking-tight">Sarthak Bansal</h1>
+          <h2 class="text-2xl text-blue-600 font-semibold mb-6">Front End Developer</h2>
+          <p class="text-gray-600 leading-relaxed max-w-3xl text-lg">
+            I have around 8 years of experience in developing front end part of web apps and websites. I get things moving and get them done.
+          </p>
+        </section>
+
+        <section>
+          <h3 class="text-2xl font-bold text-gray-900 mb-10 border-b border-gray-200 pb-3 flex items-center gap-3">
+             <span class="bg-blue-100 text-blue-600 p-2 rounded-lg">
+               <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-briefcase"><rect width="20" height="14" x="2" y="7" rx="2" ry="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg>
+             </span>
+             Work Experience
+          </h3>
+          
+          <div class="relative border-l-2 border-indigo-100 ml-3 space-y-16">
+            
+            {/* Adobe */}
+            <div class="relative pl-10">
+              <span class="absolute -left-2.5 top-1.5 h-5 w-5 rounded-full bg-blue-600 ring-4 ring-white"></span>
+              <div class="flex flex-col sm:flex-row sm:items-baseline sm:justify-between mb-3">
+                <h4 class="text-xl font-bold text-gray-900">Senior Technical Consultant</h4>
+                <span class="inline-flex items-center rounded-full bg-blue-50 px-3 py-1 text-sm font-medium text-blue-700 ring-1 ring-inset ring-blue-700/10">Adobe | 11/2022 - Present</span>
+              </div>
+              <ul class="list-disc list-outside ml-4 text-gray-600 space-y-3 mt-4 text-base">
+                <li>Worked on many projects taking architectural decisions and driving development by Guiding frontend team</li>
+                <li>Worked on Edge delivery service, graphql api, Microfrontends, Monorepos and other cutting edge technologies</li>
+                <li>Created various mcp servers to use internally and later helped in creating mcp-orchestrator-framework</li>
+                <li>Responsible for giving estimations for new projects and involve in initial phases</li>
+              </ul>
+            </div>
+
+            {/* Publicis Sapient */}
+            <div class="relative pl-10">
+              <span class="absolute -left-2.5 top-1.5 h-5 w-5 rounded-full bg-purple-200 ring-4 ring-white"></span>
+              <div class="flex flex-col sm:flex-row sm:items-baseline sm:justify-between mb-3">
+                <h4 class="text-xl font-bold text-gray-900">Associate Technology L2</h4>
+                <span class="inline-flex items-center rounded-full bg-purple-50 px-3 py-1 text-sm font-medium text-purple-700 ring-1 ring-inset ring-purple-700/10">Publicis Sapient | 06/2021 - 11/2022</span>
+              </div>
+              <p class="text-gray-600 mb-3 italic">
+                Worked with two international Clients on Frontend part of projects in agile methodology using React, SCSS, Redux, HTML, Gitlab.
+              </p>
+              <ul class="list-disc list-outside ml-4 text-gray-600 space-y-3 text-base">
+                <li>Collaborate with others to craft clear user stories, design tests for prototypes and products, and continuously deliver product enhancements.</li>
+                <li>Developed web apps to create, move or delete various telecom subscribers using React, javascript, HTML, CSS.</li>
+                <li>Developed 4 step form flow for claiming reimbursement for damaged package for logistic client using React.</li>
+                <li>Align and integrate with architects, designers and other stakeholders. Develop high-quality, well-documented, and efficient code.</li>
+                <li>Perform Unit testing using Jest, React testing library, enzyme.</li>
+                <li>Managing team of 3 developers.</li>
+              </ul>
+            </div>
+
+            {/* Accenture */}
+            <div class="relative pl-10">
+              <span class="absolute -left-2.5 top-1.5 h-5 w-5 rounded-full bg-teal-200 ring-4 ring-white"></span>
+              <div class="flex flex-col sm:flex-row sm:items-baseline sm:justify-between mb-3">
+                <h4 class="text-xl font-bold text-gray-900">Application Development Analyst</h4>
+                <span class="inline-flex items-center rounded-full bg-teal-50 px-3 py-1 text-sm font-medium text-teal-700 ring-1 ring-inset ring-teal-700/10">Accenture | 01/2017 - 06/2021</span>
+              </div>
+              <p class="text-gray-600 mb-3 italic">
+                Worked with various clients from Finance, E-commerce, Hotel & Hospitality industry.
+              </p>
+              <ul class="list-disc list-outside ml-4 text-gray-600 space-y-3 text-base">
+                <li>Realize mockups from Zeplin or PSD into working websites using Reactjs, HTML/SCSS, Javascript, jquery, Git/SVN, Hudson CI/CD, Github along with various other tech.</li>
+                <li>I contributed to cross functional teams spread across various Continents/Countries as a fed developer.</li>
+                <li>Work together with Back End team to design and develop functional, performing, and complete APIs that work with existing company software and products.</li>
+              </ul>
+            </div>
+
+          </div>
+        </section>
+      </div>
+
+      {/* 30% Right Column - Sidebar */}
+      <div class="space-y-10">
+        
+        {/* Contact Info */}
+        <div class="bg-white p-8 rounded-2xl shadow-[0_2px_15px_-3px_rgba(0,0,0,0.07),0_10px_20px_-2px_rgba(0,0,0,0.04)] ring-1 ring-gray-100">
+          <h3 class="text-xl font-bold text-gray-900 mb-6 flex items-center gap-2">
+            Contact
+          </h3>
+          <ul class="space-y-4 text-sm text-gray-600">
+            <li class="flex items-center gap-3">
+              <div class="p-2 bg-blue-50 text-blue-600 rounded-lg">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" /></svg>
+              </div>
+              <a href="mailto:sarthak.workplace@gmail.com" class="hover:text-blue-600 transition-colors font-medium">sarthak.workplace@gmail.com</a>
+            </li>
+            <li class="flex items-center gap-3">
+               <div class="p-2 bg-green-50 text-green-600 rounded-lg">
+                 <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" /></svg>
+               </div>
+              <span class="font-medium">+91 7009269255</span>
+            </li>
+            <li class="flex items-center gap-3">
+               <div class="p-2 bg-purple-50 text-purple-600 rounded-lg">
+                 <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1" /></svg>
+               </div>
+              <a href="https://sarthakworks.github.io" target="_blank" class="hover:text-purple-600 transition-colors font-medium">sarthakworks.github.io</a>
+            </li>
+            <li class="flex items-center gap-3">
+               <div class="p-2 bg-gray-100 text-gray-700 rounded-lg">
+                 <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4" /></svg>
+               </div>
+              <a href="https://github.com/sarthakworks" target="_blank" class="hover:text-gray-900 transition-colors font-medium">github.com/sarthakworks</a>
+            </li>
+          </ul>
+        </div>
+
+        {/* Skills */}
+        <div>
+          <h3 class="text-xl font-bold text-gray-900 mb-6 pb-2 border-b border-gray-100">Skills</h3>
+          <div class="space-y-6">
+            <div>
+              <h4 class="text-xs font-bold text-gray-400 uppercase tracking-widest mb-3">Architecture</h4>
+              <div class="flex flex-wrap gap-2">
+                {['Micro-frontends', 'Monorepos', 'Design Systems', 'Serverless'].map(skill => (
+                  <span class="bg-indigo-50 text-indigo-700 px-3 py-1.5 rounded-md text-sm font-medium hover:bg-indigo-100 transition-colors">{skill}</span>
+                ))}
+              </div>
+            </div>
+            <div>
+              <h4 class="text-xs font-bold text-gray-400 uppercase tracking-widest mb-3">Frameworks</h4>
+              <div class="flex flex-wrap gap-2">
+                {['Next.js (SSR/ISR/SSG)', 'React (Advanced Patterns)', 'Jamstack', 'EDS'].map(skill => (
+                  <span class="bg-blue-50 text-blue-700 px-3 py-1.5 rounded-md text-sm font-medium hover:bg-blue-100 transition-colors">{skill}</span>
+                ))}
+              </div>
+            </div>
+             <div>
+              <h4 class="text-xs font-bold text-gray-400 uppercase tracking-widest mb-3">Tools/DevOps</h4>
+               <div class="flex flex-wrap gap-2">
+                {['Webpack/Vite', 'Docker', 'CI/CD', 'AWS', 'MCP Servers', 'Figma', 'Jira', 'Datadog', 'Storybook'].map(skill => (
+                  <span class="bg-orange-50 text-orange-700 px-3 py-1.5 rounded-md text-sm font-medium hover:bg-orange-100 transition-colors">{skill}</span>
+                ))}
+              </div>
+            </div>
+             <div>
+              <h4 class="text-xs font-bold text-gray-400 uppercase tracking-widest mb-3">Quality/Security</h4>
+               <div class="flex flex-wrap gap-2">
+                {['Playwright', 'Zod', 'CSP', 'OAuth', 'Web Accessibility (WCAG 2.1)'].map(skill => (
+                  <span class="bg-green-50 text-green-700 px-3 py-1.5 rounded-md text-sm font-medium hover:bg-green-100 transition-colors">{skill}</span>
+                ))}
+              </div>
+            </div>
+             <div>
+              <h4 class="text-xs font-bold text-gray-400 uppercase tracking-widest mb-3">Data/API</h4>
+               <div class="flex flex-wrap gap-2">
+                {['GraphQL', 'TanStack Query', 'Web Workers', 'Headless CMS'].map(skill => (
+                  <span class="bg-pink-50 text-pink-700 px-3 py-1.5 rounded-md text-sm font-medium hover:bg-pink-100 transition-colors">{skill}</span>
+                ))}
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Certificates */}
+        <div>
+          <h3 class="text-xl font-bold text-gray-900 mb-6 pb-2 border-b border-gray-100">Certifications</h3>
+          <ul class="space-y-4">
+             <li class="bg-gradient-to-br from-blue-50 to-indigo-50 p-4 rounded-xl border border-blue-100">
+               <h4 class="font-bold text-gray-900">AWS CERTIFIED DEVELOPER - ASSOCIATE</h4>
+               <p class="text-xs text-blue-600 font-medium mt-1">2020 | ID: KVHNT28KNEEE1XWG</p>
+             </li>
+             <li class="bg-gradient-to-br from-purple-50 to-pink-50 p-4 rounded-xl border border-purple-100">
+               <h4 class="font-bold text-gray-900">IS ADVOCATE PROFESSIONAL</h4>
+               <p class="text-xs text-purple-600 font-medium mt-1">ID: SBIS0000009144</p>
+             </li>
+          </ul>
+        </div>
+
+        {/* Personal Projects */}
+        <div>
+          <h3 class="text-xl font-bold text-gray-900 mb-6 pb-2 border-b border-gray-100">Personal Projects</h3>
+          <ul class="space-y-4">
+            <li>
+              <a href="https://sarthakworks.github.io" target="_blank" class="group block bg-gray-50 p-4 rounded-xl hover:bg-gray-100 transition-colors border border-gray-100">
+                <div class="flex justify-between items-center mb-1">
+                  <h4 class="font-bold text-gray-900 group-hover:text-blue-600 transition-colors">PDF / Image Tools</h4>
+                  <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-gray-400 group-hover:text-blue-600 transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" /></svg>
+                </div>
+                <p class="text-sm text-gray-600">sarthakworks.github.io</p>
+              </a>
+            </li>
+             <li>
+               <a href="https://sarthakworks.github.io/2048" target="_blank" class="group block bg-gray-50 p-4 rounded-xl hover:bg-gray-100 transition-colors border border-gray-100">
+                <div class="flex justify-between items-center mb-1">
+                  <h4 class="font-bold text-gray-900 group-hover:text-orange-600 transition-colors">2048 Game</h4>
+                  <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-gray-400 group-hover:text-orange-600 transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" /></svg>
+                </div>
+                <p class="text-sm text-gray-600">sarthakworks.github.io/2048</p>
+              </a>
+            </li>
+             <li>
+               <div class="group block bg-gray-50 p-4 rounded-xl border border-gray-100">
+                <div class="flex justify-between items-center mb-1">
+                  <h4 class="font-bold text-gray-900 text-gray-900">Dark mode Kali</h4>
+                  <span class="flex items-center text-xs font-bold text-yellow-600 bg-yellow-100 px-2 py-0.5 rounded">5 STAR</span>
+                </div>
+                <p class="text-sm text-gray-600">Chrome Extension</p>
+              </div>
+            </li>
+          </ul>
+        </div>
+
+        {/* Education */}
+        <div>
+          <h3 class="text-xl font-bold text-gray-900 mb-6 pb-2 border-b border-gray-100">Education</h3>
+          <div class="space-y-4">
+            <div class="flex flex-col p-4 border-l-2 border-blue-500 bg-blue-50/30">
+               <h4 class="font-bold text-gray-900">B.E In Electronics & Communication</h4>
+               <p class="text-sm text-gray-600 mt-1">Thapar University (2016)</p>
+               <span class="text-xs font-semibold text-blue-600 mt-2">CGPA: 7.0</span>
+            </div>
+             <div class="flex flex-col p-4 border-l-2 border-gray-400 bg-gray-50/50">
+               <h4 class="font-bold text-gray-900">Diploma In Electronics & Communication</h4>
+               <p class="text-sm text-gray-600 mt-1">Thapar Polytechnic College (2013)</p>
+               <span class="text-xs font-semibold text-gray-600 mt-2">Percentage: 71.5%</span>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</Layout>

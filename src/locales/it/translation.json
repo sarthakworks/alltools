@@ -11,7 +11,9 @@
         "image": "Strumenti Immagine",
         "ai": "Strumenti IA",
         "coding": "Strumenti di Codifica",
-        "misc": "Strumenti Vari"
+        "misc": "Strumenti Vari",
+        "about_me": "Su di me",
+        "portfolio": "Portfolio"
     },
     "tools": {
         "pdf": "Strumenti PDF",
@@ -457,7 +459,11 @@
         },
         "aes-encrypt": {
             "name": "Crittografia AES",
-            "desc": "Crittografa & Decrittografa testo usando AES"
+            "desc": "Crittografa e decrittografa testo con AES"
+        },
+        "portfolio": {
+            "name": "Portfolio / Su di me",
+            "desc": "La mia esperienza lavorativa e le mie competenze"
         }
     }
 }

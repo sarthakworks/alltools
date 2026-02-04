@@ -11,7 +11,9 @@
         "image": "Bild Tools",
         "ai": "KI Tools",
         "coding": "Coding Tools",
-        "misc": "Sonstige Tools"
+        "misc": "Sonstige Tools",
+        "about_me": "Über mich",
+        "portfolio": "Portfolio"
     },
     "tools": {
         "pdf": "PDF Tools",
@@ -458,6 +460,10 @@
         "aes-encrypt": {
             "name": "AES-Verschlüsselung",
             "desc": "Text mit AES verschlüsseln & entschlüsseln"
+        },
+        "portfolio": {
+            "name": "Portfolio / Über mich",
+            "desc": "Meine Berufserfahrung & Fähigkeiten"
         }
     }
 }
