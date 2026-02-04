@@ -158,7 +158,14 @@ export default function HomeContent() {
                        <span className="text-gray-400 text-[10px] font-bold uppercase tracking-wider leading-tight">{t('tools.featured_label', { defaultValue: 'Featured' })}</span>
                        <span className="text-gray-400 text-[10px] font-bold uppercase tracking-wider leading-tight">{t('tools.tool_label', { defaultValue: 'Tool' })} :</span>
                     </div>
-                    <span className={`text-[10px] font-bold px-3 py-1.5 rounded-lg transition-all truncate text-center min-w-22.5 bg-gray-50 text-gray-600 group-hover:bg-blue-50 group-hover:text-blue-600`}>
+                    <span 
+                      onClick={(e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        window.location.href = cat.featured.href;
+                      }}
+                      className={`cursor-pointer text-[10px] font-bold px-3 py-1.5 rounded-lg transition-all truncate text-center min-w-22.5 bg-gray-50 text-gray-600 hover:bg-white hover:text-blue-600 hover:shadow-md z-20 relative`}
+                    >
                       {t(`tools_data.${cat.featured.name.toLowerCase().replace(/ /g, '-').replace('(', '').replace(')', '').replace(/'/g, '')}.name`, { defaultValue: cat.featured.name })}
                     </span>
                   </div>

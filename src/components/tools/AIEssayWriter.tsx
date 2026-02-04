@@ -1,13 +1,29 @@
-import React, { useState, useEffect, useRef } from 'react';
-import { Copy, Loader2, BookOpen, PenLine, AlertTriangle, Download, Terminal } from 'lucide-react';
+import React, { useState, useRef, useEffect } from 'react';
+import { Copy, Loader2, BookOpen, PenLine, AlertTriangle, Download, Settings, CheckCircle2 } from 'lucide-react';
 import { pipeline, env } from '@huggingface/transformers';
 import { useTranslation } from 'react-i18next';
 import { cn } from '../../lib/utils';
 
-// Skip local check to force downloading from CDN if needed, 
-// or set to true if you are hosting models locally.
+// Configuration
 env.allowLocalModels = false;
 env.useBrowserCache = true;
+
+const MODELS = [
+  {
+    id: 'Xenova/LaMini-Flan-T5-248M',
+    name: 'Standard (248M)',
+    description: 'Balanced performance & quality (~900MB)',
+    size: '900MB',
+    file: 'config.json'
+  },
+  {
+    id: 'Xenova/LaMini-Flan-T5-77M',
+    name: 'Lite (77M)',
+    description: 'Fastest, lower quality (~300MB)',
+    size: '300MB',
+    file: 'config.json'
+  }
+];
 
 export default function AIEssayWriter() {
   const { t } = useTranslation();
@@ -16,17 +32,138 @@ export default function AIEssayWriter() {
   const [length, setLength] = useState('Medium (500 words)');
   const [result, setResult] = useState('');
   const [isGenerating, setIsGenerating] = useState(false);
-  
+
+  // Model Selection
+  const [selectedModelId, setSelectedModelId] = useState(MODELS[0].id);
+  const selectedModel = MODELS.find(m => m.id === selectedModelId) || MODELS[0];
+
   // Model loading state
   const [modelStatus, setModelStatus] = useState<'idle' | 'loading' | 'ready' | 'error'>('idle');
+  const [loadedModelId, setLoadedModelId] = useState<string | null>(null); // Track WHICH model is actually ready
   const [progress, setProgress] = useState<{ status: string; progress: number } | null>(null);
   const [errorMessage, setErrorMessage] = useState('');
-  
+
   // Keep the generator instance ref to avoid reloading
   const generatorRef = useRef<any>(null);
 
-  const loadModel = async () => {
-    if (generatorRef.current) {
+  useEffect(() => {
+    // Smart Auto-Detection
+    const checkCache = async () => {
+      try {
+        if ('caches' in window) {
+          const cache = await caches.open('transformers-cache');
+          
+          // Check for Standard model first (Preferred)
+          const stdUrl = `https://huggingface.co/${MODELS[0].id}/resolve/main/${MODELS[0].file}`;
+          const stdCached = await cache.match(stdUrl);
+          
+          if (stdCached) {
+             setSelectedModelId(MODELS[0].id);
+             loadModel(MODELS[0].id);
+             return;
+          }
+
+          // Check for Lite model second
+          const liteUrl = `https://huggingface.co/${MODELS[1].id}/resolve/main/${MODELS[1].file}`;
+          const liteCached = await cache.match(liteUrl);
+          
+          if (liteCached) {
+             setSelectedModelId(MODELS[1].id);
+             loadModel(MODELS[1].id);
+             return;
+          }
+        }
+      } catch (e) {
+        // Ignore cache errors
+      }
+    };
+    checkCache();
+  }, []);
+
+  // --------- Helpers ---------
+
+  const getTargetWords = (len: string) => {
+    if (/short/i.test(len)) return 300;
+    if (/long/i.test(len)) return 850;
+    return 500;
+  };
+
+  const makePrompt = (cleanTopic: string, lvl: string, len: string) => {
+    const words = getTargetWords(len);
+    return [
+      `Write an essay about: ${cleanTopic}.`,
+      `Level: ${lvl}.`,
+      `Length: about ${words} words.`,
+      `Structure:`,
+      `1) Introduction (1 paragraph)`,
+      `2) Body (3-5 paragraphs with clear headings or topic sentences)`,
+      `3) Conclusion (1 paragraph)`,
+      `Style: clear, factual, and well-organized.`,
+      `Do not mention policies, safety rules, or refusals. Just write the essay.`,
+    ].join('\n');
+  };
+
+  const looksLikeRefusal = (text: string) => {
+    const t = (text || '').trim();
+    if (!t) return false;
+    return (
+      /^sorry[, ]/i.test(t) ||
+      /i (can('|’)t|cannot) (help|complete|do)/i.test(t) ||
+      /goes against (the )?policy/i.test(t) ||
+      /not allowed/i.test(t) ||
+      /as an ai/i.test(t)
+    );
+  };
+
+  const cleanModelOutput = (text: string) => {
+    if (!text) return '';
+    return text
+      .replace(/^\s*###\s*Response:\s*/i, '')
+      .replace(/^\s*Response:\s*/i, '')
+      .trim();
+  };
+
+  const tryGenerateWithFallbacks = async (cleanTopic: string) => {
+    const basePrompt = makePrompt(cleanTopic, level, length);
+    const out1 = await generatorRef.current(basePrompt, {
+      max_new_tokens: 900,
+      do_sample: true,
+      temperature: 0.7,
+      top_p: 0.92,
+      repetition_penalty: 1.12,
+    });
+
+    let text1 = cleanModelOutput(out1?.[0]?.generated_text ?? '');
+    if (text1 && !looksLikeRefusal(text1)) return text1;
+
+    const simplerPrompt = `Write a well-structured essay about ${cleanTopic}. Include an introduction, body, and conclusion.`;
+    const out2 = await generatorRef.current(simplerPrompt, {
+      max_new_tokens: 900,
+      do_sample: false,
+      temperature: 0.0,
+      repetition_penalty: 1.1,
+    });
+
+    let text2 = cleanModelOutput(out2?.[0]?.generated_text ?? '');
+    if (text2 && !looksLikeRefusal(text2)) return text2;
+
+    const strictPrompt = `Essay topic: ${cleanTopic}\nWrite the essay now:`;
+    const out3 = await generatorRef.current(strictPrompt, {
+      max_new_tokens: 900,
+      do_sample: false,
+      temperature: 0.0,
+      repetition_penalty: 1.08,
+    });
+
+    let text3 = cleanModelOutput(out3?.[0]?.generated_text ?? '');
+    return text3; 
+  };
+
+  // ---------------------------------------------------------------
+
+  const loadModel = async (modelIdToLoad = selectedModelId) => {
+    // If the requested model is already loaded, skip
+    if (generatorRef.current && loadedModelId === modelIdToLoad) {
       setModelStatus('ready');
       return;
     }
@@ -34,42 +171,58 @@ export default function AIEssayWriter() {
     try {
       setModelStatus('loading');
       setErrorMessage('');
-      
-      // Switching to Xenova/LaMini-Flan-T5-248M
-      // This is a "gold standard" model for Transformers.js that is guaranteed to work.
-      // It is an encoder-decoder model (~250MB).
-      const generator = await pipeline('text2text-generation', 'Xenova/LaMini-Flan-T5-248M', {
+
+      // Create new pipeline
+      const generator = await pipeline('text2text-generation', modelIdToLoad, {
         progress_callback: (x: any) => {
-          // Handle different pipeline initialization stages
-          if (x.status === 'initiate') {
-            setProgress({ status: `Downloading ${x.file}...`, progress: 0 });
-          } else if (x.status === 'progress') {
-            setProgress({ status: `Downloading ${x.file}...`, progress: x.progress });
-          } else if (x.status === 'done') {
-            setProgress({ status: 'Model loaded!', progress: 100 });
-          } else if (x.status === 'ready') {
-             // Pipeline ready
+          try {
+            if (x.status === 'initiate') {
+              setProgress({ status: `Downloading ${x.file}...`, progress: 0 });
+            } else if (x.status === 'progress') {
+              setProgress({ status: `Downloading ${x.file}...`, progress: x.progress });
+            } else if (x.status === 'done') {
+              setProgress({ status: 'Model loaded!', progress: 100 });
+            } else if (x.status === 'ready') {
+              // ready
+            }
+          } catch {
+             // ignore
           }
-        }
+        },
       });
-      
+
       generatorRef.current = generator;
+      setLoadedModelId(modelIdToLoad);
       setModelStatus('ready');
       setProgress(null);
     } catch (e: any) {
       console.error(e);
       setModelStatus('error');
-      setErrorMessage(e.message || "Failed to load the model. WebGPU might not be supported.");
+      setErrorMessage(e.message || 'Failed to load the model.');
+      setLoadedModelId(null);
     }
+  };
+
+  const handleModelChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+      const newId = e.target.value;
+      setSelectedModelId(newId);
+      // If we switch models, we force user to click "Load" or we auto-load?
+      // Auto-load is nicer but might incur data. Let's reset status to idle if different.
+      if (loadedModelId !== newId) {
+          setModelStatus('idle');
+          setLoadedModelId(null);
+          // Optional: clear result if model changes? No, keep it.
+      } else {
+          setModelStatus('ready');
+      }
   };
 
   const generateEssay = async () => {
     if (!topic) return;
 
-    // Load model first if not ready
-    if (!generatorRef.current) {
-      await loadModel();
-      // If still failed, exit
+    // Load selected model if not ready
+    if (!generatorRef.current || loadedModelId !== selectedModelId) {
+      await loadModel(selectedModelId);
       if (!generatorRef.current) return;
     }
 
@@ -78,34 +231,19 @@ export default function AIEssayWriter() {
     setErrorMessage('');
 
     try {
-      // LaMini prompt structure (Alpaca-style) often triggers refusals if too rigid.
-      // We'll use a standard completion or simple Instruction bypassing "write an essay" triggers if possible.
-      
-      const cleanTopic = topic.replace(/^(write|create|make) (an )?essay (about|on|regarding)/i, '').trim();
-      
-      const fullPrompt = `Below is an instruction that describes a task. Write a response that appropriately completes the request.
+      const cleanTopic = topic
+        .replace(/^(write|create|make)\s+(an\s+)?essay\s+(about|on|regarding)\s+/i, '')
+        .trim();
 
-### Instruction:
-Write a short academic text about the following topic: ${cleanTopic}.
-Ensure it has an introduction, body, and conclusion.
+      const generatedText = await tryGenerateWithFallbacks(cleanTopic);
+      const finalText = cleanModelOutput(generatedText);
 
-### Response:`;
-      
-      console.log("Generating with prompt:", fullPrompt);
+      if (!finalText) {
+        setErrorMessage('Failed to generate content. Please try again with a different topic.');
+        return;
+      }
 
-      const output = await generatorRef.current(fullPrompt, {
-        max_new_tokens: 600,
-        temperature: 0.8, // Slightly higher creativity
-        do_sample: true,
-        repetition_penalty: 1.1,
-        top_k: 50,
-      });
-
-      // text2text-generation returns 'generated_text' directly
-      const generatedText = output[0].generated_text;
-      
-      setResult(generatedText);
-
+      setResult(finalText);
     } catch (error: any) {
       console.error('Generation error:', error);
       setErrorMessage(error.message || 'Failed to generate content.');
@@ -118,24 +256,30 @@ Ensure it has an introduction, body, and conclusion.
     navigator.clipboard.writeText(result);
   };
 
+  const isReady = modelStatus === 'ready' && loadedModelId === selectedModelId;
+
   return (
     <div className="grid lg:grid-cols-2 gap-8">
       <div className="space-y-6">
         <div className="p-6 rounded-2xl bg-gray-50 border border-gray-200 space-y-6 shadow-sm">
-          <div className="flex items-center justify-between">
+          <div className="flex items-center justify-between flex-wrap gap-3">
             <h3 className="font-bold text-gray-900 flex items-center gap-2">
               <BookOpen className="w-5 h-5 text-indigo-600" />
               {t('tools_ui.ai_essay_writer.title')}
             </h3>
-            <span className={cn("text-xs font-medium px-2 py-1 rounded-full border", 
-              modelStatus === 'ready' ? "bg-green-50 text-green-700 border-green-200" :
+            
+            <div className={cn("text-xs font-medium px-2 py-1 rounded-full border flex items-center gap-1.5 transition-colors", 
+              isReady ? "bg-green-50 text-green-700 border-green-200" :
               modelStatus === 'loading' ? "bg-yellow-50 text-yellow-700 border-yellow-200" :
               "bg-gray-100 text-gray-700 border-gray-200"
             )}>
-              {modelStatus === 'ready' ? 'Model Ready' : 
-               modelStatus === 'loading' ? 'Downloading Model...' : 
-               modelStatus === 'error' ? 'Error' : 'Offline Model'}
-            </span>
+              {isReady && <CheckCircle2 className="w-3 h-3" />}
+              {modelStatus === 'loading' && <Loader2 className="w-3 h-3 animate-spin" />}
+              
+              {isReady ? `${selectedModel.name} Ready` : 
+               modelStatus === 'loading' ? 'Downloading...' : 
+               'Offline Model'}
+            </div>
           </div>
 
           {modelStatus === 'loading' && progress && (
@@ -150,7 +294,7 @@ Ensure it has an introduction, body, and conclusion.
                     style={{ width: `${Math.max(5, progress.progress || 0)}%` }}
                   />
                </div>
-               <p className="text-xs text-indigo-600">{t('tools_ui.ai_essay_writer.downloading_note')}</p>
+               <p className="text-xs text-indigo-600">Downloading {selectedModel.name} ({selectedModel.size}). First run only.</p>
             </div>
           )}
           
@@ -165,6 +309,25 @@ Ensure it has an introduction, body, and conclusion.
           )}
 
           <div className="space-y-5">
+              {/* Model Selector */}
+              <div className="p-3 bg-white border border-gray-200 rounded-xl flex flex-col gap-2">
+                  <label className="text-xs font-bold text-gray-500 uppercase tracking-wider flex items-center gap-1">
+                      <Settings className="w-3 h-3" /> AI Model
+                  </label>
+                  <select 
+                      value={selectedModelId}
+                      onChange={handleModelChange}
+                      className="w-full bg-gray-50 border border-gray-200 rounded-lg px-3 py-2 text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 cursor-pointer disabled:opacity-50"
+                      disabled={isGenerating || modelStatus === 'loading'}
+                  >
+                      {MODELS.map(m => (
+                          <option key={m.id} value={m.id}>
+                              {m.name} - {m.description}
+                          </option>
+                      ))}
+                  </select>
+              </div>
+
               <div className="space-y-2">
                 <label className="text-sm font-medium text-gray-700">{t('tools_ui.ai_essay_writer.essay_topic_label')}</label>
                 <textarea 
@@ -217,20 +380,22 @@ Ensure it has an introduction, body, and conclusion.
 
               <button
                 onClick={generateEssay}
-                disabled={isGenerating || !topic || modelStatus === 'loading'}
-                className="w-full bg-linear-to-r from-indigo-600 to-blue-600 hover:from-indigo-700 hover:to-blue-700 text-white py-4 rounded-xl font-bold transition-all shadow-lg shadow-indigo-500/20 flex items-center justify-center gap-2 transform active:scale-95 disabled:opacity-50 disabled:scale-100 disabled:cursor-not-allowed"
+                disabled={isGenerating || (isReady && !topic) || modelStatus === 'loading'}
+                className={cn("w-full py-4 rounded-xl font-bold transition-all shadow-lg flex items-center justify-center gap-2 transform active:scale-95 disabled:opacity-50 disabled:scale-100 disabled:cursor-not-allowed text-white",
+                    isReady ? "bg-linear-to-r from-indigo-600 to-blue-600 hover:from-indigo-700 hover:to-blue-700 shadow-indigo-500/20" : "bg-gray-800 hover:bg-gray-900 shadow-gray-500/20"
+                )}
               >
                 {isGenerating ? (
                   <>
                     <Loader2 className="animate-spin w-5 h-5" /> {t('tools_ui.ai_essay_writer.generating')}
                   </>
-                ) : modelStatus === 'idle' ? (
+                ) : isReady ? (
                   <>
-                     <Download className="w-5 h-5" /> {t('tools_ui.ai_essay_writer.download_and_generate')}
+                    <PenLine className="w-5 h-5" /> {t('tools_ui.ai_essay_writer.generate_button')}
                   </>
                 ) : (
                   <>
-                    <PenLine className="w-5 h-5" /> {t('tools_ui.ai_essay_writer.generate_button')}
+                     <Download className="w-5 h-5" /> Download {selectedModel.name}
                   </>
                 )}
               </button>

@@ -54,38 +54,40 @@ export const allTools: ToolMetadata[] = [
 
   // Misc Tools
   { id: 'aes-encrypt', name: 'AES Encryption', desc: 'Encrypt & Decrypt text using AES', icon: Lock, href: '/misc-tools/aes-encryption', category: 'misc', color: 'bg-red-50 text-red-600', search_keys: 'encrypt, decrypt, security, aes, cipher, crypto' },
-  { id: 'portfolio', name: 'Portfolio / About Me', desc: 'My work experience & skills', icon: Briefcase, href: '/portfolio', category: 'misc', color: 'bg-blue-50 text-blue-600', search_keys: 'portfolio, about, resume, cv, work, experience, sarthak' },
+
+  //not included in tools link
+  { id: 'portfolio', name: 'Portfolio / About Me', desc: 'My work experience & skills', icon: Briefcase, href: '/portfolio', category: 'NA', color: 'bg-blue-50 text-blue-600', search_keys: 'portfolio, about, resume, cv, work, experience, sarthak' },
 ];
 
 export const categories = [
   { 
     id: 'pdf', name: 'PDF Tools', icon: FileText, href: '/pdf-tools',
     color: 'bg-[#6c5dd3]', lightColor: 'bg-[#f3f0ff]', 
-    count: '45+ tools', desc: 'Solve Your PDF Problems',
-    featured: { name: 'PDF Creator', href: '/pdf-tools/create' } 
+    count: `${allTools.filter(t => t.category === 'pdf').length}+ tools`, desc: 'Solve Your PDF Problems',
+    featured: { name: 'PDF Creator', href: '/pdf-tools/merge' } 
   },
   { 
     id: 'image', name: 'Image Tools', icon: ImageIcon, href: '/image-tools',
     color: 'bg-[#ff6b2c]', lightColor: 'bg-[#fff4ed]', 
-    count: '30+ tools', desc: 'Solve Your Image Problems',
+    count: `${allTools.filter(t => t.category === 'image').length}+ tools`, desc: 'Solve Your Image Problems',
     featured: { name: 'Remove BG', href: '/image-tools/remove-bg' }
   },
   { 
     id: 'misc', name: 'Misc Tools', icon: Video, href: '/misc-tools',
     color: 'bg-[#e91e63]', lightColor: 'bg-[#fce4ec]', 
-    count: '10+ tools', desc: 'Solve Your misc Problems',
-    featured: { name: 'Mute misc', href: '/misc-tools/mute' }
+    count: `${allTools.filter(t => t.category === 'misc').length}+ tools`, desc: 'Solve Your misc Problems',
+    featured: { name: 'AES Encryption', href: '/misc-tools/aes-encryption' }
   },
   { 
     id: 'ai', name: 'AI Tools', icon: PenTool, href: '/ai-tools',
     color: 'bg-[#0099ff]', lightColor: 'bg-[#f0f9ff]', 
-    count: '10+ tools', desc: 'Solve Your Text Problems',
+    count: `${allTools.filter(t => t.category === 'ai').length}+ tools`, desc: 'Solve Your Text Problems',
     featured: { name: 'Paragraph Writer', href: '/ai-tools/writer' }
   },
   { 
     id: 'coding', name: 'Coding Tools', icon: FileCode, href: '/coding-tools',
     color: 'bg-[#0d9488]', lightColor: 'bg-[#f0fdfa]', 
-    count: '15+ tools', desc: 'Solve Your Coding Problems',
+    count: `${allTools.filter(t => t.category === 'coding').length}+ tools`, desc: 'Solve Your Coding Problems',
     featured: { name: 'JSON Formatter', href: '/coding-tools/json-formatter' }
   },
 ];
