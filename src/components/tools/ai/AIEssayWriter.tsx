@@ -2,7 +2,7 @@ import React, { useState, useRef, useEffect } from 'react';
 import { Copy, Loader2, BookOpen, PenLine, AlertTriangle, Download, Settings, CheckCircle2 } from 'lucide-react';
 import { pipeline, env } from '@huggingface/transformers';
 import { useTranslation } from 'react-i18next';
-import { cn } from '../../lib/utils';
+import { cn } from '../../../lib/utils';
 
 // Configuration
 env.allowLocalModels = false;

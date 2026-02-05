@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Copy, FileJson, ArrowRightLeft, AlertCircle } from 'lucide-react';
 import { xml2json, json2xml } from 'xml-js';
 import { useTranslation } from 'react-i18next';
-import '../../i18n';
+import '../../../i18n';
 
 export default function XmlToJson() {
   const { t } = useTranslation();

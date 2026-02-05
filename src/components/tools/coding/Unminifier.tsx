@@ -7,7 +7,7 @@ import * as parserBabel from "prettier/plugins/babel";   // JS/TS
 import * as parserPostcss from "prettier/plugins/postcss"; // CSS
 import { xml2json, json2xml } from 'xml-js';
 import { useTranslation } from 'react-i18next';
-import '../../i18n';
+import '../../../i18n';
 
 export default function Unminifier() {
   const { t } = useTranslation();

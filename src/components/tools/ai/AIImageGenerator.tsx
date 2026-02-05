@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Download, Loader2, Image as ImageIcon, Sparkles, RefreshCw, Smartphone, Monitor } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
-import { cn } from '../../lib/utils';
+import { cn } from '../../../lib/utils';
 
 const STYLES = [
   { id: 'realistic', name: 'Realistic', prompt: 'photorealistic, highly detailed, 8k, cinematic lighting' },

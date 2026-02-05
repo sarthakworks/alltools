@@ -2,7 +2,7 @@ import React, { useState, useMemo } from 'react';
 import { Copy, GitCompare, Trash2, ArrowRightLeft, ArrowRight, RotateCcw, Check } from 'lucide-react';
 import * as Diff from 'diff';
 import { useTranslation } from 'react-i18next';
-import '../../i18n';
+import '../../../i18n';
 
 interface DiffRow {
   leftLineNumber: number | null;

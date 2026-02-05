@@ -1,10 +1,10 @@
 ---
 import Layout from '../../layouts/Layout.astro';
-import UnminifierTool from '../../components/tools/Unminifier';
+import UnminifierComponent from '../../components/tools/coding/Unminifier';
 ---
 
 <Layout title="Universal Unminifier - Free Online Tool">
   <main class="min-h-screen bg-gray-50 py-12">
-    <UnminifierTool client:load />
+    <UnminifierComponent client:load />
   </main>
 </Layout>

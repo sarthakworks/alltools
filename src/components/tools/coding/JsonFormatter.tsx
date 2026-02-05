@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Copy, FileJson, Minimize2, AlignLeft, AlertCircle } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
-import '../../i18n';
+import '../../../i18n';
 
 export default function JsonFormatter() {
   const { t } = useTranslation();

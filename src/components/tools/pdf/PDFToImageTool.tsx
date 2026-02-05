@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
 import JSZip from 'jszip';
 import FileSaver from 'file-saver';
-import { FileUpload } from '../common/fileUploader';
+import { FileUpload } from '../../common/fileUploader';
 import { ArrowDown, Image as ImageIcon, Loader2 } from 'lucide-react';
-import { cn } from '../../lib/utils';
+import { cn } from '../../../lib/utils';
 
 
 // Note: PDF.js is imported dynamically to avoid SSR issues

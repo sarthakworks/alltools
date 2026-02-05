@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import CryptoJS from 'crypto-js';
 import { Copy, Lock, Unlock } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
-import '../../i18n';
+import '../../../i18n';
 
 // Types and Enums
 const MODES = {

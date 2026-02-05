@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Upload, Download, Loader2, Palette, Sparkles } from 'lucide-react';
 import { removeBackground } from '@imgly/background-removal';
 import { useTranslation } from 'react-i18next';
-import { FileUpload } from '../common/fileUploader';
+import { FileUpload } from '../../common/fileUploader';
 
 export default function ImageBGRemoverTool() {
   const { t } = useTranslation();
