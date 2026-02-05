@@ -20,6 +20,7 @@ export default defineConfig({
     }),
     AstroPWA({
       registerType: 'autoUpdate',
+      injectRegister: 'auto', // Automatically inject the registration script
       includeAssets: ['favicon.svg', 'favicon.ico'],
       manifest: {
         name: 'AllTools',
