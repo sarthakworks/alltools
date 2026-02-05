@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { ArrowRight } from 'lucide-react';
-import { popularTools, categories, allTools } from '../data/tools';
+import { popularTools, categories, allTools } from './common/data/tools';
 import { useTranslation } from 'react-i18next';
 import '../i18n';
 

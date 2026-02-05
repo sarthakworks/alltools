@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Copy, Loader2, Sparkles, Wand2, AlertTriangle, MonitorPlay } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
-import { cn } from '../../../lib/utils';
+import { cn } from '../../common/utils';
 
 // Helper for type safety with the experimental API
 declare global {

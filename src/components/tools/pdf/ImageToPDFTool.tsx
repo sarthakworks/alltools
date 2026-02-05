@@ -3,6 +3,7 @@ import { PDFDocument } from 'pdf-lib';
 import { FileUpload } from '../../common/fileUploader';
 import { ArrowDown, Loader2, X, Image as ImageIcon } from 'lucide-react';
 import FileSaver from 'file-saver';
+import { ProcessButton } from './common/ProcessButton';
 import {
   DndContext,
   closestCenter,
@@ -203,14 +204,16 @@ export default function ImageToPDFTool() {
                     </DndContext>
                 </div>
 
-                <button
+                <ProcessButton
                     onClick={convertToPDF}
                     disabled={isProcessing}
-                    className="w-full py-4 bg-blue-600 hover:bg-blue-700 text-white rounded-xl font-bold text-lg shadow-lg shadow-blue-500/20 flex items-center justify-center gap-2 transition-all"
+                    className="w-full"
+                    isProcessing={isProcessing}
+                    icon={ArrowDown}
+                    processingMessage={t('tools_ui.common.processing')}
                 >
-                    {isProcessing ? <Loader2 className="animate-spin w-5 h-5" /> : <ArrowDown className="w-5 h-5" />}
                     {t('tools_ui.image_to_pdf.convert_button')}
-                </button>
+                </ProcessButton>
             </>
         )}
     </div>

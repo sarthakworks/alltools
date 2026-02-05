@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import imageCompression from 'browser-image-compression';
 import { FileUpload } from '../../common/fileUploader';
 import { ArrowDown, Check, FileImage, Loader2 } from 'lucide-react';
-import { cn } from '../../../lib/utils';
+import { cn } from '../../common/utils';
 import FileSaver from 'file-saver';
 import { useTranslation } from 'react-i18next';
 import '../../../i18n';

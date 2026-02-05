@@ -1,6 +1,6 @@
 import { useMemo, useState, useEffect, useRef } from 'react';
 import Fuse from 'fuse.js';
-import type { ToolMetadata } from '../../data/tools';
+import type { ToolMetadata } from './data/tools';
 
 /**
  * Fuse.js configuration for fuzzy search across tools

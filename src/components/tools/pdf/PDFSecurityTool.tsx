@@ -1,36 +1,46 @@
 import React, { useState } from 'react';
 import { PDFDocument } from 'pdf-lib';
 import { FileUpload } from '../../common/fileUploader';
-import { Lock, Unlock, Loader2, Download, ShieldCheck, ShieldAlert, X } from 'lucide-react';
+import { Lock, Unlock, Download, ShieldCheck, ShieldAlert, X, CheckCircle as CheckCircleIcon, Eye, EyeOff } from 'lucide-react';
 import FileSaver from 'file-saver';
+import { usePDF } from '../../common/hooks/usePDF';
+import { initPDFWorker, formatFileSize, processAndFlattenPDF } from '../../../utils/pdf';
+import { ProcessButton } from './common/ProcessButton';
 
 type Tab = 'lock' | 'unlock';
 
 export default function PDFSecurityTool() {
+  const {
+    files,
+    addFiles,
+    clearFiles,
+    isProcessing,
+    processingProgress,
+    processingMessage,
+    setProcessingState
+  } = usePDF({ multiple: false });
+
   const [activeTab, setActiveTab] = useState<Tab>('lock');
-  const [file, setFile] = useState<File | null>(null);
   const [password, setPassword] = useState('');
-  const [isProcessing, setIsProcessing] = useState(false);
+  const [showPassword, setShowPassword] = useState(false); // New state for password visibility
   const [processedFile, setProcessedFile] = useState<Blob | null>(null);
   const [error, setError] = useState<string | null>(null);
-  const [useForceMode, setUseForceMode] = useState(false);
-  const [progress, setProgress] = useState(0);
+  const [useForceMode, setUseForceMode] = useState(true);
 
-  const handleFilesSelected = (files: File[]) => {
-    if (files.length > 0) {
-      setFile(files[0]);
-      setProcessedFile(null);
-      setError(null);
-      setPassword('');
-      setUseForceMode(false);
-    }
+  const file = files[0] || null;
+
+  const handleFilesSelected = (selectedFiles: File[]) => {
+    addFiles(selectedFiles);
+    setProcessedFile(null);
+    setError(null);
+    setPassword('');
+    setUseForceMode(true);
   };
 
   const processPDF = async () => {
     if (!file || !password) return;
-    setIsProcessing(true);
+    setProcessingState(true, activeTab === 'lock' ? 'Encrypting...' : 'Decrypting...');
     setError(null);
-    setProgress(0);
 
     try {
       const arrayBuffer = await file.arrayBuffer();
@@ -55,52 +65,10 @@ export default function PDFSecurityTool() {
         }
       } else {
         if (useForceMode) {
-             const pdfjsLib = await import('pdfjs-dist');
-             pdfjsLib.GlobalWorkerOptions.workerSrc = '/pdf.worker.min.mjs';
-
-             const loadingTask = pdfjsLib.getDocument({
-                data: new Uint8Array(arrayBuffer),
-                password: password,
+             const pdfBytes = await processAndFlattenPDF(arrayBuffer, password, (progress) => {
+                 setProcessingState(true, `Processing...`, progress);
              });
-
-             const pdfViewer = await loadingTask.promise;
-             const totalPages = pdfViewer.numPages;
-
-             const newPdf = await PDFDocument.create();
-
-             for (let i = 1; i <= totalPages; i++) {
-                const page = await pdfViewer.getPage(i);
-                const viewport = page.getViewport({ scale: 5.0 }); 
-                
-                const canvas = document.createElement("canvas");
-                const context = canvas.getContext("2d");
-                canvas.width = viewport.width;
-                canvas.height = viewport.height;
-
-                if (context) {
-                    await page.render({
-                        canvasContext: context,
-                        viewport: viewport,
-                    } as any).promise;
-
-                    const imgDataUrl = canvas.toDataURL("image/png");
-                    const imgBytes = await fetch(imgDataUrl).then((res) => res.arrayBuffer());
-
-                    const img = await newPdf.embedPng(imgBytes);
-                    const newPage = newPdf.addPage([img.width, img.height]);
-                    newPage.drawImage(img, {
-                        x: 0,
-                        y: 0,
-                        width: img.width,
-                        height: img.height,
-                    });
-                }
-                 setProgress(Math.round((i / totalPages) * 100));
-             }
-             
-             const pdfBytes = await newPdf.save();
              setProcessedFile(new Blob([pdfBytes as any], { type: 'application/pdf' }));
-
         } else {
              try {
                 const pdfDoc = await PDFDocument.load(arrayBuffer, { password, ignoreEncryption: false } as any);
@@ -125,7 +93,7 @@ export default function PDFSecurityTool() {
       console.error("Security operation failed:", err);
       setError(err.message || "Operation failed. Please try a different file.");
     } finally {
-      setIsProcessing(false);
+      setProcessingState(false);
     }
   };
 
@@ -142,17 +110,21 @@ export default function PDFSecurityTool() {
       <div className="flex justify-center mb-8">
         <div className="bg-white p-1 rounded-xl shadow-sm border border-gray-200 inline-flex">
           <button
-            onClick={() => { setActiveTab('lock'); setFile(null); setProcessedFile(null); }}
+            onClick={() => { setActiveTab('lock'); clearFiles(); setProcessedFile(null); }}
             className={`px-6 py-2 rounded-lg text-sm font-semibold flex items-center gap-2 transition-all ${
-              activeTab === 'lock' ? 'bg-red-50 text-red-600 shadow-sm' : 'text-gray-500 hover:text-gray-900'
+              activeTab === 'lock' 
+                ? 'bg-rose-50 text-rose-700 shadow-sm ring-1 ring-rose-200' 
+                : 'text-gray-600 hover:bg-gray-50'
             }`}
           >
             <Lock className="w-4 h-4" /> Lock PDF
           </button>
           <button
-            onClick={() => { setActiveTab('unlock'); setFile(null); setProcessedFile(null); }}
+            onClick={() => { setActiveTab('unlock'); clearFiles(); setProcessedFile(null); }}
             className={`px-6 py-2 rounded-lg text-sm font-semibold flex items-center gap-2 transition-all ${
-              activeTab === 'unlock' ? 'bg-green-50 text-green-600 shadow-sm' : 'text-gray-500 hover:text-gray-900'
+              activeTab === 'unlock' 
+                ? 'bg-emerald-50 text-emerald-700 shadow-sm ring-1 ring-emerald-200' 
+                : 'text-gray-600 hover:bg-gray-50'
             }`}
           >
             <Unlock className="w-4 h-4" /> Unlock PDF
@@ -169,14 +141,14 @@ export default function PDFSecurityTool() {
         <div className="space-y-8">
             <div className="flex items-center justify-between p-4 rounded-xl bg-gray-50 border border-gray-200">
                 <div className="flex items-center gap-3">
-                    {activeTab === 'lock' ? <ShieldAlert className="w-5 h-5 text-red-500" /> : <ShieldCheck className="w-5 h-5 text-green-500" />}
+                    {activeTab === 'lock' ? <ShieldAlert className="w-5 h-5 text-rose-500" /> : <ShieldCheck className="w-5 h-5 text-emerald-500" />}
                     <div>
                         <span className="text-sm font-medium text-gray-700 block">{file.name}</span>
-                        <span className="text-xs text-gray-400">({(file.size / 1024 / 1024).toFixed(2)} MB)</span>
+                        <span className="text-xs text-gray-400">({formatFileSize(file.size)})</span>
                     </div>
                 </div>
                 <button 
-                    onClick={() => { setFile(null); setProcessedFile(null); }}
+                    onClick={() => { clearFiles(); setProcessedFile(null); }}
                     className="p-1.5 hover:bg-gray-200 rounded-full text-gray-400 hover:text-gray-600 transition-colors"
                 >
                     <X className="w-4 h-4" />
@@ -189,15 +161,28 @@ export default function PDFSecurityTool() {
                         <label className="block text-sm font-medium text-gray-700 mb-2">
                             {activeTab === 'lock' ? 'Set Password' : 'Enter Password'}
                         </label>
-                        <input
-                            type="password"
-                            value={password}
-                            onChange={(e) => setPassword(e.target.value)}
-                            placeholder={activeTab === 'lock' ? "Enter a strong password" : "Enter the PDF password"}
-                            className="w-full px-4 py-3 rounded-lg border border-gray-200 focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all"
-                        />
+                        <div className="relative">
+                            <input
+                                type={showPassword ? "text" : "password"}
+                                value={password}
+                                onChange={(e) => setPassword(e.target.value)}
+                                placeholder={activeTab === 'lock' ? "Enter a strong password" : "Enter the PDF password"}
+                                className="w-full px-4 py-3 rounded-lg border border-gray-200 focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all pr-12"
+                            />
+                            <button
+                                type="button"
+                                onClick={() => setShowPassword(!showPassword)}
+                                className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 focus:outline-none"
+                            >
+                                {showPassword ? (
+                                    <EyeOff className="w-5 h-5" />
+                                ) : (
+                                    <Eye className="w-5 h-5" />
+                                )}
+                            </button>
+                        </div>
                          {error && (
-                            <div className="text-red-500 text-sm mt-2 flex items-center gap-1">
+                            <div className="text-rose-500 text-sm mt-2 flex items-center gap-1">
                                 <ShieldAlert className="w-3 h-3" /> {error}
                             </div>
                         )}
@@ -219,30 +204,25 @@ export default function PDFSecurityTool() {
                         </div>
                     )}
 
-                    <button
+                    <ProcessButton
                         onClick={processPDF}
-                        disabled={!password || isProcessing}
-                        className={`w-full py-3 rounded-xl font-bold text-lg shadow-lg flex items-center justify-center gap-2 transition-all disabled:opacity-70 disabled:cursor-not-allowed ${
-                            activeTab === 'lock' ? 'bg-red-600 hover:bg-red-700 shadow-red-500/20' : 'bg-green-600 hover:bg-green-700 shadow-green-500/20'
-                        } text-white`}
+                        disabled={!password}
+                        isProcessing={isProcessing}
+                        progress={processingProgress}
+                        processingMessage={processingMessage}
+                        className={activeTab === 'lock' 
+                            ? 'bg-rose-600 hover:bg-rose-700 text-white shadow-rose-500/20' 
+                            : 'bg-emerald-600 hover:bg-emerald-700 text-white shadow-emerald-500/20'
+                        }
+                        icon={activeTab === 'lock' ? Lock : Unlock}
                     >
-                        {isProcessing ? (
-                            <>
-                                <Loader2 className="w-5 h-5 animate-spin" />
-                                {activeTab === 'lock' ? 'Encrypting...' : useForceMode ? `Processing (${progress}%)...` : 'Decrypting...'}
-                            </>
-                        ) : (
-                            <>
-                                {activeTab === 'lock' ? <Lock className="w-5 h-5" /> : <Unlock className="w-5 h-5" />}
-                                {activeTab === 'lock' ? 'Protect PDF' : 'Unlock PDF'}
-                            </>
-                        )}
-                    </button>
+                        {activeTab === 'lock' ? 'Protect PDF' : 'Unlock PDF'}
+                    </ProcessButton>
                 </div>
             ) : (
                 <div className="text-center py-8">
                      <div className="w-16 h-16 bg-blue-100 text-blue-600 rounded-full flex items-center justify-center mx-auto mb-4">
-                        <CheckCircle className="w-8 h-8" />
+                        <CheckCircleIcon className="w-8 h-8" />
                     </div>
                     <h3 className="text-2xl font-bold text-gray-900 mb-2">
                         {activeTab === 'lock' ? 'File Protected!' : 'File Unlocked!'}
@@ -264,14 +244,4 @@ export default function PDFSecurityTool() {
       )}
     </div>
   );
-}
-
-// Helper icon
-function CheckCircle({ className }: { className?: string }) {
-    return (
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}>
-            <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
-            <polyline points="22 4 12 14.01 9 11.01"></polyline>
-        </svg>
-    );
 }

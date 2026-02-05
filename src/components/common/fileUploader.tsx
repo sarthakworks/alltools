@@ -1,7 +1,7 @@
 import React, { useCallback } from 'react';
 import { useDropzone } from 'react-dropzone';
 import { Upload } from 'lucide-react';
-import { cn } from '../../lib/utils';
+import { cn } from './utils';
 
 interface FileUploadProps {
   onFilesSelected: (files: File[]) => void;

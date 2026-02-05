@@ -1,34 +1,41 @@
 import React, { useState } from 'react';
 import { PDFDocument } from 'pdf-lib';
 import { FileUpload } from '../../common/fileUploader';
-import { ArrowDown, FileText, Loader2, Minimize2, CheckCircle, X } from 'lucide-react';
+import { ArrowDown, FileText, Minimize2, CheckCircle, X } from 'lucide-react';
 import FileSaver from 'file-saver';
+import { usePDF } from '../../common/hooks/usePDF';
+import { initPDFWorker, formatFileSize } from '../../../utils/pdf';
+import { ProcessButton } from './common/ProcessButton';
 
 export default function PDFCompressTool() {
-  const [file, setFile] = useState<File | null>(null);
-  const [isProcessing, setIsProcessing] = useState(false);
-  const [progress, setProgress] = useState(0);
+  const { 
+    files, 
+    addFiles, 
+    clearFiles, 
+    isProcessing, 
+    processingProgress,
+    processingMessage,
+    setProcessingState 
+  } = usePDF({ multiple: false });
+
   const [compressionLevel, setCompressionLevel] = useState<number>(0.7); // 0.7 = Recommended
   const [processedFile, setProcessedFile] = useState<{ blob: Blob; size: number } | null>(null);
 
-  const handleFilesSelected = (files: File[]) => {
-    if (files.length > 0) {
-      setFile(files[0]);
-      setProcessedFile(null);
-      setProgress(0);
-    }
+  const file = files[0] || null;
+
+  const handleFilesSelected = (selectedFiles: File[]) => {
+    addFiles(selectedFiles);
+    setProcessedFile(null);
   };
 
   const compressPDF = async () => {
     if (!file) return;
-    setIsProcessing(true);
-    setProgress(0);
+    setProcessingState(true, 'Compressing...');
 
     try {
       // 1. Process PDF using pdfjs-dist (client-side re-distilling)
-      // Dynamic import to avoid SSR issues
       const pdfjsLib = await import('pdfjs-dist');
-      pdfjsLib.GlobalWorkerOptions.workerSrc = '/pdf.worker.min.mjs';
+      await initPDFWorker();
 
       const arrayBuffer = await file.arrayBuffer();
       const loadingTask = pdfjsLib.getDocument({ data: arrayBuffer });
@@ -66,18 +73,18 @@ export default function PDFCompressTool() {
           });
         }
 
-        setProgress(Math.round((i / totalPages) * 100));
+        setProcessingState(true, 'Compressing...', Math.round((i / totalPages) * 100));
       }
 
       const pdfBytes = await newPdf.save();
-      const blob = new Blob([pdfBytes], { type: 'application/pdf' });
+      const blob = new Blob([pdfBytes as any], { type: 'application/pdf' });
       setProcessedFile({ blob, size: blob.size });
 
     } catch (error: any) {
       console.error("Compression failed:", error);
       alert(`Compression failed: ${error.message}`);
     } finally {
-      setIsProcessing(false);
+      setProcessingState(false);
     }
   };
 
@@ -86,8 +93,6 @@ export default function PDFCompressTool() {
       FileSaver.saveAs(processedFile.blob, `compressed-${file?.name || 'document.pdf'}`);
     }
   };
-
-  const formatSize = (bytes: number) => (bytes / 1024 / 1024).toFixed(2) + ' MB';
 
   return (
     <div className="max-w-4xl mx-auto space-y-8">
@@ -100,11 +105,11 @@ export default function PDFCompressTool() {
                     <FileText className="w-5 h-5 text-red-500" />
                     <div>
                         <span className="text-sm font-medium text-gray-700 block">{file.name}</span>
-                        <span className="text-xs text-gray-400">({formatSize(file.size)})</span>
+                        <span className="text-xs text-gray-400">({formatFileSize(file.size)})</span>
                     </div>
                 </div>
                 <button 
-                    onClick={() => { setFile(null); setProcessedFile(null); }}
+                    onClick={() => { clearFiles(); setProcessedFile(null); }}
                     className="p-1.5 hover:bg-gray-200 rounded-full text-gray-400 hover:text-gray-600 transition-colors"
                 >
                     <X className="w-4 h-4" />
@@ -137,23 +142,15 @@ export default function PDFCompressTool() {
                         </div>
                     </div>
 
-                    <button
+                    <ProcessButton
                         onClick={compressPDF}
-                        disabled={isProcessing}
-                        className="w-full py-4 bg-blue-600 hover:bg-blue-700 text-white rounded-xl font-bold text-lg shadow-lg shadow-blue-500/20 flex items-center justify-center gap-2 transition-all disabled:opacity-70 disabled:cursor-not-allowed"
+                        isProcessing={isProcessing}
+                        progress={processingProgress}
+                        processingMessage={processingMessage}
+                        icon={Minimize2}
                     >
-                        {isProcessing ? (
-                            <>
-                                <Loader2 className="w-5 h-5 animate-spin" />
-                                Compressing ({progress}%)...
-                            </>
-                        ) : (
-                            <>
-                                <Minimize2 className="w-5 h-5" />
-                                Compress PDF
-                            </>
-                        )}
-                    </button>
+                        Compress PDF
+                    </ProcessButton>
                 </div>
             ) : (
                 <div className="text-center py-8">
@@ -162,7 +159,7 @@ export default function PDFCompressTool() {
                     </div>
                     <h3 className="text-2xl font-bold text-gray-900 mb-2">Compression Complete!</h3>
                     <p className="text-gray-500 mb-8">
-                        Your file has been compressed from <span className="font-medium text-gray-900">{formatSize(file.size)}</span> to <span className="font-bold text-green-600">{formatSize( processedFile.size)}</span>
+                        Your file has been compressed from <span className="font-medium text-gray-900">{formatFileSize(file.size)}</span> to <span className="font-bold text-green-600">{formatFileSize(processedFile.size)}</span>
                     </p>
                     
                     <button

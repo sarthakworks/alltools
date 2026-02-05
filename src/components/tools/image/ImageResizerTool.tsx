@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { FileUpload } from '../../common/fileUploader';
 import { Loader2, FileImage } from 'lucide-react';
-import { cn } from '../../../lib/utils';
+import { cn } from '../../common/utils';
 import FileSaver from 'file-saver';
 import { useTranslation } from 'react-i18next';
 import '../../../i18n';

@@ -1,5 +1,5 @@
 import React from 'react';
-import { allTools } from '../../data/tools';
+import { allTools } from '../common/data/tools';
 import { useTranslation } from 'react-i18next';
 import '../../i18n';
 

@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Search, ArrowRight, FileText, Image as ImageIcon, Zap, CheckCircle, Shield, PenTool, MegaphoneOff, Infinity} from 'lucide-react';
 import ToolsGrid from './ToolsGrid';
-import { categories, stats, allTools, popularTools } from '../data/tools';
+import { categories, stats, allTools, popularTools } from './common/data/tools';
 import { useToolSearch } from './common/searchAlgo';
 import '../i18n';
 

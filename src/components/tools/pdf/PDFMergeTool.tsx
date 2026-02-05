@@ -1,9 +1,13 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { PDFDocument } from 'pdf-lib';
 import { FileUpload } from '../../common/fileUploader';
-import { ArrowDown, FileText, Loader2, X, Move, Shuffle, Grid, List, Lock } from 'lucide-react';
-import { cn } from '../../../lib/utils';
+import { ArrowDown, FileText, X, Move, Shuffle, Grid, List, Lock } from 'lucide-react';
+import { cn } from '../../common/utils';
 import FileSaver from 'file-saver';
+import { usePDF } from '../../common/hooks/usePDF';
+import { initPDFWorker, processAndFlattenPDF } from '../../../utils/pdf';
+import { ProcessButton } from './common/ProcessButton';
+import { DraggablePage } from './common/DraggablePage';
 import {
   DndContext,
   closestCenter,
@@ -17,10 +21,8 @@ import {
   arrayMove,
   SortableContext,
   sortableKeyboardCoordinates,
-  useSortable,
   rectSortingStrategy
 } from '@dnd-kit/sortable';
-import { CSS } from '@dnd-kit/utilities';
 
 interface PageItem {
   id: string; // unique id for dnd
@@ -30,56 +32,20 @@ interface PageItem {
   fileName: string;
 }
 
-function SortableItem({ id, image, fileName, pageIndex, onRemove }: any) {
-  const {
-    attributes,
-    listeners,
-    setNodeRef,
-    transform,
-    transition,
-    isDragging
-  } = useSortable({ id });
-
-  const style = {
-    transform: CSS.Transform.toString(transform),
-    transition,
-    zIndex: isDragging ? 10 : 1,
-    opacity: isDragging ? 0.5 : 1
-  };
-
-  return (
-    <div 
-      ref={setNodeRef} 
-      style={style} 
-      {...attributes} 
-      {...listeners}
-      className="group relative aspect-3/4 bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden hover:shadow-md transition-shadow cursor-grab active:cursor-grabbing"
-    >
-      <img src={image} alt={`Page ${pageIndex + 1}`} className="w-full h-full object-contain p-2" />
-      
-      <div className="absolute inset-0 bg-black/0 group-hover:bg-black/5 transition-colors" />
-      
-      <div className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity">
-        <button 
-          onPointerDown={(e) => { e.stopPropagation(); onRemove(id); }}
-          className="p-1 bg-red-500 text-white rounded-full hover:bg-red-600 shadow-sm"
-        >
-          <X className="w-3 h-3" />
-        </button>
-      </div>
-
-      <div className="absolute bottom-0 left-0 right-0 bg-white/90 backdrop-blur-sm p-2 text-xs text-gray-600 border-t border-gray-100 truncate">
-        {fileName} - P{pageIndex + 1}
-      </div>
-    </div>
-  );
-}
-
 export default function PDFMergeTool() {
-  const [files, setFiles] = useState<File[]>([]);
-  const filesRef = useRef<File[]>([]);
+  const {
+    files,
+    addFiles,
+    removeFile,
+    replaceFile,
+    filesRef,
+    isProcessing,
+    processingProgress,
+    processingMessage,
+    setProcessingState
+  } = usePDF({ multiple: true });
+
   const [pages, setPages] = useState<PageItem[]>([]);
-  const [isProcessing, setIsProcessing] = useState(false);
   const [viewMode, setViewMode] = useState<'list' | 'grid'>('list');
   const [activeId, setActiveId] = useState<string | null>(null);
   const [filePasswords, setFilePasswords] = useState<Record<number, string>>({});
@@ -90,12 +56,6 @@ export default function PDFMergeTool() {
   const [isUnlocking, setIsUnlocking] = useState(false);
   const [pendingFile, setPendingFile] = useState<File | null>(null);
   const [pendingRemainingFiles, setPendingRemainingFiles] = useState<File[]>([]);
-  const [processingProgress, setProcessingProgress] = useState(0);
-  const [processingMessage, setProcessingMessage] = useState('Processing...');
-  
-  // Note: filesRef is manually updated whenever setFiles is called
-  // We DON'T use useEffect to sync it, as that would overwrite manual updates
-  
   
   const sensors = useSensors(
     useSensor(PointerSensor),
@@ -104,69 +64,15 @@ export default function PDFMergeTool() {
     })
   );
 
-  const processAndFlattenPDF = async (
-    arrayBuffer: ArrayBuffer, 
-    password: string = '',
-    onProgress?: (progress: number) => void
-  ): Promise<Uint8Array> => {
-    const pdfjsLib = await import('pdfjs-dist');
-    pdfjsLib.GlobalWorkerOptions.workerSrc = '/pdf.worker.min.mjs';
-
-    const loadingTask = pdfjsLib.getDocument({
-      data: new Uint8Array(arrayBuffer),
-      password: password || undefined,
-    });
-
-    const pdfViewer = await loadingTask.promise;
-    const totalPages = pdfViewer.numPages;
-    const newPdf = await PDFDocument.create();
-
-    for (let i = 1; i <= totalPages; i++) {
-        const page = await pdfViewer.getPage(i);
-        const viewport = page.getViewport({ scale: 5.0 });
-        
-        const canvas = document.createElement("canvas");
-        const context = canvas.getContext("2d");
-        canvas.width = viewport.width;
-        canvas.height = viewport.height;
-
-        if (context) {
-        await page.render({
-            canvasContext: context,
-            viewport: viewport,
-        } as any).promise;
-
-        const imgDataUrl = canvas.toDataURL("image/png");
-        const imgBytes = await fetch(imgDataUrl).then((res) => res.arrayBuffer());
-
-        const img = await newPdf.embedPng(imgBytes);
-        const newPage = newPdf.addPage([img.width, img.height]);
-        newPage.drawImage(img, {
-            x: 0,
-            y: 0,
-            width: img.width,
-            height: img.height,
-        });
-        }
-        if (onProgress) {
-            onProgress(Math.round((i / totalPages) * 100));
-        }
-    }
-    
-    return await newPdf.save();
-  };
-
   const handleFilesSelected = async (selectedFiles: File[]) => {
-    setIsProcessing(true);
-    setProcessingProgress(0);
+    setProcessingState(true, 'Processing files...', 0);
     const processedFiles: File[] = [];
     const totalFiles = selectedFiles.length;
     
     // First, try to unlock any encrypted files automatically
     for (let fileIdx = 0; fileIdx < selectedFiles.length; fileIdx++) {
       const file = selectedFiles[fileIdx];
-      setProcessingMessage(`Checking file ${fileIdx + 1}/${totalFiles}: ${file.name}`);
-      setProcessingProgress(Math.round(((fileIdx) / totalFiles) * 50)); // 0-50% for file processing
+      setProcessingState(true, `Checking file ${fileIdx + 1}/${totalFiles}: ${file.name}`, Math.round(((fileIdx) / totalFiles) * 50));
       
       try {
         // Try to load with pdf-lib to check if encrypted
@@ -177,7 +83,7 @@ export default function PDFMergeTool() {
           processedFiles.push(file);
         } catch (e: any) {
           if (e.message?.includes('encrypted') || e.name === 'EncryptedPDFError') {
-            setProcessingMessage(`Unlocking ${file.name}...`);
+            setProcessingState(true, `Unlocking ${file.name}...`);
             // Try empty password first
             try {
               await PDFDocument.load(arrayBuffer, { password: '' } as any);
@@ -188,7 +94,7 @@ export default function PDFMergeTool() {
                 const pdfBytes = await processAndFlattenPDF(arrayBuffer, '', (progress) => {
                   const fileProgress = (fileIdx / totalFiles) * 50;
                   const pageProgress = (progress / 100) * (50 / totalFiles);
-                  setProcessingProgress(Math.round(fileProgress + pageProgress));
+                  setProcessingState(true, `Unlocking ${file.name}...`, Math.round(fileProgress + pageProgress));
                 });
                 
                 const flattenedBlob = new Blob([pdfBytes as any], { type: 'application/pdf' });
@@ -206,12 +112,16 @@ export default function PDFMergeTool() {
                 setPendingRemainingFiles(remainingFiles);
                 
                 setPasswordPrompt({ fileIndex, fileName: file.name });
-                setIsProcessing(false);
+                setProcessingState(false);
                 
                 // Add processed files and the pending file to files array
-                const newFiles = [...currentFiles, ...processedFiles, file];
-                setFiles(newFiles);
-                filesRef.current = newFiles;
+                const startIndexForProcessed = filesRef.current.length;
+                addFiles([...processedFiles, file]);
+                
+                // Generate thumbnails for the processed files so far
+                if (processedFiles.length > 0) {
+                     generateThumbnails(processedFiles, startIndexForProcessed);
+                }
                 
                 // Don't add remainingFiles yet - they'll be added when they're processed
                 // Stop processing remaining files - user needs to handle this one first
@@ -228,34 +138,41 @@ export default function PDFMergeTool() {
       }
     }
 
-    const currentFiles = filesRef.current;
-    const newFiles = [...currentFiles, ...processedFiles];
-    setFiles(newFiles);
-    filesRef.current = newFiles;
+    const startIndex = filesRef.current.length;
+    addFiles(processedFiles);
 
-    const newPages: PageItem[] = [];
-    let startFileIndex = currentFiles.length;
-
-    try {
-      setProcessingMessage('Generating thumbnails...');
+    // Generate thumbnails with correct start index
+    await generateThumbnails(processedFiles, startIndex);
+  };
+  
+  // Wrap generateThumbnails to handle the async state update issue?
+  // Actually, I can just traverse the new `processedFiles` and generate thumbnails. Their index will be `allFiles.length` + `i`.
+  // Wait, `filesRef.current.length`? 
+  // If I call `addFiles(processedFiles)`, the state updates. Re-render happens.
+  // But `generateThumbnails` is called in the same closure. 
+  // It's safer to separate thumbnail generation.
+  // But `generateThumbnails` uses `filesToProcess`.
+  
+  const generateThumbnails = async (filesToProcess: File[], startIndex: number, password?: string) => {
+      setProcessingState(true, 'Generating thumbnails...');
       const pdfjsLib = await import('pdfjs-dist');
-      pdfjsLib.GlobalWorkerOptions.workerSrc = '/pdf.worker.min.mjs';
-
-      for (let i = 0; i < processedFiles.length; i++) {
-        const file = processedFiles[i];
-        setProcessingProgress(50 + Math.round(((i + 1) / processedFiles.length) * 50)); // 50-100% for thumbnails
+      await initPDFWorker();
+      
+      const newPages: PageItem[] = [];
+      
+      for (let i = 0; i < filesToProcess.length; i++) {
+        const file = filesToProcess[i];
+        setProcessingState(true, `Generating thumbnails ${i + 1}/${filesToProcess.length}`, 50 + Math.round(((i + 1) / filesToProcess.length) * 50));
         
         try {
           const arrayBuffer = await file.arrayBuffer();
           
-          // Try to load the PDF, with empty password fallback for encrypted files
           let pdf;
           try {
             const loadingTask = pdfjsLib.getDocument({ data: arrayBuffer });
             pdf = await loadingTask.promise;
           } catch (e: any) {
             if (e.name === 'PasswordException') {
-              // Try with empty password
               const loadingTask = pdfjsLib.getDocument({ data: arrayBuffer, password: '' });
               pdf = await loadingTask.promise;
             } else {
@@ -264,12 +181,6 @@ export default function PDFMergeTool() {
           }
           
           for (let j = 1; j <= pdf.numPages; j++) {
-              // Update progress for each thumbnail page
-              const baseProgress = 50 + (i / processedFiles.length) * 50;
-              const pageProgress = (j / pdf.numPages) * (50 / processedFiles.length);
-              setProcessingProgress(Math.round(baseProgress + pageProgress));
-              setProcessingMessage(`Generating thumbnails ${i + 1}/${processedFiles.length}: page ${j}/${pdf.numPages}`);
-              
               const page = await pdf.getPage(j);
               const viewport = page.getViewport({ scale: 0.5 });
               const canvas = document.createElement('canvas');
@@ -284,8 +195,8 @@ export default function PDFMergeTool() {
                 } as any).promise;
 
                 newPages.push({
-                  id: `f${startFileIndex + i}-p${j}-${Date.now()}-${Math.random()}`,
-                  fileIndex: startFileIndex + i,
+                  id: `f${startIndex + i}-p${j}-${Date.now()}-${Math.random()}`,
+                  fileIndex: startIndex + i,
                   pageIndex: j - 1,
                   image: canvas.toDataURL(),
                   fileName: file.name
@@ -294,40 +205,20 @@ export default function PDFMergeTool() {
           }
         } catch (fileErr: any) {
           console.warn(`Skipping thumbnail generation for ${file.name}:`, fileErr);
-          // File is still encrypted and couldn't generate thumbnails
-          // Will handle password during merge
         }
       }
       
-      setPages((prev) => [...prev, ...newPages]);
-      if (newFiles.length > 0) setViewMode('grid');
-
-    } catch (err: any) {
-      console.error("Error processing PDF:", err);
-      alert(`Failed to load PDF: ${err?.message || 'Unknown error'}. Check console for details.`);
-    } finally {
-      setIsProcessing(false);
-    }
+      setPages(prev => [...prev, ...newPages]);
+      if (filesToProcess.length > 0) setViewMode('grid');
+      setProcessingState(false);
   };
 
-  const removeFile = (idxToRemove: number) => {
-    const newFiles = files.filter((_, idx) => idx !== idxToRemove);
-    setFiles(newFiles);
-    filesRef.current = newFiles;
+  const handleRemoveFile = (idxToRemove: number) => {
+    removeFile(idxToRemove);
     setPages(prev => prev.filter(p => p.fileIndex !== idxToRemove).map(p => ({
         ...p,
         fileIndex: p.fileIndex > idxToRemove ? p.fileIndex - 1 : p.fileIndex
     })));
-    const newPasswords = { ...filePasswords };
-    delete newPasswords[idxToRemove];
-    Object.keys(newPasswords).forEach(key => {
-      const numKey = parseInt(key);
-      if (numKey > idxToRemove) {
-        newPasswords[numKey - 1] = newPasswords[numKey];
-        delete newPasswords[numKey];
-      }
-    });
-    setFilePasswords(newPasswords);
   };
 
   const removePage = (id: string) => {
@@ -388,20 +279,8 @@ export default function PDFMergeTool() {
         const flattenedBlob = new Blob([pdfBytes as any], { type: 'application/pdf' });
         const flattenedFile = new File([flattenedBlob], fileName, { type: 'application/pdf' });
         
-        if (pendingFile) {
-          // Upload flow - replace in files array
-          const newFiles = [...files];
-          newFiles[fileIndex] = flattenedFile;
-          setFiles(newFiles);
-          filesRef.current = newFiles;
-          setPendingFile(null);
-        } else {
-          // Merge flow - replace in files array
-          const newFiles = [...files];
-          newFiles[fileIndex] = flattenedFile;
-          setFiles(newFiles);
-          filesRef.current = newFiles;
-        }
+        // Replace in files array
+        replaceFile(fileIndex, flattenedFile);
         
         // Generate thumbnails for unlocked file
         await generateThumbnails([flattenedFile], fileIndex);
@@ -409,9 +288,8 @@ export default function PDFMergeTool() {
         setFilePasswords(prev => ({ ...prev, [fileIndex]: '' }));
         setUseForceUnlock(true); // Reset to true for next file
         setPasswordPrompt(null);
+        setPendingFile(null);
         
-        // Continue processing remaining files if any
-        // Use setTimeout to ensure state updates propagate
         if (pendingRemainingFiles.length > 0) {
           const remaining = pendingRemainingFiles;
           setPendingRemainingFiles([]);
@@ -424,12 +302,11 @@ export default function PDFMergeTool() {
         setPasswordPrompt(null);
       }
     } else {
-      // Try to unlock with password - always flatten to avoid re-prompting
       setIsUnlocking(true);
       try {
         const arrayBuffer = await currentFile.arrayBuffer();
         
-        // Use helper to unlock and flatten
+        // Unlock and flatten to avoid re-prompting
         const pdfBytes = await processAndFlattenPDF(arrayBuffer, password, (progress) => {
           setUnlockProgress(progress);
         });
@@ -437,27 +314,18 @@ export default function PDFMergeTool() {
         const flattenedBlob = new Blob([pdfBytes as any], { type: 'application/pdf' });
         const flattenedFile = new File([flattenedBlob], fileName, { type: 'application/pdf' });
         
-        // Replace file in array to avoid re-prompting during merge
-        const newFiles = [...files];
-        newFiles[fileIndex] = flattenedFile;
-        setFiles(newFiles);
-        filesRef.current = newFiles;
-        
-        // Password worked, store it and generate thumbnails
+        replaceFile(fileIndex, flattenedFile);
         setFilePasswords(prev => ({ ...prev, [fileIndex]: '' }));
         await generateThumbnails([flattenedFile], fileIndex);
         setPendingFile(null);
         setPasswordPrompt(null);
         
-        // Continue processing remaining files if any
-        // Use setTimeout to ensure state updates propagate
         if (pendingRemainingFiles.length > 0) {
           const remaining = pendingRemainingFiles;
           setPendingRemainingFiles([]);
           setTimeout(() => handleFilesSelected(remaining), 100);
         }
       } catch (err: any) {
-        // Check if it's an encryption issue even with password
         if (err.message?.includes('encrypted') || err.message?.includes('ignoreEncryption')) {
           alert(`This PDF uses encryption that requires Force Unlock.\n\nPlease:\n1. Check the "Force Unlock (Flatten PDF)" option\n2. Re-enter your password (or leave empty)\n3. Click Submit again`);
           setPasswordInput('');
@@ -473,54 +341,9 @@ export default function PDFMergeTool() {
     }
   };
 
-  const generateThumbnails = async (filesToProcess: File[], startIndex: number, password?: string) => {
-    const pdfjsLib = await import('pdfjs-dist');
-    pdfjsLib.GlobalWorkerOptions.workerSrc = '/pdf.worker.min.mjs';
-    
-    const newPages: PageItem[] = [];
-    
-    for (let i = 0; i < filesToProcess.length; i++) {
-      const file = filesToProcess[i];
-      const arrayBuffer = await file.arrayBuffer();
-      
-      const loadingTask = pdfjsLib.getDocument({ 
-        data: arrayBuffer,
-        password: password || undefined
-      });
-      const pdf = await loadingTask.promise;
-      
-      for (let j = 1; j <= pdf.numPages; j++) {
-        const page = await pdf.getPage(j);
-        const viewport = page.getViewport({ scale: 0.5 });
-        const canvas = document.createElement('canvas');
-        const context = canvas.getContext('2d');
-        canvas.height = viewport.height;
-        canvas.width = viewport.width;
-
-        if (context) {
-          await page.render({
-            canvasContext: context,
-            viewport: viewport
-          } as any).promise;
-
-          newPages.push({
-            id: `f${startIndex + i}-p${j}-${Date.now()}-${Math.random()}`,
-            fileIndex: startIndex + i,
-            pageIndex: j - 1,
-            image: canvas.toDataURL(),
-            fileName: file.name
-          });
-        }
-      }
-    }
-    
-    setPages(prev => [...prev, ...newPages]);
-    if (files.length > 0) setViewMode('grid');
-  };
-
   const mergePDFs = async () => {
     if (pages.length === 0) return;
-    setIsProcessing(true);
+    setProcessingState(true, 'Merging PDFs...');
 
     try {
       const mergedPdf = await PDFDocument.create();
@@ -528,28 +351,33 @@ export default function PDFMergeTool() {
       const pdfDocs: Record<number, PDFDocument> = {};
 
       for (const idx of uniqueFileIndices) {
-          // Use filesRef to get the latest files state, not the closure
           const currentFiles = filesRef.current;
+          if (!currentFiles[idx]) {
+              console.warn(`File at index ${idx} not found, skipping.`);
+              continue;
+          }
+
           try {
               const arrayBuffer = await currentFiles[idx].arrayBuffer();
               pdfDocs[idx] = await PDFDocument.load(arrayBuffer);
           } catch (e: any) {
-              // If still encrypted, the flattening during upload failed
+              const fileName = currentFiles[idx]?.name || 'Unknown File';
               if (e.message?.includes('encrypted')) {
-                  console.error(`File ${files[idx].name} is still encrypted at merge time`);
-                  alert(`ERROR: File "${files[idx].name}" is still encrypted.\n\nThis shouldn't happen. Please:\n1. Clear all files\n2. Re-upload your files\n3. Ensure Force Unlock is enabled (should be default)`);
-                  setIsProcessing(false);
+                  console.error(`File ${fileName} is still encrypted at merge time`);
+                  alert(`ERROR: File "${fileName}" is still encrypted.`);
+                  setProcessingState(false);
                   return;
               } else {
-                  console.error(`Error loading file ${files[idx].name}:`, e);
-                  alert(`Failed to load ${files[idx].name}: ${e.message}`);
-                  setIsProcessing(false);
+                  console.error(`Error loading file ${fileName}:`, e);
+                  alert(`Failed to load ${fileName}: ${e.message}`);
+                  setProcessingState(false);
                   return;
               }
           }
       }
 
       for (const page of pages) {
+          if (!pdfDocs[page.fileIndex]) continue;
           const sourcePdf = pdfDocs[page.fileIndex];
           const [copiedPage] = await mergedPdf.copyPages(sourcePdf, [page.pageIndex]);
           mergedPdf.addPage(copiedPage);
@@ -562,7 +390,7 @@ export default function PDFMergeTool() {
       console.error('Error merging PDFs:', error);
       alert('Failed to merge PDFs. Please try again.');
     } finally {
-      setIsProcessing(false);
+      setProcessingState(false);
     }
   };
 
@@ -618,7 +446,7 @@ export default function PDFMergeTool() {
                                 <span className="text-xs text-gray-400">({(file.size / 1024 / 1024).toFixed(2)} MB)</span>
                                 </div>
                                 <button 
-                                onClick={() => removeFile(idx)}
+                                onClick={() => handleRemoveFile(idx)}
                                 className="p-1.5 hover:bg-gray-200 rounded-full text-gray-400 hover:text-gray-600 transition-colors"
                                 >
                                 <X className="w-4 h-4" />
@@ -636,12 +464,12 @@ export default function PDFMergeTool() {
                         sensors={sensors} 
                         collisionDetection={closestCenter} 
                         onDragEnd={handleDragEnd}
-                        onDragStart={handleDragStart}
+                        onDragStart={(e) => setActiveId(e.active.id as string)}
                     >
                         <SortableContext items={pages.map(p => p.id)} strategy={rectSortingStrategy}>
                             <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-4">
                                 {pages.map((page) => (
-                                    <SortableItem key={page.id} {...page} onRemove={removePage} />
+                                    <DraggablePage key={page.id} {...page} onRemove={removePage} />
                                 ))}
                                 <div className="aspect-3/4 flex items-center justify-center bg-gray-50 border-2 border-dashed border-gray-200 rounded-lg hover:bg-gray-100 transition-colors cursor-pointer"
                                      onClick={() => document.getElementById('add-more-pdf')?.click()}
@@ -757,34 +585,16 @@ export default function PDFMergeTool() {
         </div>
       )}
 
-      <button
-        onClick={mergePDFs}
-        disabled={isProcessing || pages.length < 1}
-        className={cn(
-          "w-full py-4 rounded-xl font-bold text-lg shadow-lg relative overflow-hidden transition-all transform active:scale-95",
-          pages.length >= 1 && !isProcessing
-            ? "bg-blue-600 hover:bg-blue-700 text-white shadow-blue-500/20"
-            : "bg-gray-100 text-gray-400 cursor-not-allowed"
-        )}
+      <ProcessButton
+          onClick={mergePDFs}
+          disabled={isProcessing || pages.length < 1}
+          isProcessing={isProcessing}
+          processingMessage={processingMessage}
+          progress={processingProgress}
+          icon={ArrowDown}
       >
-        {isProcessing && (
-          <div 
-            className="absolute inset-0 bg-blue-600 transition-all duration-300"
-            style={{ width: `${processingProgress}%` }}
-          />
-        )}
-        <span className="relative z-10 flex items-center justify-center gap-2">
-          {isProcessing ? (
-            <>
-              {processingMessage} - {processingProgress}%
-            </>
-          ) : (
-            <>
-              <ArrowDown className="w-5 h-5" /> Merge {pages.length} Pages
-            </>
-          )}
-        </span>
-      </button>
+           Merge {pages.length} Pages
+      </ProcessButton>
     </div>
   );
 }

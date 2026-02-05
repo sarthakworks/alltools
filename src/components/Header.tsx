@@ -9,7 +9,7 @@ import {
   ChevronRight,
   User
 } from 'lucide-react';
-import { categories, allTools } from '../data/tools';
+import { categories, allTools } from './common/data/tools';
 import LanguageSwitcher from './LanguageSwitcher';
 import { useToolSearch } from './common/searchAlgo';
 import '../i18n';

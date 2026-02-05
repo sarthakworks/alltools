@@ -2,9 +2,12 @@ import React, { useState } from 'react';
 import { PDFDocument } from 'pdf-lib';
 import JSZip from 'jszip';
 import { FileUpload } from '../../common/fileUploader';
-import { ArrowDown, FileText, Loader2, X, Move, Shuffle, Grid, List, Scissors } from 'lucide-react';
-import { cn } from '../../../lib/utils';
+import { FileText, Loader2, Grid, Scissors } from 'lucide-react';
 import FileSaver from 'file-saver';
+import { usePDF } from '../../common/hooks/usePDF';
+import { generatePageThumbnails } from '../../../utils/pdf';
+import { ProcessButton } from './common/ProcessButton';
+import { DraggablePage } from './common/DraggablePage';
 import {
   DndContext,
   closestCenter,
@@ -18,10 +21,8 @@ import {
   arrayMove,
   SortableContext,
   sortableKeyboardCoordinates,
-  useSortable,
   rectSortingStrategy
 } from '@dnd-kit/sortable';
-import { CSS } from '@dnd-kit/utilities';
 
 interface PageItem {
   id: string; 
@@ -31,52 +32,17 @@ interface PageItem {
   fileName: string;
 }
 
-function SortableItem({ id, image, fileName, pageIndex, onRemove }: any) {
-  const {
-    attributes,
-    listeners,
-    setNodeRef,
-    transform,
-    transition,
-    isDragging
-  } = useSortable({ id });
-
-  const style = {
-    transform: CSS.Transform.toString(transform),
-    transition,
-    zIndex: isDragging ? 10 : 1,
-    opacity: isDragging ? 0.5 : 1
-  };
-
-  return (
-    <div 
-      ref={setNodeRef} 
-      style={style} 
-      {...attributes} 
-      {...listeners}
-      className="group relative aspect-3/4 bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden hover:shadow-md transition-shadow cursor-grab active:cursor-grabbing"
-    >
-      <img src={image} alt={`Page ${pageIndex + 1}`} className="w-full h-full object-contain p-2" />
-      <div className="absolute inset-0 bg-black/0 group-hover:bg-black/5 transition-colors" />
-      <div className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity">
-        <button 
-          onPointerDown={(e) => { e.stopPropagation(); onRemove(id); }}
-          className="p-1 bg-red-500 text-white rounded-full hover:bg-red-600 shadow-sm"
-        >
-          <X className="w-3 h-3" />
-        </button>
-      </div>
-      <div className="absolute bottom-0 left-0 right-0 bg-white/90 backdrop-blur-sm p-2 text-xs text-gray-600 border-t border-gray-100 truncate">
-        {fileName} - P{pageIndex + 1}
-      </div>
-    </div>
-  );
-}
-
 export default function PDFSplitTool() {
-  const [files, setFiles] = useState<File[]>([]);
+  const {
+    files,
+    addFiles,
+    filesRef,
+    isProcessing,
+    processingMessage,
+    setProcessingState
+  } = usePDF({ multiple: true });
+
   const [pages, setPages] = useState<PageItem[]>([]);
-  const [isProcessing, setIsProcessing] = useState(false);
   const [activeId, setActiveId] = useState<string | null>(null);
   
   const sensors = useSensors(
@@ -87,57 +53,40 @@ export default function PDFSplitTool() {
   );
 
   const handleFilesSelected = async (selectedFiles: File[]) => {
-    setIsProcessing(true);
-    const newFiles = [...files, ...selectedFiles];
-    setFiles(newFiles);
-
-    // Process new files to extract pages
-    const newPages: PageItem[] = [];
-    let startFileIndex = files.length;
+    const startIndex = filesRef.current.length;
+    addFiles(selectedFiles);
+    setProcessingState(true, 'Generating thumbnails...');
 
     try {
-      // Dynamically import PDF.js
-      const pdfjsLib = await import('pdfjs-dist');
-      // Set worker source to local file
-      pdfjsLib.GlobalWorkerOptions.workerSrc = '/pdf.worker.min.mjs';
-
+      const newPages: PageItem[] = [];
+      
       for (let i = 0; i < selectedFiles.length; i++) {
         const file = selectedFiles[i];
-        const arrayBuffer = await file.arrayBuffer();
-        const loadingTask = pdfjsLib.getDocument({ data: arrayBuffer });
-        const pdf = await loadingTask.promise;
-          
-        for (let j = 1; j <= pdf.numPages; j++) {
-            const page = await pdf.getPage(j);
-            const viewport = page.getViewport({ scale: 0.5 });
-            const canvas = document.createElement('canvas');
-            const context = canvas.getContext('2d');
-            canvas.height = viewport.height;
-            canvas.width = viewport.width;
-
-            if (context) {
-              await page.render({
-                canvasContext: context,
-                viewport: viewport
-              } as any).promise;
-
-              newPages.push({
-                id: `f${startFileIndex + i}-p${j}-${Date.now()}-${Math.random()}`,
-                fileIndex: startFileIndex + i,
-                pageIndex: j - 1,
-                image: canvas.toDataURL(),
-                fileName: file.name
-              });
-            }
+        setProcessingState(true, `Processing ${file.name}...`, Math.round(((i + 1) / selectedFiles.length) * 100));
+        
+        try {
+            const thumbnails = await generatePageThumbnails(file); // No progress hook needed here really as generic msg is fine
+            thumbnails.forEach((img, pageIdx) => {
+                newPages.push({
+                    id: `f${startIndex + i}-p${pageIdx + 1}-${Date.now()}-${Math.random()}`,
+                    fileIndex: startIndex + i,
+                    pageIndex: pageIdx,
+                    image: img,
+                    fileName: file.name
+                });
+            });
+        } catch (err: any) {
+            console.error(`Error processing ${file.name}:`, err);
+            // alert(`Failed to load ${file.name}: ${err.message}`);
         }
       }
-    } catch (err: any) {
-      console.error("Error processing PDF:", err);
-      alert(`Failed to load PDF: ${err?.message || 'Unknown error'}.`);
+      setPages((prev) => [...prev, ...newPages]);
+    } catch (error: any) {
+        console.error(error);
+        alert(`Error: ${error.message}`);
+    } finally {
+        setProcessingState(false);
     }
-
-    setPages((prev) => [...prev, ...newPages]);
-    setIsProcessing(false);
   };
 
   const removePage = (id: string) => {
@@ -162,19 +111,22 @@ export default function PDFSplitTool() {
 
   const saveAsSinglePDF = async () => {
     if (pages.length === 0) return;
-    setIsProcessing(true);
+    setProcessingState(true, 'Creating PDF...');
 
     try {
       const mergedPdf = await PDFDocument.create();
       const uniqueFileIndices = [...new Set(pages.map(p => p.fileIndex))];
       const pdfDocs: Record<number, PDFDocument> = {};
+      const currentFiles = filesRef.current; // Use ref to gain access to all files including newly added ones
 
       for (const idx of uniqueFileIndices) {
-          const arrayBuffer = await files[idx].arrayBuffer();
+          if (!currentFiles[idx]) continue;
+          const arrayBuffer = await currentFiles[idx].arrayBuffer();
           pdfDocs[idx] = await PDFDocument.load(arrayBuffer);
       }
 
       for (const page of pages) {
+          if (!pdfDocs[page.fileIndex]) continue;
           const sourcePdf = pdfDocs[page.fileIndex];
           const [copiedPage] = await mergedPdf.copyPages(sourcePdf, [page.pageIndex]);
           mergedPdf.addPage(copiedPage);
@@ -187,31 +139,31 @@ export default function PDFSplitTool() {
        console.error(error);
        alert('Error saving PDF');
     } finally {
-      setIsProcessing(false);
+      setProcessingState(false);
     }
   };
 
   const extractAllPages = async () => {
       if (pages.length === 0) return;
-      setIsProcessing(true);
+      setProcessingState(true, 'Extracting pages...');
 
       try {
         const zip = new JSZip();
-        // Load all source PDFs
         const uniqueFileIndices = [...new Set(pages.map(p => p.fileIndex))];
         const pdfDocs: Record<number, PDFDocument> = {};
+        const currentFiles = filesRef.current;
 
         for (const idx of uniqueFileIndices) {
-            const arrayBuffer = await files[idx].arrayBuffer();
+            if (!currentFiles[idx]) continue;
+            const arrayBuffer = await currentFiles[idx].arrayBuffer();
             pdfDocs[idx] = await PDFDocument.load(arrayBuffer);
         }
 
-        // Process each page
         for (let i = 0; i < pages.length; i++) {
              const page = pages[i];
+             if (!pdfDocs[page.fileIndex]) continue;
              const sourcePdf = pdfDocs[page.fileIndex];
              
-             // Create a new PDF for this single page
              const singleDoc = await PDFDocument.create();
              const [copiedPage] = await singleDoc.copyPages(sourcePdf, [page.pageIndex]);
              singleDoc.addPage(copiedPage);
@@ -227,7 +179,7 @@ export default function PDFSplitTool() {
         console.error(error);
         alert('Error extracting pages');
       } finally {
-        setIsProcessing(false);
+        setProcessingState(false);
       }
   };
 
@@ -256,13 +208,34 @@ export default function PDFSplitTool() {
                     sensors={sensors} 
                     collisionDetection={closestCenter} 
                     onDragEnd={handleDragEnd}
-                    onDragStart={handleDragStart}
+                    onDragStart={(e) => setActiveId(e.active.id as string)}
                 >
                     <SortableContext items={pages.map(p => p.id)} strategy={rectSortingStrategy}>
                         <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-4">
                             {pages.map((page) => (
-                                <SortableItem key={page.id} {...page} onRemove={removePage} />
+                                <DraggablePage key={page.id} {...page} onRemove={removePage} />
                             ))}
+                            {/* Add More Button */}
+                            <div className="aspect-3/4 flex items-center justify-center bg-gray-50 border-2 border-dashed border-gray-200 rounded-lg hover:bg-gray-100 transition-colors cursor-pointer"
+                                 onClick={() => document.getElementById('add-more-pdf-split')?.click()}
+                            >
+                                <div className="text-center">
+                                    <div className="w-8 h-8 bg-blue-100 text-blue-600 rounded-full flex items-center justify-center mx-auto mb-2">
+                                        <span className="text-xl">+</span>
+                                    </div>
+                                    <span className="text-xs text-gray-500 font-medium">Add More</span>
+                                </div>
+                                <input 
+                                    id="add-more-pdf-split" 
+                                    type="file" 
+                                    multiple 
+                                    accept=".pdf"
+                                    className="hidden" 
+                                    onChange={(e) => {
+                                        if (e.target.files) handleFilesSelected(Array.from(e.target.files));
+                                    }}
+                                />
+                            </div>
                         </div>
                     </SortableContext>
                     <DragOverlay>
@@ -279,23 +252,27 @@ export default function PDFSplitTool() {
 
        {files.length > 0 && (
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <button
+                <ProcessButton
                     onClick={saveAsSinglePDF}
                     disabled={isProcessing}
-                    className="w-full py-4 bg-blue-600 hover:bg-blue-700 text-white rounded-xl font-bold text-lg shadow-lg shadow-blue-500/20 flex items-center justify-center gap-2 transition-all"
+                    isProcessing={isProcessing && processingMessage === 'Creating PDF...'}
+                    icon={FileText}
+                    processingMessage="Saving..."
+                    progress={isProcessing ? 100 : 0} // indeterminate mostly
                 >
-                    {isProcessing ? <Loader2 className="animate-spin w-5 h-5" /> : <FileText className="w-5 h-5" />}
                     Save as Single PDF
-                </button>
+                </ProcessButton>
                 
-                <button
+                <ProcessButton
                     onClick={extractAllPages}
                     disabled={isProcessing}
-                    className="w-full py-4 bg-purple-600 hover:bg-purple-700 text-white rounded-xl font-bold text-lg shadow-lg shadow-purple-500/20 flex items-center justify-center gap-2 transition-all"
+                    isProcessing={isProcessing && processingMessage === 'Extracting pages...'}
+                    icon={Grid}
+                    processingMessage="Extracting..."
+                    className="bg-purple-600 hover:bg-purple-700 shadow-purple-500/20"
                 >
-                    {isProcessing ? <Loader2 className="animate-spin w-5 h-5" /> : <Grid className="w-5 h-5" />}
                     Extract All as ZIP
-                </button>
+                </ProcessButton>
             </div>
        )}
     </div>

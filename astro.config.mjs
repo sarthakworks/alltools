@@ -69,7 +69,24 @@ export default defineConfig({
   ],
 
   vite: {
-    plugins: [tailwindcss()]
+    plugins: [tailwindcss()],
+    optimizeDeps: {
+      include: [
+        '@pdfsmaller/pdf-encrypt-lite',
+        'pdfjs-dist',
+        'jszip',
+        '@dnd-kit/core',
+        '@dnd-kit/sortable',
+        '@dnd-kit/utilities',
+        '@huggingface/transformers'
+      ]
+    },
+    server: {
+      headers: {
+        'Cross-Origin-Embedder-Policy': 'require-corp',
+        'Cross-Origin-Opener-Policy': 'same-origin',
+      }
+    }
   },
 
   i18n: {
