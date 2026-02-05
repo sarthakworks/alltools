@@ -47,7 +47,7 @@ export default defineConfig({
           ? []
           : ['**/*.{js,css,html,ico,png,svg,mjs,json}'],
         navigateFallback: process.env.NODE_ENV === 'development' ? null : '/404',
-        maximumFileSizeToCacheInBytes: 5 * 1024 * 1024, // 5MB
+        maximumFileSizeToCacheInBytes: 15 * 1024 * 1024, // 10MB (increased from 5MB for large PDF libraries)
         runtimeCaching: [
           {
             urlPattern: /\.(?:png|jpg|jpeg|svg|gif|webp)$/,
@@ -56,6 +56,31 @@ export default defineConfig({
               cacheName: 'images',
               expiration: {
                 maxEntries: 10,
+                maxAgeSeconds: 30 * 24 * 60 * 60, // 30 Days
+              },
+            },
+          },
+          // Cache JavaScript modules for offline dynamic imports
+          {
+            urlPattern: /\.(?:js|mjs)$/,
+            handler: 'CacheFirst',
+            options: {
+              cacheName: 'js-modules',
+              expiration: {
+                maxEntries: 50,
+                maxAgeSeconds: 30 * 24 * 60 * 60, // 30 Days
+              },
+            },
+          },
+          // Special caching for critical PDF processing modules
+          {
+            urlPattern: /pdfjs-dist|pdf-lib|jszip|@pdfsmaller/,
+            handler: 'NetworkFirst',
+            options: {
+              cacheName: 'pdf-modules',
+              networkTimeoutSeconds: 3,
+              expiration: {
+                maxEntries: 20,
                 maxAgeSeconds: 30 * 24 * 60 * 60, // 30 Days
               },
             },
