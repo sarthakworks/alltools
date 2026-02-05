@@ -61,7 +61,7 @@ export default function Header() {
       <div className="bg-linear-to-r from-blue-600 to-indigo-600 px-4 py-1.5 text-center">
         <p className="text-[10px] font-medium text-white uppercase tracking-widest flex items-center justify-center gap-2">
           <span>🚧</span>
-          App in development: Some features may not work as expected
+          App in development: Some features might not work as expected
           <span>🚧</span>
         </p>
       </div>
