@@ -14,6 +14,7 @@ import LanguageSwitcher from './LanguageSwitcher';
 import { useToolSearch } from './common/searchAlgo';
 import '../i18n';
 import { useTranslation } from 'react-i18next';
+import OfflineIndicator from './common/OfflineIndicator';
 
 export default function Header() {
   const [activeDropdown, setActiveDropdown] = useState<string | null>(null);
@@ -219,7 +220,12 @@ export default function Header() {
 
           {/* Action Icons */}
           <div className="flex items-center gap-2">
-          <div className="relative">
+            {/* PWA Status Indicator */}
+            <div className="hidden lg:block">
+              <OfflineIndicator />
+            </div>
+
+            <div className="relative">
             <button 
               aria-label="Switch Language"
               onClick={() => setIsLangSwitcherOpen(true)}

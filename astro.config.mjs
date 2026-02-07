@@ -44,10 +44,9 @@ export default defineConfig({
       },
       workbox: {
         mode: 'production',
-        globPatterns: process.env.NODE_ENV === 'development'
-          ? []
-          : ['**/*.{js,css,html,ico,png,svg,mjs,json}'],
-        navigateFallback: process.env.NODE_ENV === 'development' ? null : '/404',
+        cacheId: 'alltools',
+        globPatterns: ['**/*.{js,css,html,ico,png,svg,mjs,json,woff,woff2,eot,ttf,otf}'],
+        navigateFallback: '/404',
         maximumFileSizeToCacheInBytes: 15 * 1024 * 1024, // 10MB (increased from 5MB for large PDF libraries)
         runtimeCaching: [
           {
@@ -61,18 +60,7 @@ export default defineConfig({
               },
             },
           },
-          // Cache JavaScript modules for offline dynamic imports
-          {
-            urlPattern: /\.(?:js|mjs)$/,
-            handler: 'CacheFirst',
-            options: {
-              cacheName: 'js-modules',
-              expiration: {
-                maxEntries: 50,
-                maxAgeSeconds: 30 * 24 * 60 * 60, // 30 Days
-              },
-            },
-          },
+
           // Special caching for critical PDF processing modules
           {
             urlPattern: /pdfjs-dist|pdf-lib|jszip|@pdfsmaller/,
@@ -82,6 +70,18 @@ export default defineConfig({
               networkTimeoutSeconds: 3,
               expiration: {
                 maxEntries: 20,
+                maxAgeSeconds: 30 * 24 * 60 * 60, // 30 Days
+              },
+            },
+          },
+          // Cache JavaScript modules for offline dynamic imports
+          {
+            urlPattern: /\.(?:js|mjs)$/,
+            handler: 'CacheFirst',
+            options: {
+              cacheName: 'js-modules',
+              expiration: {
+                maxEntries: 50,
                 maxAgeSeconds: 30 * 24 * 60 * 60, // 30 Days
               },
             },
@@ -112,7 +112,41 @@ export default defineConfig({
         'Cross-Origin-Embedder-Policy': 'require-corp',
         'Cross-Origin-Opener-Policy': 'same-origin',
       }
-    }
+    },
+    build: {
+      minify: 'terser',
+      rollupOptions: {
+        output: {
+          manualChunks(id) {
+            if (id.includes('node_modules')) {
+              // Priority 1: Specific vendor buckets
+              if (id.includes('lucide-react')) {
+                return 'lucide-icons';
+              }
+              if (id.includes('pdfjs-dist') || id.includes('pdf-lib') || id.includes('jszip') || id.includes('@pdfsmaller')) {
+                return 'pdf-vendor';
+              }
+              if (id.includes('@huggingface/transformers')) {
+                return 'ai-vendor';
+              }
+              // Priority 2: Everything else (including React)
+              return 'vendor';
+            }
+          },
+        },
+      },
+      terserOptions: {
+        compress: {
+          drop_console: true,
+          drop_debugger: true,
+          pure_funcs: ['console.log', 'console.info', 'console.debug', 'console.trace'],
+          passes: 3,
+        },
+        format: {
+          comments: false,
+        },
+      },
+    },
   },
 
   i18n: {
