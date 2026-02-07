@@ -362,7 +362,7 @@ export default function OfflineIndicator() {
   // ============================================================================
 
   const title = useMemo(() => {
-    const controller = "serviceWorker" in navigator ? !!navigator.serviceWorker.controller : false;
+    const controller = typeof navigator !== 'undefined' && "serviceWorker" in navigator ? !!navigator.serviceWorker.controller : false;
     const p = percent == null ? "" : ` (${percent}%)`;
     const cacheMode = fullyCached ? "Full offline mode" : "Runtime caching";
     
