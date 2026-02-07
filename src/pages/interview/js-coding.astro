@@ -1,0 +1,107 @@
+---
+import InterviewLayout from '../../layouts/InterviewLayout.astro';
+import InterviewCard from '../../components/interview/InterviewCard.astro';
+
+import codeInfiniteCurrying from '../../assets/portfolio/images/interview/infinitecurrying.png';
+import codeSum from '../../assets/portfolio/images/interview/sum.png';
+import codeGenericMemo from '../../assets/portfolio/images/interview/genericMemo.png';
+import codeFib from '../../assets/portfolio/images/interview/fib.png';
+import codeFactorial from '../../assets/portfolio/images/interview/factorial.png';
+import codePalindrome from '../../assets/portfolio/images/interview/palindrome.png';
+import codeAnagram from '../../assets/portfolio/images/interview/Anagram.png';
+import codeReverse from '../../assets/portfolio/images/interview/reverse.png';
+import codeReversePoly from '../../assets/portfolio/images/interview/reversepoly.png';
+import codeSortingArray from '../../assets/portfolio/images/interview/sortingArray.png';
+import codeSearch from '../../assets/portfolio/images/interview/search.png';
+import codeBindPoly from '../../assets/portfolio/images/interview/bindpoly.png';
+import codeFilterPoly from '../../assets/portfolio/images/interview/filterpoly.png';
+import codePromiseAllPoly1 from '../../assets/portfolio/images/interview/promisallpoly1.png';
+import codePromiseAllPoly2 from '../../assets/portfolio/images/interview/promisallpoly2.png';
+import codeFlatPoly from '../../assets/portfolio/images/interview/flatpoly.png';
+import codePrintNameSortAge from '../../assets/portfolio/images/interview/PrintNameSortAge.png';
+import codeRemoveDuplicate from '../../assets/portfolio/images/interview/removeduplicate.png';
+import codeRangeCreator from '../../assets/portfolio/images/interview/rangecreator.png';
+import codeShuffle from '../../assets/portfolio/images/interview/shuffle.png';
+import codeFindingVowels from '../../assets/portfolio/images/interview/findingvowels.png';
+import codeCapital from '../../assets/portfolio/images/interview/capital.png';
+import codePanagram from '../../assets/portfolio/images/interview/panagram.png';
+import codeMaxFrequency from '../../assets/portfolio/images/interview/Maxfrequency.png';
+import codeTwoSum from '../../assets/portfolio/images/interview/twosum.png';
+import codeTable from '../../assets/portfolio/images/interview/table.png';
+---
+
+<InterviewLayout title="JS Coding" currentTab="js-coding">
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-6 items-start">
+    
+    <InterviewCard title="Currying">
+      <h5 class="text-blue-600 font-bold mb-2 text-sm">Infinite Currying</h5>
+      <img src={codeInfiniteCurrying.src} alt="Infinite Currying" class="w-full h-auto rounded border border-gray-100" />
+    </InterviewCard>
+
+    <InterviewCard title="Memoization">
+      <h5 class="text-blue-600 font-bold mb-2 text-sm">Sum</h5>
+      <img src={codeSum.src} alt="Sum Memoization" class="w-full h-auto rounded border border-gray-100 mb-4" />
+      <h5 class="text-blue-600 font-bold mb-2 text-sm">Generic Memoize</h5>
+      <img src={codeGenericMemo.src} alt="Generic Memoize" class="w-full h-auto rounded border border-gray-100 mb-4" />
+      <h5 class="text-blue-600 font-bold mb-2 text-sm">Fibonacci</h5>
+      <img src={codeFib.src} alt="Fibonacci" class="w-full h-auto rounded border border-gray-100 mb-4" />
+      <h5 class="text-blue-600 font-bold mb-2 text-sm">Factorial</h5>
+      <img src={codeFactorial.src} alt="Factorial" class="w-full h-auto rounded border border-gray-100" />
+    </InterviewCard>
+
+    <InterviewCard title="Strings">
+      <h5 class="text-blue-600 font-bold mb-2 text-sm">Palindrome</h5>
+      <img src={codePalindrome.src} alt="Palindrome" class="w-full h-auto rounded border border-gray-100 mb-4" />
+      <h5 class="text-blue-600 font-bold mb-2 text-sm">Anagram</h5>
+      <img src={codeAnagram.src} alt="Anagram" class="w-full h-auto rounded border border-gray-100 mb-4" />
+      <h5 class="text-blue-600 font-bold mb-2 text-sm">Vowels</h5>
+      <img src={codeFindingVowels.src} alt="Finding Vowels" class="w-full h-auto rounded border border-gray-100 mb-4" />
+      <h5 class="text-blue-600 font-bold mb-2 text-sm">Capitalize</h5>
+      <img src={codeCapital.src} alt="Capitalize" class="w-full h-auto rounded border border-gray-100 mb-4" />
+      <h5 class="text-blue-600 font-bold mb-2 text-sm">Pangram</h5>
+      <img src={codePanagram.src} alt="Pangram" class="w-full h-auto rounded border border-gray-100" />
+    </InterviewCard>
+
+    <InterviewCard title="Array Manipulation">
+      <img src={codeReverse.src} alt="Reverse" class="w-full h-auto rounded border border-gray-100 mb-4" />
+      <img src={codeSortingArray.src} alt="Sorting" class="w-full h-auto rounded border border-gray-100 mb-4" />
+      <img src={codeSearch.src} alt="Search" class="w-full h-auto rounded border border-gray-100 mb-4" />
+      <img src={codeRemoveDuplicate.src} alt="Remove Duplicate" class="w-full h-auto rounded border border-gray-100 mb-4" />
+      <img src={codeRangeCreator.src} alt="Range Creator" class="w-full h-auto rounded border border-gray-100 mb-4" />
+      <img src={codeShuffle.src} alt="Shuffle" class="w-full h-auto rounded border border-gray-100" />
+    </InterviewCard>
+
+    <InterviewCard title="Polyfills">
+      <h5 class="text-blue-600 font-bold mb-2 text-sm">Bind</h5>
+      <img src={codeBindPoly.src} alt="Bind Polyfill" class="w-full h-auto rounded border border-gray-100 mb-4" />
+      <h5 class="text-blue-600 font-bold mb-2 text-sm">Filter</h5>
+      <img src={codeFilterPoly.src} alt="Filter Polyfill" class="w-full h-auto rounded border border-gray-100 mb-4" />
+      <h5 class="text-blue-600 font-bold mb-2 text-sm">Array.flat</h5>
+      <img src={codeFlatPoly.src} alt="Flat Polyfill" class="w-full h-auto rounded border border-gray-100 mb-4" />
+      <h5 class="text-blue-600 font-bold mb-2 text-sm">Array.reverse</h5>
+      <img src={codeReversePoly.src} alt="Reverse Polyfill" class="w-full h-auto rounded border border-gray-100 mb-4" />
+      <h5 class="text-blue-600 font-bold mb-2 text-sm">Promise.all</h5>
+      <img src={codePromiseAllPoly1.src} alt="Promise.all Polyfill 1" class="w-full h-auto rounded border border-gray-100 mb-4" />
+      <img src={codePromiseAllPoly2.src} alt="Promise.all Polyfill 2" class="w-full h-auto rounded border border-gray-100" />
+    </InterviewCard>
+
+    <InterviewCard title="Output & Logic">
+       <h5 class="text-blue-600 font-bold mb-2 text-sm">Output Questions</h5>
+       <p class="text-gray-600 text-sm mb-4">
+         (console.log(1) &lt; console.log(2) &lt; console.log(3)) // true
+       </p>
+       <h5 class="text-blue-600 font-bold mb-2 text-sm">Print Names by Age</h5>
+       <img src={codePrintNameSortAge.src} alt="Print Names Sort Age" class="w-full h-auto rounded border border-gray-100 mb-4" />
+       
+       <h5 class="text-blue-600 font-bold mb-2 text-sm">Max Frequency Char</h5>
+       <img src={codeMaxFrequency.src} alt="Max Frequency" class="w-full h-auto rounded border border-gray-100 mb-4" />
+       
+       <h5 class="text-blue-600 font-bold mb-2 text-sm">Two Sum</h5>
+       <img src={codeTwoSum.src} alt="Two Sum" class="w-full h-auto rounded border border-gray-100 mb-4" />
+
+       <h5 class="text-blue-600 font-bold mb-2 text-sm">Table Generation</h5>
+       <img src={codeTable.src} alt="Table" class="w-full h-auto rounded border border-gray-100" />
+    </InterviewCard>
+
+  </div>
+</InterviewLayout>

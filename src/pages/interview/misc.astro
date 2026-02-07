@@ -1,0 +1,102 @@
+---
+import InterviewLayout from '../../layouts/InterviewLayout.astro';
+import InterviewCard from '../../components/interview/InterviewCard.astro';
+
+import codeWebpackConfig from '../../assets/portfolio/images/interview/misc/basicconfig.png';
+import codeServiceWorker from '../../assets/portfolio/images/interview/misc/serviceworker1.png';
+---
+
+<InterviewLayout title="Misc" currentTab="misc">
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-6 items-start">
+    
+    <InterviewCard title="Optimization Techniques" class="md:col-span-2">
+      <ul class="list-disc list-inside text-gray-600 space-y-2 text-sm">
+        <li>
+          <span class="text-blue-600 font-bold">Micro-frontends:</span> Splitting a monolithic app into smaller, independent apps.
+        </li>
+        <li>
+          <span class="text-blue-600 font-bold">Server Side Rendering (SSR):</span> Rendering the initial HTML on the server.
+        </li>
+        <li>
+          <span class="text-blue-600 font-bold">Reduce Latency:</span> CDN, Caching, Compression (Gzip/Brotli).
+        </li>
+        <li>
+          <span class="text-blue-600 font-bold">Caching:</span> Browser Cache, Service Workers.
+        </li>
+        <li>
+          <span class="text-blue-600 font-bold">Code Splitting:</span> Load only what is needed (Lazy loading).
+        </li>
+        <li>
+          <span class="text-blue-600 font-bold">Memoization:</span> Caching expensive function results (useMemo, React.memo).
+        </li>
+        <li>
+          <span class="text-blue-600 font-bold">Web Workers:</span> Offload heavy processing to background threads.
+        </li>
+        <li>
+          <span class="text-blue-600 font-bold">Service Workers:</span> Offline support, caching assets.
+        </li>
+        <li>
+          <span class="text-blue-600 font-bold">Critical Rendering:</span> Inline critical CSS, defer non-critical JS.
+        </li>
+      </ul>
+    </InterviewCard>
+
+    <InterviewCard title="Webpack" class="md:col-span-2">
+      <p class="text-gray-600 mb-4 text-sm">
+        A static module bundler for modern JavaScript applications.
+      </p>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div>
+           <h5 class="text-blue-600 font-bold mb-2">Key Concepts</h5>
+           <ul class="list-disc list-inside text-gray-600 space-y-1 text-sm">
+             <li><span class="font-bold">Entry:</span> The start point of the application.</li>
+             <li><span class="font-bold">Output:</span> Where to emit the bundles.</li>
+             <li><span class="font-bold">Loaders:</span> Transformations applied to source files (e.g., Babel for JS, css-loader for CSS).</li>
+             <li><span class="font-bold">Plugins:</span> Perform wider range of tasks (bundle optimization, asset management).</li>
+           </ul>
+        </div>
+        <div>
+           <h5 class="text-blue-600 font-bold mb-2">Configuration</h5>
+           <img src={codeWebpackConfig.src} alt="Webpack Config" class="w-full h-auto rounded border border-gray-100" />
+        </div>
+      </div>
+    </InterviewCard>
+
+    <InterviewCard title="CommonJS vs ES6 Imports" class="md:col-span-1">
+      <div class="grid grid-cols-2 gap-4 text-sm">
+        <div>
+           <h5 class="text-blue-600 font-bold mb-1">CommonJS</h5>
+           <p class="text-gray-600 mb-1">Node.js (Server)</p>
+           <code class="text-xs bg-gray-50 p-1 block">require()</code>
+           <code class="text-xs bg-gray-50 p-1 block mt-1">module.exports</code>
+           <p class="text-gray-500 text-xs mt-1">Dynamic (runtime), synchronous.</p>
+        </div>
+         <div>
+           <h5 class="text-blue-600 font-bold mb-1">ES6 Modules</h5>
+           <p class="text-gray-600 mb-1">Browser (Client)</p>
+           <code class="text-xs bg-gray-50 p-1 block">import</code>
+           <code class="text-xs bg-gray-50 p-1 block mt-1">export</code>
+           <p class="text-gray-500 text-xs mt-1">Static (compile-time), asynchronous.</p>
+        </div>
+      </div>
+    </InterviewCard>
+
+    <InterviewCard title="Workers" class="md:col-span-1">
+       <h5 class="text-blue-600 font-bold mb-1">Web Workers</h5>
+       <p class="text-gray-600 text-sm mb-2">Run in background thread. No access to DOM. Good for heavy calculations.</p>
+       
+       <h5 class="text-blue-600 font-bold mb-1">Service Workers</h5>
+       <p class="text-gray-600 text-sm mb-2">Proxy between app and network. Offline support, caching, push notifications. Requires HTTPS.</p>
+       <img src={codeServiceWorker.src} alt="Service Worker" class="w-full h-auto rounded border border-gray-100" />
+    </InterviewCard>
+
+    <InterviewCard title="PWA (Progressive Web App)" class="md:col-span-1">
+      <ul class="list-disc list-inside text-gray-600 space-y-2 text-sm">
+        <li>Web apps that behave like native apps.</li>
+        <li><span class="font-bold">Requirements:</span> HTTPS, Service Worker, Manifest File.</li>
+        <li><span class="font-bold">Features:</span> Installable, Offline capabilities, Push notifications.</li>
+      </ul>
+    </InterviewCard>
+
+  </div>
+</InterviewLayout>

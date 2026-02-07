@@ -1,0 +1,295 @@
+---
+import InterviewLayout from '../../layouts/InterviewLayout.astro';
+import InterviewCard from '../../components/interview/InterviewCard.astro';
+
+import codeJsSymbolPng from '../../assets/portfolio/images/interview/js/symbol.png';
+import codeJsProtoPng from '../../assets/portfolio/images/interview/js/proto.png';
+import codeJsPromise1Png from '../../assets/portfolio/images/interview/js/promise1.png';
+import codeJsPromise2Png from '../../assets/portfolio/images/interview/js/promise2.png';
+import codeJsAsyncawaitPng from '../../assets/portfolio/images/interview/js/asyncawait.png';
+---
+
+<InterviewLayout title="Javascript" currentTab="javascript">
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-6 items-start">
+
+    <InterviewCard title="Data Types" class="md:col-span-2">
+      <p class="text-gray-600 mb-4">
+        A mutable object is an object whose state can be modified after it is created.
+      </p>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+        <div>
+          <h5 class="text-blue-600 font-bold mb-2">Primitive (All Immutable)</h5>
+          <ul class="list-disc list-inside text-gray-600 space-y-1 text-sm">
+            <li><span class="text-blue-600">null</span> (type of null is "object")</li>
+            <li><span class="text-blue-600">undefined</span> ("undefined" type)</li>
+            <li><span class="text-blue-600">String</span></li>
+            <li><span class="text-blue-600">number</span></li>
+            <li><span class="text-blue-600">boolean</span></li>
+            <li><span class="text-blue-600">symbol</span></li>
+          </ul>
+        </div>
+        <div>
+          <h5 class="text-blue-600 font-bold mb-2">Reference (Mutable)</h5>
+          <ul class="list-disc list-inside text-gray-600 space-y-1 text-sm">
+            <li><span class="text-blue-600">Arrays</span> - ordered collections</li>
+            <li><span class="text-blue-600">Objects</span> - keyed collections</li>
+            <li><span class="text-blue-600">Function</span></li>
+            <li><span class="text-blue-600">Set / Map</span></li>
+            <li><span class="text-blue-600">WeakSet / WeakMap</span></li>
+            <li><span class="text-blue-600">Date</span></li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <ul class="list-disc list-inside text-gray-600 space-y-3 text-sm">
+          <li>
+            <span class="text-blue-600 font-bold">Symbol</span> - Unique identifier.
+          </li>
+          <li>
+            <span class="text-blue-600 font-bold">Set</span>
+            <p class="ml-5">Collection of unique values (no keys).</p>
+          </li>
+          <li>
+            <span class="text-blue-600 font-bold">Map</span>
+            <p class="ml-5">Collection of keyed data items, allows keys of any type.</p>
+          </li>
+          <li>
+            <span class="text-blue-600 font-bold">WeakMap</span>
+            <p class="ml-5">Keys must be objects. If no other references to the key object exist, it's garbage collected.</p>
+          </li>
+          <li>
+            <span class="text-blue-600 font-bold">WeakSet</span>
+            <p class="ml-5">Collection of unique objects. Weakly held, allowing garbage collection.</p>
+          </li>
+        </ul>
+        <div>
+          <img src={codeJsSymbolPng.src} alt="Symbol code" class="w-full h-auto rounded border border-gray-100" />
+        </div>
+      </div>
+    </InterviewCard>
+
+    <InterviewCard title="Closures" class="md:col-span-2">
+      <ul class="list-disc list-inside text-gray-600 space-y-2">
+        <li>
+          A function bundled with its lexical scope forms a closure. It gives access to an outer function's scope from an inner function. Created at function creation time.
+        </li>
+        <li>
+          <span class="text-blue-600 font-bold">Uses:</span> Memoization, Currying, Data-privacy, maintaining state in async world.
+        </li>
+        <li>
+          <span class="text-blue-600 font-bold">Disadvantages:</span> Memory leaks if not handled (data not garbage collected automatically).
+        </li>
+      </ul>
+    </InterviewCard>
+
+    <InterviewCard title="Types of Functions" class="md:col-span-2">
+      <ul class="list-disc list-inside text-gray-600 space-y-2">
+        <li>
+          <span class="text-blue-600 font-bold">Higher Order Function:</span> Takes a function as argument or returns a function.
+        </li>
+        <li>
+          <span class="text-blue-600 font-bold">First-Class Function:</span> Functions treated like any other variable (passed as args, assigned to vars).
+        </li>
+        <li>
+          <span class="text-blue-600 font-bold">Callback Function:</span> Passed into another function to be invoked later.
+        </li>
+        <li>
+          <span class="text-blue-600 font-bold">Pure Function:</span> Always returns same result for same arguments, no side effects.
+        </li>
+      </ul>
+    </InterviewCard>
+
+    <InterviewCard title="Event Bubbling vs Capturing" class="md:col-span-1">
+       <ol class="list-decimal list-inside text-gray-600 space-y-1 mb-2 text-sm">
+        <li>Capturing phase (down to element)</li>
+        <li>Target phase (at element)</li>
+        <li>Bubbling phase (up from element)</li>
+      </ol>
+      <ul class="list-disc list-inside text-gray-600 space-y-2 text-sm">
+        <li>
+          <span class="text-blue-600 font-bold">Event Bubbling (default):</span> Event runs on element, then parent, then ancestors.
+        </li>
+        <li>
+          <span class="text-blue-600 font-bold">Event Capturing:</span> Event propagates from outermost to target.
+          <p class="text-red-500 font-mono mt-1 text-xs">elem.addEventListener(..., {'{'} capture: true {'}'})</p>
+        </li>
+      </ul>
+    </InterviewCard>
+
+    <InterviewCard title="Stop Propagation & Prevent Default" class="md:col-span-1">
+      <ul class="list-disc list-inside text-gray-600 space-y-2 text-sm">
+        <li>
+          <span class="text-blue-600 font-bold">event.stopPropagation():</span> Stops the bubbling process.
+        </li>
+        <li>
+          <span class="text-blue-600 font-bold">event.preventDefault():</span> Cancels the default action of the event (e.g., submitting a form, following a link).
+        </li>
+      </ul>
+    </InterviewCard>
+
+    <InterviewCard title="Synthetic Events (React)" class="md:col-span-1">
+      <p class="text-gray-600 mb-2 text-sm">
+        Cross-browser wrapper around the browser's native event. React reuses this event object for performance.
+      </p>
+      <p class="text-gray-600 mb-2 text-sm">
+        'e' is the synthetic event. API is same as native events (stopPropagation, preventDefault).
+      </p>
+      <p class="text-red-500 text-sm font-mono">onClick, onBlur, onChange (camelCase)</p>
+    </InterviewCard>
+
+    <InterviewCard title="Event Delegation" class="md:col-span-1">
+      <p class="text-gray-600 mb-2 text-sm">
+        Instead of multiple listeners on child nodes, add one listener to the parent. Use bubbling to catch events from children.
+      </p>
+      <p class="text-gray-600 text-sm">
+        Identify child using <span class="text-red-500 font-mono">e.target.nodeName</span>.
+      </p>
+    </InterviewCard>
+
+    <InterviewCard title="Debouncing & Throttling" class="md:col-span-1">
+      <h5 class="text-blue-600 font-bold mb-1">Debouncing</h5>
+      <p class="text-gray-600 mb-2 text-sm">
+        Waits for a pause in events before executing. (e.g., Search bar input - exec 1s after last keystroke).
+      </p>
+      <h5 class="text-blue-600 font-bold mb-1">Throttling</h5>
+      <p class="text-gray-600 text-sm">
+        Executes at most once every X milliseconds. (e.g., Scroll event - exec every 100ms).
+      </p>
+    </InterviewCard>
+
+    <InterviewCard title="Generator Functions" class="md:col-span-1">
+      <p class="text-gray-600 mb-2 text-sm">
+        Can "yield" multiple values on-demand. Doesn't terminate, just pauses.
+      </p>
+      <div class="bg-gray-50 p-2 rounded text-xs font-mono text-red-500 mb-2">
+        function* gen() {'{'} yield 1; yield 2; {'}'}<br/>
+        const g = gen();<br/>
+        g.next().value; // 1
+      </div>
+    </InterviewCard>
+
+    <InterviewCard title="Prototype Inheritance" class="md:col-span-1">
+      <p class="text-gray-600 mb-2 text-sm">
+        Objects have a an internal <span class="font-mono">[[Prototype]]</span> property. Objects inherit methods/properties from their prototype.
+      </p>
+      <p class="text-red-500 text-sm font-mono mb-2">ChildObject.__proto__ = ParentObject</p>
+      <img src={codeJsProtoPng.src} alt="Prototype" class="w-full h-auto rounded border border-gray-100" />
+    </InterviewCard>
+
+    <InterviewCard title="ES6 Features" class="md:col-span-1">
+      <ul class="list-disc list-inside text-blue-600 space-y-1 text-sm">
+        <li>let and const</li>
+        <li>Arrow Functions</li>
+        <li>Spread / Rest Operator</li>
+        <li>For/of loop</li>
+        <li>Promises</li>
+        <li>Default parameters</li>
+        <li>Template Literals</li>
+        <li>Destructuring Assignment</li>
+        <li>Modules (import/export)</li>
+      </ul>
+    </InterviewCard>
+
+    <InterviewCard title="Callbacks" class="md:col-span-1">
+      <p class="text-gray-600 mb-2 text-sm">
+         Passed as argument to another function, executed after some operation.
+      </p>
+      <p class="text-gray-600 text-sm">
+        <span class="font-bold">Disadvantage:</span> Callback hell, Inversion of control. Better to use Promises.
+      </p>
+    </InterviewCard>
+
+    <InterviewCard title="Promises" class="md:col-span-1">
+      <p class="text-gray-600 mb-2 text-sm">
+        Represents eventual completion/failure of an async operation.
+      </p>
+      <ul class="list-disc list-inside text-gray-600 mb-2 text-sm">
+        <li>Pending</li>
+        <li>Fulfilled</li>
+        <li>Rejected</li>
+      </ul>
+      <div class="grid grid-cols-2 gap-2">
+         <img src={codeJsPromise1Png.src} alt="Promise 1" class="w-full h-auto rounded border border-gray-100" />
+         <img src={codeJsPromise2Png.src} alt="Promise 2" class="w-full h-auto rounded border border-gray-100" />
+      </div>
+    </InterviewCard>
+
+    <InterviewCard title="Async / Await" class="md:col-span-1">
+      <p class="text-gray-600 mb-2 text-sm">
+        Syntactic sugar over Promises. Makes async code look synchronous.
+      </p>
+      <img src={codeJsAsyncawaitPng.src} alt="Async Await" class="w-full h-auto rounded border border-gray-100" />
+    </InterviewCard>
+
+    <InterviewCard title="Arrow Functions" class="md:col-span-1">
+      <ul class="list-disc list-inside text-gray-600 space-y-1 text-sm">
+        <li>Shorter syntax.</li>
+        <li>Implicit return (if one expression).</li>
+        <li><span class="font-bold">No 'this' binding:</span> 'this' is lexically inherited from scope.</li>
+      </ul>
+    </InterviewCard>
+
+    <InterviewCard title="This Keyword" class="md:col-span-1">
+      <ul class="list-disc list-inside text-gray-600 space-y-1 text-sm">
+        <li>In method: refers to object.</li>
+        <li>Alone/In function: refers to global (window).</li>
+        <li>Strict mode function: undefined.</li>
+        <li>Event handler: element that received event.</li>
+        <li>Arrow function: lexical scope.</li>
+        <li><span class="font-mono">call(), apply(), bind()</span> set it explicitly.</li>
+      </ul>
+    </InterviewCard>
+
+    <InterviewCard title="Currying" class="md:col-span-1">
+      <p class="text-gray-600 mb-2 text-sm">
+        Translating <span class="font-mono text-blue-600">f(a, b, c)</span> into <span class="font-mono text-blue-600">f(a)(b)(c)</span>.
+      </p>
+      <p class="text-gray-600 text-sm">
+        Useful for making functions argument-independent or creating partial applications.
+      </p>
+    </InterviewCard>
+
+    <InterviewCard title="Popular Methods" class="md:col-span-2">
+      <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 text-sm">
+        <div>
+           <span class="text-blue-600 font-bold block">JSON.parse()</span>
+           <span class="text-gray-500">String to Object</span>
+        </div>
+        <div>
+           <span class="text-blue-600 font-bold block">JSON.stringify()</span>
+           <span class="text-gray-500">Object to String</span>
+        </div>
+        <div>
+           <span class="text-blue-600 font-bold block">.split(sep)</span>
+           <span class="text-gray-500">String to Array</span>
+        </div>
+        <div>
+           <span class="text-blue-600 font-bold block">.join(sep)</span>
+           <span class="text-gray-500">Array to String</span>
+        </div>
+        <div>
+           <span class="text-blue-600 font-bold block">.map()</span>
+           <span class="text-gray-500">Transform array</span>
+        </div>
+        <div>
+           <span class="text-blue-600 font-bold block">.filter()</span>
+           <span class="text-gray-500">Filter array</span>
+        </div>
+        <div>
+           <span class="text-blue-600 font-bold block">.reduce()</span>
+           <span class="text-gray-500">Accumulate array</span>
+        </div>
+         <div>
+           <span class="text-blue-600 font-bold block">.slice()</span>
+           <span class="text-gray-500">Extract part (immutable)</span>
+        </div>
+         <div>
+           <span class="text-blue-600 font-bold block">.splice()</span>
+           <span class="text-gray-500">Add/Remove (mutable)</span>
+        </div>
+      </div>
+    </InterviewCard>
+    
+  </div>
+</InterviewLayout>

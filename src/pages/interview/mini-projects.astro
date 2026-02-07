@@ -1,0 +1,58 @@
+---
+import InterviewLayout from '../../layouts/InterviewLayout.astro';
+import InterviewCard from '../../components/interview/InterviewCard.astro';
+
+import Stopwatch from '../../components/interview/projects/Stopwatch';
+import Debounce from '../../components/interview/projects/Debounce';
+import Api from '../../components/interview/projects/Api';
+import Todo from '../../components/interview/projects/Todo';
+import Search from '../../components/interview/projects/Search';
+import Slideshow from '../../components/interview/projects/Slideshow';
+import Explorer from '../../components/interview/projects/Explorer';
+import Virtualisation from '../../components/interview/projects/Virtualisation';
+import Rating from '../../components/interview/projects/Rating';
+---
+
+<InterviewLayout title="Mini Projects" currentTab="mini-projects">
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-6 items-start">
+    
+    <InterviewCard title="Stopwatch">
+      <Stopwatch client:visible />
+    </InterviewCard>
+
+    <InterviewCard title="Debounce / Throttle">
+      <Debounce client:visible />
+    </InterviewCard>
+
+    <InterviewCard title="Sort Api Table" class="md:col-span-2">
+      <Api client:visible />
+    </InterviewCard>
+
+    <InterviewCard title="Todo List">
+      <Todo client:visible />
+    </InterviewCard>
+
+    <InterviewCard title="Search">
+      <Search client:visible />
+    </InterviewCard>
+
+    <InterviewCard title="Carousel">
+      <Slideshow client:visible />
+    </InterviewCard>
+
+    <InterviewCard title="Vs Code Folder Structure">
+      <Explorer client:visible />
+    </InterviewCard>
+
+    <InterviewCard title="Virtualization">
+      <Virtualisation client:visible />
+    </InterviewCard>
+
+    <InterviewCard title="Rating Stars">
+      <div class="flex justify-center py-4">
+        <Rating client:visible />
+      </div>
+    </InterviewCard>
+
+  </div>
+</InterviewLayout>

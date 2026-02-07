@@ -1,0 +1,72 @@
+---
+import Layout from './Layout.astro';
+import { allTools } from '../components/common/data/tools';
+
+interface Props {
+  title: string;
+  currentTab?: string; // Optional now, as we use URL for highlighting
+}
+
+const { title } = Astro.props;
+const currentPath = Astro.url.pathname.replace(/\/$/, ''); // Remove trailing slash for consistent matching
+
+// Derive tabs from tools.ts
+// We filter for the specific interview IDs we added
+const interviewToolIds = [
+  'interview-html',
+  'interview-js',
+  'interview-react',
+  'interview-coding',
+  'interview-misc',
+  'interview-projects'
+];
+
+const tabs = interviewToolIds.map(id => {
+  const tool = allTools.find(t => t.id === id);
+  if (!tool) return null;
+  return {
+    id: tool.id,
+    name: tool.name.replace('Interview: ', ''), // Remove prefix for tab display
+    href: tool.href
+  };
+}).filter(Boolean);
+---
+
+<Layout title={`${title} | Interview Preparation`}>
+  <div class="w-full max-w-[1280px] mx-auto px-4 sm:px-6 lg:px-8 py-12">
+    
+    <div class="mb-12 text-center">
+      <h1 class="text-4xl font-extrabold text-gray-900 mb-4">Interview Preparation</h1>
+      <p class="text-xl text-gray-600">Master the technical interview with curated resources.</p>
+    </div>
+
+    {/* Tabs */}
+    <div class="border-b border-gray-200 mb-8 overflow-x-auto">
+      <nav class="-mb-px flex space-x-8" aria-label="Tabs">
+        {tabs.map((tab) => {
+          if (!tab) return null;
+          const isActive = currentPath === tab.href.replace(/\/$/, '') || (tab.href === '/interview' && currentPath === '/interview');
+          return (
+          <a
+            href={tab.href}
+            class={`
+              whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm transition-colors
+              ${isActive
+                ? 'border-blue-500 text-blue-600'
+                : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'}
+            `}
+            aria-current={isActive ? 'page' : undefined}
+          >
+            {tab.name}
+          </a>
+        )})}
+      </nav>
+    </div>
+
+    {/* Content */}
+    <div class="mt-8">
+      <slot />
+    </div>
+    
+  </div>
+</Layout>

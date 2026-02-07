@@ -57,6 +57,15 @@ export const allTools: ToolMetadata[] = [
 
   //not included in tools link
   { id: 'portfolio', name: 'Portfolio / About Me', desc: 'My work experience & skills', icon: Briefcase, href: '/portfolio', category: 'NA', color: 'bg-blue-50 text-blue-600', search_keys: 'portfolio, about, resume, cv, work, experience, sarthak' },
+  { id: 'interview', name: 'Interview Preparation', desc: 'Resources & Guides', icon: Briefcase, href: '/interview', category: 'NA', color: 'bg-indigo-50 text-indigo-600', search_keys: 'interview, preparation, guide, resources' },
+  { id: 'interview-html', name: 'Interview: HTML / CSS', desc: 'HTML & CSS Concepts', icon: FileCode, href: '/interview', category: 'NA', color: 'bg-orange-50 text-orange-600', search_keys: 'html, css, interview, styling, box model, flexbox, grid' },
+  { id: 'interview-js', name: 'Interview: Javascript', desc: 'JS Core Concepts', icon: FileCode, href: '/interview/javascript', category: 'NA', color: 'bg-yellow-50 text-yellow-600', search_keys: 'javascript, js, interview, es6, closures, async, promises' },
+  { id: 'interview-react', name: 'Interview: React', desc: 'React.js Concepts', icon: FileCode, href: '/interview/react', category: 'NA', color: 'bg-cyan-50 text-cyan-600', search_keys: 'react, hooks, virtual dom, components, interview' },
+  { id: 'interview-coding', name: 'Interview: JS Coding', desc: 'JS Coding Challenges', icon: FileCode, href: '/interview/js-coding', category: 'NA', color: 'bg-green-50 text-green-600', search_keys: 'coding, algorithms, data structures, dsa, problem solving, interview' },
+  { id: 'interview-misc', name: 'Interview: Misc', desc: 'Browser & Web Concepts', icon: Briefcase, href: '/interview/misc', category: 'NA', color: 'bg-gray-50 text-gray-600', search_keys: 'browser, web, storage, cookies, network, security, interview' },
+  { id: 'interview-projects', name: 'Interview: Mini Projects', desc: 'Practice Projects', icon: Briefcase, href: '/interview/mini-projects', category: 'NA', color: 'bg-purple-50 text-purple-600', search_keys: 'projects, practice, stopwatch, todo, carousel, interview' },
+
+  
 ];
 
 export const categories = [

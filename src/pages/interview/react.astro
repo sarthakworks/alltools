@@ -1,0 +1,175 @@
+---
+import InterviewLayout from '../../layouts/InterviewLayout.astro';
+import InterviewCard from '../../components/interview/InterviewCard.astro';
+
+// Images missing in source
+// import codeReactLifecycle1Png from '../../assets/portfolio/images/interview/react/lifecycle1.png';
+// import codeReactLifecycle2Png from '../../assets/portfolio/images/interview/react/lifecycle2.png';
+// import codeReactUseEffectPng from '../../assets/portfolio/images/interview/react/useeffect.png';
+// import codeReactHooksPng from '../../assets/portfolio/images/interview/react/hooks.png';
+// import codeReactReconsilationPng from '../../assets/portfolio/images/interview/react/reconsilation.png';
+// import codeReactContextPng from '../../assets/portfolio/images/interview/react/context.png';
+// import codeReactReduxPng from '../../assets/portfolio/images/interview/react/redux.png';
+---
+
+<InterviewLayout title="React" currentTab="react">
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-6 items-start">
+    
+    <InterviewCard title="Key Features" class="md:col-span-2">
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div>
+           <h5 class="text-blue-600 font-bold mb-1">Component-Based Architecture</h5>
+           <p class="text-gray-600 text-sm">Everything is a component, reusable and independent.</p>
+        </div>
+        <div>
+           <h5 class="text-blue-600 font-bold mb-1">Virtual DOM</h5>
+           <p class="text-gray-600 text-sm">Lightweight copy of real DOM. React updates V-DOM first, then diffs with previous V-DOM, then updates real DOM only where needed.</p>
+        </div>
+        <div>
+           <h5 class="text-blue-600 font-bold mb-1">One-way Data Binding</h5>
+           <p class="text-gray-600 text-sm">Data flows down from parent to child (props).</p>
+        </div>
+         <div>
+           <h5 class="text-blue-600 font-bold mb-1">JSX</h5>
+           <p class="text-gray-600 text-sm">Syntax extension for JavaScript. Looks like HTML but is JS.</p>
+        </div>
+      </div>
+    </InterviewCard>
+
+    <InterviewCard title="Lifecycle Methods (Class)" class="md:col-span-2">
+       <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+         <div>
+            <h5 class="text-blue-600 font-bold mb-2">Mounting</h5>
+            <ul class="list-disc list-inside text-gray-600 space-y-1 text-sm">
+              <li>constructor()</li>
+              <li>static getDerivedStateFromProps()</li>
+              <li>render()</li>
+              <li>componentDidMount()</li>
+            </ul>
+            <h5 class="text-blue-600 font-bold mt-4 mb-2">Updating</h5>
+            <ul class="list-disc list-inside text-gray-600 space-y-1 text-sm">
+              <li>static getDerivedStateFromProps()</li>
+              <li>shouldComponentUpdate()</li>
+              <li>render()</li>
+              <li>getSnapshotBeforeUpdate()</li>
+              <li>componentDidUpdate()</li>
+            </ul>
+            <h5 class="text-blue-600 font-bold mt-4 mb-2">Unmounting</h5>
+            <ul class="list-disc list-inside text-gray-600 space-y-1 text-sm">
+              <li>componentWillUnmount()</li>
+            </ul>
+         </div>
+         <div>
+            {/* <img src={codeReactLifecycle1Png.src} alt="Lifecycle 1" class="w-full h-auto rounded border border-gray-100 mb-4" /> */}
+            <div class="p-4 bg-gray-50 text-gray-400 text-center text-xs rounded border border-dashed border-gray-200 mb-4">Lifecycle Diagram 1 Missing</div>
+            {/* <img src={codeReactLifecycle2Png.src} alt="Lifecycle 2" class="w-full h-auto rounded border border-gray-100" /> */}
+            <div class="p-4 bg-gray-50 text-gray-400 text-center text-xs rounded border border-dashed border-gray-200">Lifecycle Diagram 2 Missing</div>
+         </div>
+       </div>
+    </InterviewCard>
+
+    <InterviewCard title="React Hooks" class="md:col-span-2">
+      <p class="text-gray-600 mb-4">
+        Functions that let you hook into React state and lifecycle features from function components.
+      </p>
+      {/* <img src={codeReactHooksPng.src} alt="Hooks" class="w-full h-auto rounded border border-gray-100 mb-6" /> */}
+      <div class="p-4 bg-gray-50 text-gray-400 text-center text-xs rounded border border-dashed border-gray-200 mb-6">Hooks Diagram Missing</div>
+
+      <div class="space-y-4">
+        <div>
+          <h5 class="text-blue-600 font-bold">useState</h5>
+          <p class="text-gray-600 text-sm">Allows you to store state in a functional component.</p>
+        </div>
+        <div>
+          <h5 class="text-blue-600 font-bold">useEffect</h5>
+          <p class="text-gray-600 text-sm mb-2">Perform side effects (data fetching, subscriptions, manual DOM changes).</p>
+          {/* <img src={codeReactUseEffectPng.src} alt="useEffect" class="w-full h-auto rounded border border-gray-100" /> */}
+          <div class="p-4 bg-gray-50 text-gray-400 text-center text-xs rounded border border-dashed border-gray-200">useEffect Diagram Missing</div>
+        </div>
+        <div>
+          <h5 class="text-blue-600 font-bold">useContext</h5>
+          <p class="text-gray-600 text-sm">Access context directly without wrapping callback.</p>
+        </div>
+        <div>
+          <h5 class="text-blue-600 font-bold">useReducer</h5>
+          <p class="text-gray-600 text-sm">Alternative to useState for complex state logic.</p>
+        </div>
+        <div>
+            <h5 class="text-blue-600 font-bold">useRef</h5>
+            <p class="text-gray-600 text-sm">Access DOM elements directly, or store mutable values that don't trigger re-render.</p>
+        </div>
+      </div>
+    </InterviewCard>
+
+    <InterviewCard title="Optimization" class="md:col-span-1">
+      <ul class="list-disc list-inside text-gray-600 space-y-2 text-sm">
+        <li>
+          <span class="text-blue-600 font-bold">useMemo:</span> Memoizes a <span class="italic">value</span>. Recomputes only when dependencies change.
+        </li>
+        <li>
+          <span class="text-blue-600 font-bold">useCallback:</span> Memoizes a <span class="italic">function</span> definition.
+        </li>
+        <li>
+          <span class="text-blue-600 font-bold">React.memo:</span> HOC that memoizes a <span class="italic">component</span>. Renders only if props change.
+        </li>
+        <li>
+          <span class="text-blue-600 font-bold">Code Splitting:</span> `React.lazy` and `Suspense`.
+        </li>
+        <li>
+          <span class="text-blue-600 font-bold">Key Prop:</span> Helps React identify which items have changed.
+        </li>
+      </ul>
+    </InterviewCard>
+
+    <InterviewCard title="Reconciliation" class="md:col-span-1">
+      <p class="text-gray-600 mb-2 text-sm">
+        The algorithm React uses to diff one tree with another to determine which parts need to be replaced.
+      </p>
+       {/* <img src={codeReactReconsilationPng.src} alt="Reconciliation" class="w-full h-auto rounded border border-gray-100" /> */}
+       <div class="p-4 bg-gray-50 text-gray-400 text-center text-xs rounded border border-dashed border-gray-200">Reconciliation Diagram Missing</div>
+    </InterviewCard>
+
+    <InterviewCard title="Controlled vs Uncontrolled" class="md:col-span-1">
+      <h5 class="text-blue-600 font-bold mb-1 text-sm">Controlled</h5>
+      <p class="text-gray-600 text-sm mb-2">Form data is handled by a React component (state). Single source of truth.</p>
+      
+      <h5 class="text-blue-600 font-bold mb-1 text-sm">Uncontrolled</h5>
+      <p class="text-gray-600 text-sm">Form data is handled by the DOM itself. Use refs to get values.</p>
+    </InterviewCard>
+
+    <InterviewCard title="Redux" class="md:col-span-2">
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div>
+           <ul class="list-disc list-inside text-gray-600 space-y-2 text-sm">
+            <li><span class="font-bold">Store:</span> Holds the state of the application.</li>
+            <li><span class="font-bold">Action:</span> Describes what happened (type, payload).</li>
+            <li><span class="font-bold">Reducer:</span> Pure function that takes state and action, returns new state.</li>
+            <li><span class="font-bold">Dispatch:</span> Function to send action to store.</li>
+            <li><span class="font-bold">Middleware:</span> Extension point (e.g., Thunk for async).</li>
+           </ul>
+        </div>
+        <div>
+           {/* <img src={codeReactReduxPng.src} alt="Redux" class="w-full h-auto rounded border border-gray-100" /> */}
+           <div class="p-4 bg-gray-50 text-gray-400 text-center text-xs rounded border border-dashed border-gray-200">Redux Diagram Missing</div>
+        </div>
+      </div>
+    </InterviewCard>
+
+    <InterviewCard title="Context API" class="md:col-span-1">
+      <p class="text-gray-600 mb-2 text-sm">
+        Way to pass data through the component tree without having to pass props down manually at every level.
+      </p>
+      {/* <img src={codeReactContextPng.src} alt="Context API" class="w-full h-auto rounded border border-gray-100" /> */}
+      <div class="p-4 bg-gray-50 text-gray-400 text-center text-xs rounded border border-dashed border-gray-200">Context API Diagram Missing</div>
+    </InterviewCard>
+
+     <InterviewCard title="Redux vs Context" class="md:col-span-1">
+      <ul class="list-disc list-inside text-gray-600 space-y-2 text-sm">
+        <li>Redux is for complex state management, frequent updates, debugging capabilities (DevTools).</li>
+        <li>Context is for global state like theme, user, language. Low frequency updates.</li>
+        <li>Redux needs external library, Context is built-in.</li>
+      </ul>
+    </InterviewCard>
+
+  </div>
+</InterviewLayout>
