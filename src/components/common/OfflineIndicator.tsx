@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useRef, useState } from "react";
-import { WifiOff, Loader2, CheckCircle2, AlertTriangle, RefreshCcw } from "lucide-react";
+import { WifiOff, Loader2, CheckCircle2, AlertTriangle, RefreshCcw, ZapOff } from "lucide-react";
 
 // ============================================================================
 // TYPES
@@ -22,6 +22,7 @@ interface PWAState {
 // ============================================================================
 
 const CACHE_NAME_FRAGMENT = "alltools";
+const OFFLINE_MODE_KEY = "offlineModeEnabled";
 
 // ============================================================================
 // HELPER FUNCTIONS
@@ -53,6 +54,31 @@ async function checkCacheStorage(): Promise<{ exists: boolean; name: string }> {
   }
 }
 
+async function checkFullCache(): Promise<boolean> {
+  try {
+    // Find the Workbox precache (versioned like "alltools-precache-v2-...")
+    // Exclude old "alltools-precache-full" caches from previous implementation
+    const cacheKeys = await caches.keys();
+    const precacheName = cacheKeys.find(k => 
+      k.includes('alltools-precache') && 
+      k.includes('-v') &&  // Workbox adds version like -v2-
+      !k.includes('-full')  // Exclude old full caches
+    );
+    
+    if (!precacheName) return false;
+    
+    const cache = await caches.open(precacheName);
+    const keys = await cache.keys();
+    
+    // Minimal precache has ~35 HTML files
+    // Full offline has 144 source files (compressed variants excluded)
+    // Use 50 as threshold to be safe
+    return keys.length > 50;
+  } catch {
+    return false;
+  }
+}
+
 async function checkNetworkConnectivity(): Promise<boolean> {
   if (!navigator.onLine) return false;
   
@@ -73,31 +99,20 @@ async function checkNetworkConnectivity(): Promise<boolean> {
 // ============================================================================
 
 /**
- * Decision tree for determining offline indicator status:
- * 
- * 1. If SW/Cache API not supported → unavailable (unsupported)
- * 2. If SW not registered → unavailable (unregistered)
- * 3. If offline (no network) AND cache exists → offline (cached content available)
- * 4. If offline (no network) AND no cache → unavailable (nothing cached)
- * 5. If SW activated AND cache exists → ready (fully functional)
- * 6. If SW activated AND no cache → unavailable (corrupted/cleared)
- * 7. If SW not activated yet → loading (installing/activating)
+ * Decision tree for determining offline indicator status
  */
 function determineStatus(state: PWAState): {
   status: OfflineStatus;
   showRefresh: boolean;
 } {
-  // Rule 1: No SW support
   if (!state.hasSWSupport) {
     return { status: "unavailable", showRefresh: false };
   }
 
-  // Rule 2: SW not registered
   if (!state.swRegistered) {
     return { status: "unavailable", showRefresh: false };
   }
 
-  // Rule 3 & 4: Offline scenarios
   if (!state.isOnline) {
     return {
       status: state.cacheExists ? "offline" : "unavailable",
@@ -105,15 +120,13 @@ function determineStatus(state: PWAState): {
     };
   }
 
-  // Rule 5 & 6: SW activated scenarios
   if (state.swActivated) {
     return {
       status: state.cacheExists ? "ready" : "unavailable",
-      showRefresh: !state.cacheExists // Show refresh button if cache missing
+      showRefresh: !state.cacheExists
     };
   }
 
-  // Rule 7: SW still loading
   return { status: "loading", showRefresh: false };
 }
 
@@ -126,7 +139,8 @@ export default function OfflineIndicator() {
   const [swPhase, setSwPhase] = useState<SWPhase>("unknown");
   const [percent, setPercent] = useState<number | null>(null);
   const [cacheName, setCacheName] = useState<string>("");
-  const [showRefreshButton, setShowRefreshButton] = useState(false);
+  const [fullyCached, setFullyCached] = useState(false);
+  const [showEnableButton, setShowEnableButton] = useState(false);
 
   const refreshingRef = useRef(false);
 
@@ -149,19 +163,87 @@ export default function OfflineIndicator() {
     }
   };
 
+  const handleEnableFullOffline = async () => {
+    try {
+      setOfflineStatus("loading");
+      setPercent(0);
+      
+      // Fetch the manifest of all URLs to cache
+      const manifestResponse = await fetch("/cache-manifest.json");
+      if (!manifestResponse.ok) {
+        throw new Error("Failed to fetch cache manifest");
+      }
+      
+      const manifest = await manifestResponse.json();
+      const urls = manifest.urls || [];
+      
+      console.log(`[OfflineIndicator] Enabling full offline mode for ${urls.length} URLs`);
+      
+      // Get SW registration
+      const reg = await navigator.serviceWorker.getRegistration();
+      if (!reg || !reg.active) {
+        console.error("[OfflineIndicator] No active service worker");
+        setOfflineStatus("unavailable");
+        return;
+      }
+      
+      // Create message channel for communication
+      const messageChannel = new MessageChannel();
+      
+      messageChannel.port1.onmessage = (event) => {
+        const data = event.data;
+        
+        if (data.type === "PRECACHE_PROGRESS") {
+          setPercent(data.percent);
+          setOfflineStatus("loading");
+        }
+        
+        if (data.type === "PRECACHE_DONE") {
+          setPercent(100);
+          setOfflineStatus("ready");
+          setFullyCached(true);
+          setShowEnableButton(false);
+          
+          // Save preference
+          localStorage.setItem(OFFLINE_MODE_KEY, "true");
+          
+          console.log("[OfflineIndicator] Full offline mode enabled", data);
+        }
+        
+        if (data.type === "PRECACHE_ERROR") {
+          console.error("[OfflineIndicator] Full offline cache error:", data.error);
+          setOfflineStatus("unavailable");
+          setPercent(null);
+        }
+      };
+      
+      // Send message to SW
+      reg.active.postMessage(
+        {
+          type: "ENABLE_FULL_OFFLINE",
+          urls: urls
+        },
+        [messageChannel.port2]
+      );
+      
+    } catch (error) {
+      console.error("[OfflineIndicator] Error enabling full offline:", error);
+      setOfflineStatus("unavailable");
+      setPercent(null);
+    }
+  };
+
   const updateStatus = async () => {
-    // Prevent concurrent executions
     if (refreshingRef.current) return;
     refreshingRef.current = true;
 
     try {
-      // Gather PWA state
       const hasSWSupport = "serviceWorker" in navigator && "caches" in window;
       
       if (!hasSWSupport) {
         setOfflineStatus("unavailable");
         setSwPhase("unsupported");
-        setShowRefreshButton(false);
+        setShowEnableButton(false);
         return;
       }
 
@@ -169,8 +251,10 @@ export default function OfflineIndicator() {
       const reg = await sw.getRegistration();
       const isOnline = await checkNetworkConnectivity();
       const { exists: cacheExists, name } = await checkCacheStorage();
+      const hasFullCache = await checkFullCache();
 
       setCacheName(name);
+      setFullyCached(hasFullCache);
 
       const pwaState: PWAState = {
         isOnline,
@@ -181,27 +265,40 @@ export default function OfflineIndicator() {
         cacheName: name
       };
 
-      // Update SW phase
       if (reg) {
         setSwPhase(toPhase(reg.installing || reg.waiting || reg.active));
       } else {
         setSwPhase("unregistered");
       }
 
-      // Apply state machine
       const { status, showRefresh } = determineStatus(pwaState);
       setOfflineStatus(status);
-      setShowRefreshButton(showRefresh);
 
-      // Set percent to 100 if ready
+      // Determine if enable button should be shown
+      const offlineModeEnabled = localStorage.getItem(OFFLINE_MODE_KEY) === "true";
+      const shouldShowEnableButton = 
+        status === "ready" && 
+        !hasFullCache && 
+        !offlineModeEnabled &&
+        isOnline;
+      
+      setShowEnableButton(shouldShowEnableButton);
+
       if (status === "ready") {
-        setPercent(100);
+        setPercent(hasFullCache ? 100 : null);
       }
+      
+      // Auto-enable if preference is saved and not yet cached
+      if (offlineModeEnabled && !hasFullCache && status === "ready" && isOnline) {
+        console.log("[OfflineIndicator] Auto-enabling full offline mode from saved preference");
+        setTimeout(() => handleEnableFullOffline(), 1000);
+      }
+      
     } catch (e) {
       console.error("Error updating PWA status:", e);
       setOfflineStatus("unavailable");
       setSwPhase("unknown");
-      setShowRefreshButton(false);
+      setShowEnableButton(false);
     } finally {
       refreshingRef.current = false;
     }
@@ -217,7 +314,6 @@ export default function OfflineIndicator() {
     if (!("serviceWorker" in navigator)) return;
     const sw = navigator.serviceWorker;
 
-    // Handle precache progress messages from SW
     const onMessage = (event: MessageEvent) => {
       const data = event.data;
       if (!data?.type) return;
@@ -238,13 +334,11 @@ export default function OfflineIndicator() {
       }
     };
 
-    // Register event listeners
     window.addEventListener("online", updateStatus);
     window.addEventListener("offline", updateStatus);
     sw.addEventListener("controllerchange", updateStatus);
     sw.addEventListener("message", onMessage);
 
-    // Listen for SW state changes
     sw.getRegistration().then((reg) => {
       if (!reg) return;
       [reg.installing, reg.waiting, reg.active].forEach((worker) => {
@@ -270,18 +364,20 @@ export default function OfflineIndicator() {
   const title = useMemo(() => {
     const controller = "serviceWorker" in navigator ? !!navigator.serviceWorker.controller : false;
     const p = percent == null ? "" : ` (${percent}%)`;
+    const cacheMode = fullyCached ? "Full offline mode" : "Runtime caching";
+    
     return [
       offlineStatus === "loading"
         ? `Preparing offline support${p}…`
         : offlineStatus === "ready"
-        ? "Offline ready."
+        ? `Offline ready - ${cacheMode}.`
         : offlineStatus === "offline"
         ? "You are offline."
         : "Offline unavailable.",
       `SW: ${swPhase}${controller ? " (controlling)" : " (not controlling yet)"}`,
       cacheName ? `Cache: ${cacheName}` : `Cache: missing (looking for "${CACHE_NAME_FRAGMENT}")`,
     ].join("\n");
-  }, [offlineStatus, swPhase, percent, cacheName]);
+  }, [offlineStatus, swPhase, percent, cacheName, fullyCached]);
 
   const badgeClass =
     offlineStatus === "loading"
@@ -296,6 +392,21 @@ export default function OfflineIndicator() {
   // RENDER
   // ============================================================================
 
+  // Show standalone button when full offline is available to enable
+  if (offlineStatus === "ready" && showEnableButton) {
+    return (
+      <button
+        onClick={handleEnableFullOffline}
+        className="px-2 py-1 bg-green-600 hover:bg-green-700 text-white rounded-full text-[10px] font-semibold transition-colors flex items-center gap-1.5 border border-green-700"
+        title="Download all site content for full offline access"
+      >
+        <ZapOff className="w-3 h-3" />
+        <span>Enable Full Offline</span>
+      </button>
+    );
+  }
+
+  // Otherwise, show the status chip
   return (
     <div
       className={`flex items-center gap-1.5 px-2 py-1 rounded-full text-[10px] font-medium border transition-colors duration-300 ${badgeClass}`}
@@ -325,8 +436,7 @@ export default function OfflineIndicator() {
       {offlineStatus === "unavailable" && (
         <>
           <AlertTriangle className="w-3 h-3" />
-          <span>{showRefreshButton ? "Retry Offline Caching" : "Offline Caching Unavailable"}</span>
-          {showRefreshButton && (
+          <span>Retry Offline Caching</span>
             <span
               title="Unregister Service Worker and reload to fix cache issues"
               className="inline-flex"
@@ -336,7 +446,6 @@ export default function OfflineIndicator() {
                 className="w-3 h-3 ml-2 cursor-pointer hover:rotate-180 transition-transform duration-300"
               />
             </span>
-          )}
         </>
       )}
     </div>

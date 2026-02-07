@@ -45,44 +45,79 @@ export default defineConfig({
       workbox: {
         mode: 'production',
         cacheId: 'alltools',
-        globPatterns: ['**/*.{js,css,html,ico,png,svg,mjs,json,woff,woff2,eot,ttf,otf}'],
-        navigateFallback: '/404',
-        maximumFileSizeToCacheInBytes: 15 * 1024 * 1024, // 10MB (increased from 5MB for large PDF libraries)
-        runtimeCaching: [
-          {
-            urlPattern: /\.(?:png|jpg|jpeg|svg|gif|webp)$/,
-            handler: 'CacheFirst',
-            options: {
-              cacheName: 'images',
-              expiration: {
-                maxEntries: 10,
-                maxAgeSeconds: 30 * 24 * 60 * 60, // 30 Days
-              },
-            },
-          },
 
-          // Special caching for critical PDF processing modules
-          {
-            urlPattern: /pdfjs-dist|pdf-lib|jszip|@pdfsmaller/,
-            handler: 'NetworkFirst',
-            options: {
-              cacheName: 'pdf-modules',
-              networkTimeoutSeconds: 3,
-              expiration: {
-                maxEntries: 20,
-                maxAgeSeconds: 30 * 24 * 60 * 60, // 30 Days
-              },
-            },
-          },
-          // Cache JavaScript modules for offline dynamic imports
+        // Inject custom logic for on-demand full precaching
+        importScripts: ['/sw-custom.js'],
+
+        // MINIMAL precache - only HTML pages for instant navigation
+        globPatterns: ['**/*.html'],
+        navigateFallback: '/404',
+        maximumFileSizeToCacheInBytes: 15 * 1024 * 1024,
+
+        // Runtime caching - cache assets as users browse
+        runtimeCaching: [
+          // JavaScript modules - critical for app functionality
           {
             urlPattern: /\.(?:js|mjs)$/,
             handler: 'CacheFirst',
             options: {
-              cacheName: 'js-modules',
+              cacheName: 'alltools-js',
+              expiration: {
+                maxEntries: 60,
+                maxAgeSeconds: 30 * 24 * 60 * 60, // 30 days
+              },
+            },
+          },
+
+          // CSS stylesheets
+          {
+            urlPattern: /\.css$/,
+            handler: 'CacheFirst',
+            options: {
+              cacheName: 'alltools-css',
+              expiration: {
+                maxEntries: 30,
+                maxAgeSeconds: 30 * 24 * 60 * 60, // 30 days
+              },
+            },
+          },
+
+          // Images - UI assets and tool icons
+          {
+            urlPattern: /\.(?:png|jpg|jpeg|svg|gif|webp|ico)$/,
+            handler: 'CacheFirst',
+            options: {
+              cacheName: 'alltools-images',
               expiration: {
                 maxEntries: 50,
-                maxAgeSeconds: 30 * 24 * 60 * 60, // 30 Days
+                maxAgeSeconds: 30 * 24 * 60 * 60, // 30 days
+              },
+            },
+          },
+
+          // Fonts - precache would be better but this works
+          {
+            urlPattern: /\.(?:woff|woff2|eot|ttf|otf)$/,
+            handler: 'CacheFirst',
+            options: {
+              cacheName: 'alltools-fonts',
+              expiration: {
+                maxEntries: 20,
+                maxAgeSeconds: 365 * 24 * 60 * 60, // 1 year
+              },
+            },
+          },
+
+          // JSON data files - i18n translations, etc.
+          {
+            urlPattern: /\.json$/,
+            handler: 'NetworkFirst',
+            options: {
+              cacheName: 'alltools-data',
+              networkTimeoutSeconds: 3,
+              expiration: {
+                maxEntries: 20,
+                maxAgeSeconds: 7 * 24 * 60 * 60, // 7 days
               },
             },
           },
