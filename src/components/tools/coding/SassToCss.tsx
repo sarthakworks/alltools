@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import { Copy, FileCode, ArrowRight, AlertCircle, Loader2 } from 'lucide-react';
+import { Copy, FileCode, ArrowRight, AlertCircle, Loader2, Check } from 'lucide-react';
 import * as sass from 'sass';
 import { useTranslation } from 'react-i18next';
 import '../../../i18n';
+import { useCopyToClipboard } from '../../common/hooks/useCopyToClipboard';
 
 export default function SassToCss() {
   const { t } = useTranslation();
@@ -11,6 +12,7 @@ export default function SassToCss() {
   const [error, setError] = useState<string>("");
   const [loading, setLoading] = useState<boolean>(false);
   const [options, setOptions] = useState<{ style: 'expanded' | 'compressed' }>({ style: 'expanded' });
+  const { copiedId, handleCopy } = useCopyToClipboard();
 
   // Dynamically load Sass if needed, but since we imported it, we'll try to use it directly.
   // Note: Standard 'sass' package might be heavy or Node-dependent. 
@@ -41,9 +43,7 @@ export default function SassToCss() {
     }
   };
 
-  const copyToClipboard = () => {
-    navigator.clipboard.writeText(output);
-  };
+
 
   const loadSample = () => {
     const sample = `$primary-color: #3b82f6;
@@ -121,10 +121,18 @@ export default function SassToCss() {
 
             {output && (
                  <button 
-                    onClick={copyToClipboard}
+                    onClick={() => handleCopy(output, 'sass-output')}
                     className="flex items-center gap-1.5 text-xs font-medium text-gray-600 hover:text-pink-600 transition-colors"
                   >
-                    <Copy className="w-3.5 h-3.5" /> {t('tools_ui.common.copy')}
+                    {copiedId === 'sass-output' ? (
+                      <>
+                        <Check className="w-3.5 h-3.5" /> {t('tools_ui.common.copied')}
+                      </>
+                    ) : (
+                      <>
+                        <Copy className="w-3.5 h-3.5" /> {t('tools_ui.common.copy')}
+                      </>
+                    )}
                   </button>
             )}
           </div>

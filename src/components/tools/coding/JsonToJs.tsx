@@ -1,13 +1,15 @@
 import React, { useState } from 'react';
-import { Copy, FileJson, ArrowRight, AlertCircle } from 'lucide-react';
+import { Copy, FileJson, ArrowRight, AlertCircle, Check } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import '../../../i18n';
+import { useCopyToClipboard } from '../../common/hooks/useCopyToClipboard';
 
 export default function JsonToJs() {
   const { t } = useTranslation();
   const [input, setInput] = useState<string>("");
   const [output, setOutput] = useState<string>("");
   const [error, setError] = useState<string>("");
+  const { copiedId, handleCopy } = useCopyToClipboard();
 
   const convert = () => {
     setError("");
@@ -38,9 +40,7 @@ export default function JsonToJs() {
     }
   };
 
-  const copyToClipboard = () => {
-    navigator.clipboard.writeText(output);
-  };
+
 
   const loadSample = () => {
     const sample = `{
@@ -106,10 +106,18 @@ export default function JsonToJs() {
 
             {output && (
                  <button 
-                    onClick={copyToClipboard}
+                    onClick={() => handleCopy(output, 'jsonjs-output')}
                     className="flex items-center gap-1.5 text-xs font-medium text-gray-600 hover:text-emerald-600 transition-colors"
                   >
-                    <Copy className="w-3.5 h-3.5" /> Copy Result
+                    {copiedId === 'jsonjs-output' ? (
+                      <>
+                        <Check className="w-3.5 h-3.5" /> {t('tools_ui.common.copied')}
+                      </>
+                    ) : (
+                      <>
+                        <Copy className="w-3.5 h-3.5" /> {t('tools_ui.common.copy')}
+                      </>
+                    )}
                   </button>
             )}
           </div>

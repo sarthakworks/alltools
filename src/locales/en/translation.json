@@ -103,6 +103,7 @@
         "common": {
             "generate": "Generate",
             "copy": "Copy",
+            "copied": "Copied",
             "download": "Download",
             "processing": "Processing...",
             "error": "Error",
@@ -128,7 +129,7 @@
         "ai_essay_writer": {
             "title": "Essay Config",
             "topic_label": "Essay Topic",
-            "topic_placeholder": "e.g. The impact of artificial intelligence on modern education...",
+            "topic_placeholder": "e.g. Sick Leave , Cows etc...",
             "level_label": "Academic Level",
             "length_label": "Length",
             "generate_button": "Generate Essay",
@@ -139,7 +140,8 @@
             "private_offline": "100% Private & Offline",
             "downloading_note": "First run requires downloading ~300MB of model data.",
             "load_error": "Load Error",
-            "retry_download": "Retry Download"
+            "retry_download": "Retry Download",
+            "essay_topic_label": "Essay Topic"
         },
         "aes_tool": {
             "title": "AES Encryption & Decryption",
@@ -358,10 +360,16 @@
             "description": "Transform XML data to JSON format.",
             "input_label": "Input XML",
             "placeholder_input": "Paste XML here...",
+            "input_xml": "Input XML",
+            "placeholder_xml": "Paste XML here...",
+            "input_json": "Input JSON",
+            "placeholder_json": "Paste JSON here...",
             "convert": "Convert",
             "result_label": "Result",
             "error": "Conversion Error",
-            "placeholder_output": "Result will appear here..."
+            "placeholder_output": "Result will appear here...",
+            "mode_xml_json": "XML → JSON",
+            "mode_json_xml": "JSON → XML"
         }
     },
     "tools_data": {

@@ -1,8 +1,9 @@
 import React, { useState, useCallback } from 'react';
 import { useDropzone } from 'react-dropzone';
-import { FileCode, Download, Copy, RefreshCw, Upload, Image as ImageIcon } from 'lucide-react';
+import { FileCode, Download, Copy, RefreshCw, Upload, Image as ImageIcon, Check } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import '../../../i18n';
+import { useCopyToClipboard } from '../../common/hooks/useCopyToClipboard';
 
 export default function ImageBase64Tool() {
   const { t } = useTranslation();
@@ -11,7 +12,7 @@ export default function ImageBase64Tool() {
   const [base64, setBase64] = useState('');
   const [fileName, setFileName] = useState('');
   const [loading, setLoading] = useState(false);
-  const [copySuccess, setCopySuccess] = useState(false);
+  const { copiedId, handleCopy } = useCopyToClipboard();
 
   // ENCODE: Image -> Base64
   const onDrop = useCallback((acceptedFiles: File[]) => {
@@ -43,15 +44,7 @@ export default function ImageBase64Tool() {
     setImage(base64); // Simple as setting it as src
   };
 
-  const handleCopy = async () => {
-     try {
-       await navigator.clipboard.writeText(base64);
-       setCopySuccess(true);
-       setTimeout(() => setCopySuccess(false), 2000);
-     } catch (err) {
-       console.error('Failed to copy!', err);
-     }
-  };
+
 
   // Utility to format long strings
   const truncate = (str: string, len = 50) => str.length > len ? str.substring(0, len) + '...' : str;
@@ -108,10 +101,18 @@ export default function ImageBase64Tool() {
                     <span className="text-xs font-bold text-gray-500 uppercase tracking-wide">{t('tools_ui.image_base64.output_label')}</span>
                     {base64 && (
                     <button 
-                        onClick={handleCopy}
-                        className={`text-xs flex items-center gap-1 px-2 py-1 rounded transition-colors ${copySuccess ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-600 hover:bg-gray-200'}`}
+                        onClick={() => handleCopy(base64, 'base64-output')}
+                        className="text-xs flex items-center gap-1 px-2 py-1 rounded transition-colors bg-gray-100 text-gray-600 hover:bg-gray-200"
                     >
-                        {copySuccess ? <span className="flex items-center gap-1">{t('tools_ui.image_base64.copied')}</span> : <><Copy size={12}/> {t('tools_ui.image_base64.copy')}</>}
+                        {copiedId === 'base64-output' ? (
+                          <>
+                            <Check size={12}/> {t('tools_ui.image_base64.copied')}
+                          </>
+                        ) : (
+                          <>
+                            <Copy size={12}/> {t('tools_ui.image_base64.copy')}
+                          </>
+                        )}
                     </button>
                     )}
                 </div>

@@ -1,9 +1,10 @@
 import React, { useState } from 'react';
-import { Copy, FileCode, AlignLeft, AlertCircle } from 'lucide-react';
+import { Copy, FileCode, AlignLeft, AlertCircle, Check } from 'lucide-react';
 import * as prettier from "prettier/standalone";
 import * as parserHtml from "prettier/plugins/html";
 import { useTranslation } from 'react-i18next';
 import '../../../i18n';
+import { useCopyToClipboard } from '../../common/hooks/useCopyToClipboard';
 
 export default function HtmlFormatter() {
   const { t } = useTranslation();
@@ -11,6 +12,7 @@ export default function HtmlFormatter() {
   const [output, setOutput] = useState<string>("");
   const [error, setError] = useState<string>("");
   const [indentSize, setIndentSize] = useState<number>(2);
+  const { copiedId, handleCopy } = useCopyToClipboard();
 
   const formatHtml = async () => {
     setError("");
@@ -32,9 +34,7 @@ export default function HtmlFormatter() {
     }
   };
 
-  const copyToClipboard = () => {
-    navigator.clipboard.writeText(output);
-  };
+
 
   const loadSample = () => {
     const sample = `<!DOCTYPE html><html><head><title>Page Title</title></head><body><h1>My First Heading</h1><p>My first paragraph.</p></body></html>`;
@@ -103,10 +103,18 @@ export default function HtmlFormatter() {
 
             {output && (
                  <button 
-                    onClick={copyToClipboard}
+                    onClick={() => handleCopy(output, 'html-output')}
                     className="flex items-center gap-1.5 text-xs font-medium text-gray-600 hover:text-orange-600 transition-colors"
                   >
-                    <Copy className="w-3.5 h-3.5" /> {t('tools_ui.common.copy')}
+                    {copiedId === 'html-output' ? (
+                      <>
+                        <Check className="w-3.5 h-3.5" /> {t('tools_ui.common.copied')}
+                      </>
+                    ) : (
+                      <>
+                        <Copy className="w-3.5 h-3.5" /> {t('tools_ui.common.copy')}
+                      </>
+                    )}
                   </button>
             )}
           </div>

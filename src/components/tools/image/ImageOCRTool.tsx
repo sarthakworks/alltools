@@ -1,9 +1,10 @@
 import React, { useState } from 'react';
-import { Upload, Copy, FileText, Loader2, Languages } from 'lucide-react';
+import { Upload, Copy, FileText, Loader2, Languages, Check } from 'lucide-react';
 import { createWorker } from 'tesseract.js';
 import { FileUpload } from '../../common/fileUploader';
 import { useTranslation } from 'react-i18next';
 import '../../../i18n';
+import { useCopyToClipboard } from '../../common/hooks/useCopyToClipboard';
 
 export default function ImageOCRTool() {
   const { t } = useTranslation();
@@ -12,7 +13,7 @@ export default function ImageOCRTool() {
   const [isProcessing, setIsProcessing] = useState(false);
   const [progress, setProgress] = useState(0);
   const [language, setLanguage] = useState('eng');
-  const [copySuccess, setCopySuccess] = useState(false);
+  const { copiedId, handleCopy } = useCopyToClipboard();
 
   const handleFilesSelected = (files: File[]) => {
     if (files && files.length > 0) {
@@ -52,15 +53,7 @@ export default function ImageOCRTool() {
     }
   };
 
-  const handleCopy = async () => {
-    try {
-      await navigator.clipboard.writeText(extractedText);
-      setCopySuccess(true);
-      setTimeout(() => setCopySuccess(false), 2000);
-    } catch (err) {
-      console.error('Failed to copy:', err);
-    }
-  };
+
 
   const downloadText = () => {
     const blob = new Blob([extractedText], { type: 'text/plain' });
@@ -149,10 +142,18 @@ export default function ImageOCRTool() {
                 {extractedText && (
                   <div className="flex gap-2">
                     <button 
-                      onClick={handleCopy}
-                      className={`text-xs flex items-center gap-1 px-3 py-1.5 rounded-lg transition-colors font-semibold ${copySuccess ? 'bg-green-100 text-green-700' : 'bg-white text-gray-600 hover:bg-gray-50 border border-gray-200'}`}
+                      onClick={() => handleCopy(extractedText, 'ocr-output')}
+                      className="text-xs flex items-center gap-1 px-3 py-1.5 rounded-lg transition-colors font-semibold bg-white text-gray-600 hover:bg-gray-50 border border-gray-200"
                     >
-                      {copySuccess ? t('tools_ui.image_base64.copied') : <><Copy size={12}/> {t('tools_ui.image_base64.copy')}</>}
+                      {copiedId === 'ocr-output' ? (
+                        <>
+                          <Check size={12}/> {t('tools_ui.image_base64.copied')}
+                        </>
+                      ) : (
+                        <>
+                          <Copy size={12}/> {t('tools_ui.image_base64.copy')}
+                        </>
+                      )}
                     </button>
                     <button 
                       onClick={downloadText}

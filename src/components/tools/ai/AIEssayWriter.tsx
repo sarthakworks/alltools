@@ -1,14 +1,11 @@
-import React, { useState, useRef, useEffect } from 'react';
-import { Copy, Loader2, BookOpen, PenLine, AlertTriangle, Download, Settings, CheckCircle2 } from 'lucide-react';
-import { pipeline, env } from '@huggingface/transformers';
+import React, { useState, useRef, useCallback } from 'react';
+import { Copy, Loader2, BookOpen, PenLine, AlertTriangle, Download, Settings, CheckCircle2, Check } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { cn } from '../../common/utils';
+import { useHuggingfaceTransformer, type TransformerModel } from '../../common/hooks/useHuggingfaceTransformer';
+import { useCopyToClipboard } from '../../common/hooks/useCopyToClipboard';
 
-// Configuration
-env.allowLocalModels = false;
-env.useBrowserCache = true;
-
-const MODELS = [
+const MODELS: TransformerModel[] = [
   {
     id: 'Xenova/LaMini-Flan-T5-248M',
     name: 'Standard (248M)',
@@ -28,57 +25,33 @@ const MODELS = [
 export default function AIEssayWriter() {
   const { t } = useTranslation();
   const [topic, setTopic] = useState('');
-  const [level, setLevel] = useState('College');
-  const [length, setLength] = useState('Medium (500 words)');
+  const [tone, setTone] = useState('professional');
+  const [type, setType] = useState('article');
   const [result, setResult] = useState('');
   const [isGenerating, setIsGenerating] = useState(false);
+  const [generationError, setGenerationError] = useState('');
 
-  // Model Selection
-  const [selectedModelId, setSelectedModelId] = useState(MODELS[0].id);
+  // Prevent multiple simultaneous requests and rate limiting
+  const isGeneratingRef = useRef(false);
+  const lastCallTimeRef = useRef(0);
+
+  // Use Hugging Face Transformer hook
+  const {
+    selectedModelId,
+    setSelectedModelId,
+    modelStatus,
+    loadedModelId,
+    progress,
+    errorMessage,
+    loadModel,
+    generatorRef,
+    isReady
+  } = useHuggingfaceTransformer(MODELS);
+
+  // Use copy to clipboard hook
+  const { copiedId, handleCopy } = useCopyToClipboard();
+
   const selectedModel = MODELS.find(m => m.id === selectedModelId) || MODELS[0];
-
-  // Model loading state
-  const [modelStatus, setModelStatus] = useState<'idle' | 'loading' | 'ready' | 'error'>('idle');
-  const [loadedModelId, setLoadedModelId] = useState<string | null>(null); // Track WHICH model is actually ready
-  const [progress, setProgress] = useState<{ status: string; progress: number } | null>(null);
-  const [errorMessage, setErrorMessage] = useState('');
-
-  // Keep the generator instance ref to avoid reloading
-  const generatorRef = useRef<any>(null);
-
-  useEffect(() => {
-    // Smart Auto-Detection
-    const checkCache = async () => {
-      try {
-        if ('caches' in window) {
-          const cache = await caches.open('transformers-cache');
-          
-          // Check for Standard model first (Preferred)
-          const stdUrl = `https://huggingface.co/${MODELS[0].id}/resolve/main/${MODELS[0].file}`;
-          const stdCached = await cache.match(stdUrl);
-          
-          if (stdCached) {
-             setSelectedModelId(MODELS[0].id);
-             loadModel(MODELS[0].id);
-             return;
-          }
-
-          // Check for Lite model second
-          const liteUrl = `https://huggingface.co/${MODELS[1].id}/resolve/main/${MODELS[1].file}`;
-          const liteCached = await cache.match(liteUrl);
-          
-          if (liteCached) {
-             setSelectedModelId(MODELS[1].id);
-             loadModel(MODELS[1].id);
-             return;
-          }
-        }
-      } catch (e) {
-        // Ignore cache errors
-      }
-    };
-    checkCache();
-  }, []);
 
   // --------- Helpers ---------
 
@@ -88,20 +61,6 @@ export default function AIEssayWriter() {
     return 500;
   };
 
-  const makePrompt = (cleanTopic: string, lvl: string, len: string) => {
-    const words = getTargetWords(len);
-    return [
-      `Write an essay about: ${cleanTopic}.`,
-      `Level: ${lvl}.`,
-      `Length: about ${words} words.`,
-      `Structure:`,
-      `1) Introduction (1 paragraph)`,
-      `2) Body (3-5 paragraphs with clear headings or topic sentences)`,
-      `3) Conclusion (1 paragraph)`,
-      `Style: clear, factual, and well-organized.`,
-      `Do not mention policies, safety rules, or refusals. Just write the essay.`,
-    ].join('\n');
-  };
 
   const looksLikeRefusal = (text: string) => {
     const t = (text || '').trim();
@@ -124,19 +83,10 @@ export default function AIEssayWriter() {
   };
 
   const tryGenerateWithFallbacks = async (cleanTopic: string) => {
-    const basePrompt = makePrompt(cleanTopic, level, length);
-    const out1 = await generatorRef.current(basePrompt, {
-      max_new_tokens: 900,
-      do_sample: true,
-      temperature: 0.7,
-      top_p: 0.92,
-      repetition_penalty: 1.12,
-    });
-
-    let text1 = cleanModelOutput(out1?.[0]?.generated_text ?? '');
-    if (text1 && !looksLikeRefusal(text1)) return text1;
-
-    const simplerPrompt = `Write a well-structured essay about ${cleanTopic}. Include an introduction, body, and conclusion.`;
+    if (!generatorRef.current) {
+      throw new Error('Model not loaded');
+    }
+    const simplerPrompt = `Write a ${tone} ${type} about ${cleanTopic}. Make it engaging and well-structured.`;
     const out2 = await generatorRef.current(simplerPrompt, {
       max_new_tokens: 900,
       do_sample: false,
@@ -147,7 +97,7 @@ export default function AIEssayWriter() {
     let text2 = cleanModelOutput(out2?.[0]?.generated_text ?? '');
     if (text2 && !looksLikeRefusal(text2)) return text2;
 
-    const strictPrompt = `Essay topic: ${cleanTopic}\nWrite the essay now:`;
+    const strictPrompt =  `Write a well-structured essay about ${cleanTopic}. Include an introduction, body, and conclusion.`;
     const out3 = await generatorRef.current(strictPrompt, {
       max_new_tokens: 900,
       do_sample: false,
@@ -161,63 +111,25 @@ export default function AIEssayWriter() {
 
   // ---------------------------------------------------------------
 
-  const loadModel = async (modelIdToLoad = selectedModelId) => {
-    // If the requested model is already loaded, skip
-    if (generatorRef.current && loadedModelId === modelIdToLoad) {
-      setModelStatus('ready');
+  const handleModelChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    setSelectedModelId(e.target.value);
+  };
+
+  const generateEssay = useCallback(async () => {
+    // Rate limiting: prevent clicks within 500ms
+    const now = Date.now();
+    if (now - lastCallTimeRef.current < 500) {
+      console.log('Rate limited: Too many clicks');
+      return;
+    }
+    lastCallTimeRef.current = now;
+
+    // Prevent multiple simultaneous requests
+    if (isGeneratingRef.current) {
+      console.log('Already generating, ignoring click');
       return;
     }
 
-    try {
-      setModelStatus('loading');
-      setErrorMessage('');
-
-      // Create new pipeline
-      const generator = await pipeline('text2text-generation', modelIdToLoad, {
-        progress_callback: (x: any) => {
-          try {
-            if (x.status === 'initiate') {
-              setProgress({ status: `Downloading ${x.file}...`, progress: 0 });
-            } else if (x.status === 'progress') {
-              setProgress({ status: `Downloading ${x.file}...`, progress: x.progress });
-            } else if (x.status === 'done') {
-              setProgress({ status: 'Model loaded!', progress: 100 });
-            } else if (x.status === 'ready') {
-              // ready
-            }
-          } catch {
-             // ignore
-          }
-        },
-      });
-
-      generatorRef.current = generator;
-      setLoadedModelId(modelIdToLoad);
-      setModelStatus('ready');
-      setProgress(null);
-    } catch (e: any) {
-      console.error(e);
-      setModelStatus('error');
-      setErrorMessage(e.message || 'Failed to load the model.');
-      setLoadedModelId(null);
-    }
-  };
-
-  const handleModelChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-      const newId = e.target.value;
-      setSelectedModelId(newId);
-      // If we switch models, we force user to click "Load" or we auto-load?
-      // Auto-load is nicer but might incur data. Let's reset status to idle if different.
-      if (loadedModelId !== newId) {
-          setModelStatus('idle');
-          setLoadedModelId(null);
-          // Optional: clear result if model changes? No, keep it.
-      } else {
-          setModelStatus('ready');
-      }
-  };
-
-  const generateEssay = async () => {
     if (!topic) return;
 
     // Load selected model if not ready
@@ -226,37 +138,41 @@ export default function AIEssayWriter() {
       if (!generatorRef.current) return;
     }
 
+    // Set both state and ref to ensure UI updates and prevent race conditions
+    isGeneratingRef.current = true;
     setIsGenerating(true);
     setResult('');
-    setErrorMessage('');
+    setGenerationError('');
 
-    try {
-      const cleanTopic = topic
-        .replace(/^(write|create|make)\s+(an\s+)?essay\s+(about|on|regarding)\s+/i, '')
-        .trim();
+    // CRITICAL: Use setTimeout to allow React to commit the state update to the DOM
+    // before starting the heavy synchronous computation that blocks the main thread
+    setTimeout(async () => {
+      try {
+        const cleanTopic = topic
+          .replace(/^(write|create|make)\s+(an\s+)?essay\s+(about|on|regarding)\s+/i, '')
+          .trim();
 
-      const generatedText = await tryGenerateWithFallbacks(cleanTopic);
-      const finalText = cleanModelOutput(generatedText);
+        const generatedText = await tryGenerateWithFallbacks(cleanTopic);
+        const finalText = cleanModelOutput(generatedText);
 
-      if (!finalText) {
-        setErrorMessage('Failed to generate content. Please try again with a different topic.');
-        return;
+        if (!finalText) {
+          setGenerationError('Failed to generate content. Please try again with a different topic.');
+          return;
+        }
+
+        setResult(finalText);
+      } catch (error: any) {
+        console.error('Generation error:', error);
+        setGenerationError(error.message || 'Failed to generate content.');
+      } finally {
+        // Reset both state and ref
+        isGeneratingRef.current = false;
+        setIsGenerating(false);
       }
+    }, 50); // 50ms delay to allow React to paint the loading state
+  }, [topic, generatorRef, loadedModelId, selectedModelId, loadModel]);
 
-      setResult(finalText);
-    } catch (error: any) {
-      console.error('Generation error:', error);
-      setErrorMessage(error.message || 'Failed to generate content.');
-    } finally {
-      setIsGenerating(false);
-    }
-  };
 
-  const copyToClipboard = () => {
-    navigator.clipboard.writeText(result);
-  };
-
-  const isReady = modelStatus === 'ready' && loadedModelId === selectedModelId;
 
   return (
     <div className="grid lg:grid-cols-2 gap-8">
@@ -304,7 +220,7 @@ export default function AIEssayWriter() {
                    <AlertTriangle className="w-4 h-4" /> Load Error
                 </div>
                 <p>{errorMessage}</p>
-                 <button onClick={() => { setModelStatus('idle'); loadModel(); }} className="mt-3 underline font-medium">Retry Download</button>
+                 <button onClick={() => loadModel()} className="mt-3 underline font-medium">Retry Download</button>
              </div>
           )}
 
@@ -343,16 +259,16 @@ export default function AIEssayWriter() {
                 <div className="space-y-2">
                   <label className="text-sm font-medium text-gray-700">{t('tools_ui.ai_essay_writer.level_label')}</label>
                   <div className="relative">
-                    <select 
-                      value={level}
-                      onChange={(e) => setLevel(e.target.value)}
-                      className="w-full bg-white border border-gray-200 rounded-lg px-4 py-2.5 text-gray-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 appearance-none shadow-sm cursor-pointer"
-                    >
-                      <option value="High School">High School</option>
-                      <option value="College">College / undergrad</option>
-                      <option value="Graduate">Graduate / PhD</option>
-                      <option value="Professional">Professional</option>
-                    </select>
+                  <select 
+                    value={type}
+                    onChange={(e) => setType(e.target.value)}
+                    className="w-full bg-white border border-gray-200 rounded-lg px-4 py-2.5 text-gray-900 focus:outline-none focus:ring-2 focus:ring-purple-500 appearance-none shadow-sm"
+                  >
+                    <option value="article">Article</option>
+                    <option value="blog post">Blog Post</option>
+                    <option value="email">Email</option>
+                    <option value="social media caption">Social Caption</option>
+                  </select>
                   </div>
                 </div>
 
@@ -360,21 +276,22 @@ export default function AIEssayWriter() {
                   <label className="text-sm font-medium text-gray-700">{t('tools_ui.ai_essay_writer.length_label')}</label>
                   <div className="relative">
                     <select 
-                      value={length}
-                      onChange={(e) => setLength(e.target.value)}
+                      value={tone}
+                      onChange={(e) => setTone(e.target.value)}
                       className="w-full bg-white border border-gray-200 rounded-lg px-4 py-2.5 text-gray-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 appearance-none shadow-sm cursor-pointer"
                     >
-                      <option value="Short (300 words)">Short (~300 words)</option>
-                      <option value="Medium (500 words)">Medium (~500 words)</option>
-                      <option value="Long (800+ words)">Long (800+ words)</option>
+                      <option value="professional">Professional</option>
+                      <option value="casual">Casual</option>
+                      <option value="enthusiastic">Enthusiastic</option>
+                      <option value="informative">Informative</option>
                     </select>
                   </div>
                 </div>
               </div>
 
-              {errorMessage && modelStatus !== 'error' && (
+              {generationError && modelStatus !== 'error' && (
                 <div className="p-3 bg-red-50 text-red-700 text-sm rounded-lg border border-red-100">
-                  {errorMessage}
+                  {generationError}
                 </div>
               )}
 
@@ -410,10 +327,18 @@ export default function AIEssayWriter() {
             <div className="p-4 border-b border-gray-100 flex items-center justify-between bg-gray-50">
               <span className="text-sm font-medium text-gray-500">{t('tools_ui.ai_essay_writer.essay_draft')}</span>
               <button 
-                onClick={copyToClipboard}
+                onClick={() => handleCopy(result, 'essay-result')}
                 className="text-xs font-medium text-indigo-600 hover:text-indigo-700 flex items-center gap-1.5 transition-colors bg-indigo-50 px-3 py-1.5 rounded-full"
               >
-                <Copy className="w-3.5 h-3.5" /> {t('tools_ui.common.copy')}
+                {copiedId === 'essay-result' ? (
+                  <>
+                    <Check className="w-3.5 h-3.5" /> {t('tools_ui.common.copied')}
+                  </>
+                ) : (
+                  <>
+                    <Copy className="w-3.5 h-3.5" /> {t('tools_ui.common.copy')}
+                  </>
+                )}
               </button>
             </div>
             <div className="flex-1 p-8 overflow-y-auto custom-scrollbar bg-white">

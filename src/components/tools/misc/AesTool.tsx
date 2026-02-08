@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
 import CryptoJS from 'crypto-js';
-import { Copy, Lock, Unlock } from 'lucide-react';
+import { Copy, Lock, Unlock, Check } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import '../../../i18n';
+import { useCopyToClipboard } from '../../common/hooks/useCopyToClipboard';
 
 // Types and Enums
 const MODES = {
@@ -55,6 +56,7 @@ export default function AesTool() {
   const { t } = useTranslation();
   const [encState, setEncState] = useState<State>({ ...defaultState });
   const [decState, setDecState] = useState<State>({ ...defaultState, format: "Utf8" });
+  const { copiedId, handleCopy } = useCopyToClipboard();
 
   const process = (isEncrypt: boolean) => {
     const state = isEncrypt ? encState : decState;
@@ -159,9 +161,7 @@ export default function AesTool() {
       setter(prev => ({ ...prev, [key]: value }));
   };
 
-  const copyToClipboard = (text: string) => {
-    navigator.clipboard.writeText(text);
-  };
+
 
   return (
     <div className="max-w-7xl mx-auto p-4 sm:p-6 lg:p-8">
@@ -232,10 +232,18 @@ export default function AesTool() {
                 <label className="block text-sm font-medium text-gray-700">{t('tools_ui.aes_tool.encrypted_output')}</label>
                  {encState.output && (
                   <button 
-                    onClick={() => copyToClipboard(encState.output)}
+                    onClick={() => handleCopy(encState.output, 'enc-output')}
                     className="text-xs flex items-center gap-1 text-blue-600 hover:text-blue-700 font-medium cursor-pointer"
                   >
-                    <Copy className="w-3 h-3" /> {t('tools_ui.common.copy')}
+                    {copiedId === 'enc-output' ? (
+                      <>
+                        <Check className="w-3 h-3" /> {t('tools_ui.common.copied')}
+                      </>
+                    ) : (
+                      <>
+                        <Copy className="w-3 h-3" /> {t('tools_ui.common.copy')}
+                      </>
+                    )}
                   </button>
                  )}
               </div>
@@ -328,10 +336,18 @@ export default function AesTool() {
                 <label className="block text-sm font-medium text-gray-700">{t('tools_ui.aes_tool.decrypted_output')}</label>
                  {decState.output && (
                   <button 
-                    onClick={() => copyToClipboard(decState.output)}
+                    onClick={() => handleCopy(decState.output, 'dec-output')}
                     className="text-xs flex items-center gap-1 text-green-600 hover:text-green-700 font-medium cursor-pointer"
                   >
-                    <Copy className="w-3 h-3" /> {t('tools_ui.common.copy')}
+                    {copiedId === 'dec-output' ? (
+                      <>
+                        <Check className="w-3 h-3" /> {t('tools_ui.common.copied')}
+                      </>
+                    ) : (
+                      <>
+                        <Copy className="w-3 h-3" /> {t('tools_ui.common.copy')}
+                      </>
+                    )}
                   </button>
                  )}
               </div>

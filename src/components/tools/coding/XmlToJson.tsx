@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
-import { Copy, FileJson, ArrowRightLeft, AlertCircle } from 'lucide-react';
+import { Copy, FileJson, ArrowRightLeft, AlertCircle, Check } from 'lucide-react';
 import { xml2json, json2xml } from 'xml-js';
 import { useTranslation } from 'react-i18next';
 import '../../../i18n';
+import { useCopyToClipboard } from '../../common/hooks/useCopyToClipboard';
 
 export default function XmlToJson() {
   const { t } = useTranslation();
@@ -10,6 +11,7 @@ export default function XmlToJson() {
   const [output, setOutput] = useState<string>("");
   const [mode, setMode] = useState<'xml2json' | 'json2xml'>('xml2json');
   const [error, setError] = useState<string>("");
+  const { copiedId, handleCopy } = useCopyToClipboard();
 
   const convert = () => {
     setError("");
@@ -31,9 +33,7 @@ export default function XmlToJson() {
     }
   };
 
-  const copyToClipboard = () => {
-    navigator.clipboard.writeText(output);
-  };
+
 
   const loadSample = () => {
     if (mode === 'xml2json') {
@@ -133,10 +133,18 @@ export default function XmlToJson() {
 
             {output && (
                  <button 
-                    onClick={copyToClipboard}
+                    onClick={() => handleCopy(output, 'xml-json-output')}
                     className="flex items-center gap-1.5 text-xs font-medium text-gray-600 hover:text-purple-600 transition-colors"
                   >
-                    <Copy className="w-3.5 h-3.5" /> {t('tools_ui.common.copy')}
+                    {copiedId === 'xml-json-output' ? (
+                      <>
+                        <Check className="w-3.5 h-3.5" /> {t('tools_ui.common.copied')}
+                      </>
+                    ) : (
+                      <>
+                        <Copy className="w-3.5 h-3.5" /> {t('tools_ui.common.copy')}
+                      </>
+                    )}
                   </button>
             )}
           </div>

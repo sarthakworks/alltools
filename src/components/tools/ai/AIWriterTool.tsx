@@ -1,56 +1,25 @@
-import React, { useState, useEffect } from 'react';
-import { Copy, Loader2, Sparkles, Wand2, AlertTriangle, MonitorPlay } from 'lucide-react';
-import { useTranslation } from 'react-i18next';
-import { cn } from '../../common/utils';
-
-// Helper for type safety with the experimental API
-declare global {
-  interface Window {
-    ai?: {
-      languageModel?: {
-        capabilities: () => Promise<{ available: 'readily' | 'after-download' | 'no' }>;
-        create: (options?: any) => Promise<{
-          prompt: (text: string) => Promise<string>;
-          destroy: () => void;
-        }>;
-      };
-    };
-  }
-}
+import React, { useState } from 'react';
+import { Copy, Loader2, Sparkles, Wand2 } from 'lucide-react';
+import { cn, createAISession, streamAIResponse } from '../../common/utils';
+import { useChromeAI } from '../../common/hooks/useChromeAI';
+import { useCopyToClipboard } from '../../common/hooks/useCopyToClipboard';
+import { AIUnavailableMessage } from '../../common/chromeAiUnavailableMsg';
+import type { LanguageModelSession } from '../../common/types/chromeAI.types';
+import '../../common/types/chromeAI.types';
 
 export default function AIWriterTool() {
-  const { t } = useTranslation();
   const [topic, setTopic] = useState('');
   const [tone, setTone] = useState('professional');
   const [type, setType] = useState('article');
   const [result, setResult] = useState('');
   const [isGenerating, setIsGenerating] = useState(false);
-  const [modelStatus, setModelStatus] = useState<'checking' | 'ready' | 'downloading' | 'unavailable'>('checking');
   const [errorMessage, setErrorMessage] = useState('');
+  
+  // Use custom hooks
+  const { modelStatus, checkAvailability } = useChromeAI();
+  const { copiedId, handleCopy } = useCopyToClipboard();
 
-  useEffect(() => {
-    checkAvailability();
-  }, []);
 
-  const checkAvailability = async () => {
-    if (!window.ai || !window.ai.languageModel) {
-      setModelStatus('unavailable');
-      return;
-    }
-
-    try {
-      const capabilities = await window.ai.languageModel.capabilities();
-      if (capabilities.available === 'readily') {
-        setModelStatus('ready');
-      } else if (capabilities.available === 'after-download') {
-        setModelStatus('downloading');
-      } else {
-        setModelStatus('unavailable');
-      }
-    } catch (e) {
-      setModelStatus('unavailable');
-    }
-  };
 
   const generateContent = async () => {
     if (!topic || modelStatus !== 'ready') return;
@@ -58,31 +27,27 @@ export default function AIWriterTool() {
     setResult('');
     setErrorMessage('');
 
-    let session;
+    let session: LanguageModelSession | undefined;
     try {
-      // Create a session (this might trigger download if status was 'after-download', but we check 'ready' first)
-      session = await window.ai!.languageModel!.create({
+      // Create AI session using shared utility
+      session = await createAISession({
         systemPrompt: `You are a helpful AI writing assistant. user wants a ${tone} ${type}.`
       });
 
       const prompt = `Write a ${tone} ${type} about "${topic}". Make it engaging and well-structured.`;
       
-      const stream = await session.prompt(prompt);
-      setResult(stream);
+      // Stream response using shared utility
+      await streamAIResponse(session, prompt, (chunk) => {
+        setResult(prev => prev + chunk);
+      });
 
     } catch (error: any) {
       console.error('Generation error:', error);
       setErrorMessage(error.message || 'Failed to generate content using offline model.');
     } finally {
-      if (session) {
-        session.destroy();
-      }
+      if (session) session.destroy();
       setIsGenerating(false);
     }
-  };
-
-  const copyToClipboard = () => {
-    navigator.clipboard.writeText(result);
   };
 
   return (
@@ -92,130 +57,61 @@ export default function AIWriterTool() {
           <div className="flex items-center justify-between">
             <h3 className="font-bold text-gray-900 flex items-center gap-2">
               <Sparkles className="w-5 h-5 text-purple-600" />
-              {t('tools_ui.ai_writer_tool.title')}
+              AI Content Writer
             </h3>
             <span className={cn("text-xs font-medium px-2 py-1 rounded-full border", 
               modelStatus === 'ready' ? "bg-green-50 text-green-700 border-green-200" :
               modelStatus === 'unavailable' ? "bg-red-50 text-red-700 border-red-200" :
               "bg-yellow-50 text-yellow-700 border-yellow-200"
             )}>
-              {modelStatus === 'ready' ? t('tools_ui.common.model_ready') : 
-               modelStatus === 'checking' ? t('tools_ui.common.checking_cpu') :
-               modelStatus === 'downloading' ? t('tools_ui.common.model_downloading') : t('tools_ui.common.browser_unsupported')}
+              {modelStatus === 'ready' ? "Model Ready" : 
+               modelStatus === 'checking' ? "Checking System..." :
+               modelStatus === 'downloading' ? "Downloading Model..." : "AI Unsupported"}
             </span>
           </div>
 
           {modelStatus === 'unavailable' ? (
-            <div className="p-4 bg-amber-50 border border-amber-200 rounded-xl space-y-4">
-              <div className="flex gap-3">
-                <AlertTriangle className="w-5 h-5 text-amber-600 shrink-0 mt-0.5" />
-                <div className="text-sm text-amber-800 space-y-3">
-                  <div>
-                    <p className="font-bold">{t('tools_ui.ai_writer_tool.offline_not_detected')}</p>
-                    <p>Status: {
-                      !window.ai ? "'window.ai' is undefined (Flag disabled/Old Chrome)" : 
-                      !window.ai.languageModel ? "'languageModel' API missing" : 
-                      "Model capabilities check failed"
-                    }</p>
-                  </div>
-                  
-                  <div className="bg-white/50 p-3 rounded-lg border border-amber-100">
-                    <p className="font-bold mb-2">{t('tools_ui.ai_writer_tool.troubleshooting')}</p>
-                    <ol className="list-decimal pl-4 space-y-2 opacity-90">
-                      <li>
-                        <div className="flex items-center gap-2 flex-wrap">
-                          <span><b>Flags:</b> Set to "Enabled":</span>
-                          <div className="flex items-center gap-1 bg-white px-2 py-0.5 rounded border border-gray-200 text-[10px] font-mono select-all">
-                            chrome://flags/#prompt-api-for-gemini-nano
-                          </div>
-                          <button 
-                            onClick={() => navigator.clipboard.writeText('chrome://flags/#prompt-api-for-gemini-nano')}
-                            className="p-1 hover:bg-black/5 rounded transition-colors"
-                            title="Copy Link"
-                          >
-                            <Copy className="w-3 h-3" />
-                          </button>
-                        </div>
-                      </li>
-                      <li>
-                        <div className="flex items-center gap-2 flex-wrap mb-1">
-                          <span><b>Model Download:</b> Check update at:</span>
-                          <div className="flex items-center gap-1 bg-white px-2 py-0.5 rounded border border-gray-200 text-[10px] font-mono select-all">
-                            chrome://components
-                          </div>
-                          <button 
-                            onClick={() => navigator.clipboard.writeText('chrome://components')}
-                            className="p-1 hover:bg-black/5 rounded transition-colors"
-                            title="Copy Link"
-                          >
-                            <Copy className="w-3 h-3" />
-                          </button>
-                        </div>
-                        <ul className="list-disc pl-4 text-xs space-y-0.5 mt-1">
-                          <li>Find <b>Optimization Guide On Device Model</b></li>
-                          <li>Click "Check for update"</li>
-                          <li>Wait until Version is not <code>0.0.0.0</code></li>
-                        </ul>
-                      </li>
-                      <li className="font-medium text-amber-900">Restart Chrome completely after these steps.</li>
-                    </ol>
-                  </div>
-
-                  <button 
-                    onClick={checkAvailability}
-                    className="flex items-center gap-2 px-3 py-1.5 bg-amber-100 hover:bg-amber-200 text-amber-900 rounded-lg text-xs font-semibold transition-colors"
-                  >
-                    <MonitorPlay className="w-3 h-3" /> {t('tools_ui.common.recheck')}
-                  </button>
-                </div>
-              </div>
-            </div>
+            <AIUnavailableMessage onRecheck={checkAvailability} />
           ) : (
             <div className="space-y-5">
               <div className="space-y-2">
-                <label className="text-sm font-medium text-gray-700">{t('tools_ui.ai_writer_tool.topic_label')}</label>
+                <label className="text-sm font-medium text-gray-700">What do you want to write about?</label>
                 <textarea 
                   value={topic}
                   onChange={(e) => setTopic(e.target.value)}
-                  placeholder={t('tools_ui.ai_writer_tool.topic_placeholder')}
+                  placeholder="e.g. The future of artificial intelligence in web development"
                   rows={4}
-                  className="w-full bg-white border border-gray-200 rounded-xl px-4 py-3 text-gray-900 focus:outline-none focus:ring-2 focus:ring-purple-500 transition-all resize-none shadow-sm placeholder:text-gray-400"
+                  className="w-full bg-white border border-gray-200 rounded-xl px-4 py-3 text-gray-900 focus:outline-none focus:ring-2 focus:ring-purple-500 transition-all resize-none shadow-sm"
                 />
               </div>
 
               <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-2">
-                  <label className="text-sm font-medium text-gray-700">{t('tools_ui.ai_writer_tool.type_label')}</label>
-                  <div className="relative">
-                    <select 
-                      value={type}
-                      onChange={(e) => setType(e.target.value)}
-                      className="w-full bg-white border border-gray-200 rounded-lg px-4 py-2.5 text-gray-900 focus:outline-none focus:ring-2 focus:ring-purple-500 appearance-none shadow-sm cursor-pointer"
-                    >
-                      <option value="article">Article</option>
-                      <option value="blog post">Blog Post</option>
-                      <option value="email">Email</option>
-                      <option value="social media caption">Social Caption</option>
-                      <option value="story">Story</option>
-                    </select>
-                  </div>
+                  <label className="text-sm font-medium text-gray-700">Content Type</label>
+                  <select 
+                    value={type}
+                    onChange={(e) => setType(e.target.value)}
+                    className="w-full bg-white border border-gray-200 rounded-lg px-4 py-2.5 text-gray-900 focus:outline-none focus:ring-2 focus:ring-purple-500 appearance-none shadow-sm"
+                  >
+                    <option value="article">Article</option>
+                    <option value="blog post">Blog Post</option>
+                    <option value="email">Email</option>
+                    <option value="social media caption">Social Caption</option>
+                  </select>
                 </div>
 
                 <div className="space-y-2">
-                  <label className="text-sm font-medium text-gray-700">{t('tools_ui.ai_writer_tool.tone_label')}</label>
-                  <div className="relative">
-                    <select 
-                      value={tone}
-                      onChange={(e) => setTone(e.target.value)}
-                      className="w-full bg-white border border-gray-200 rounded-lg px-4 py-2.5 text-gray-900 focus:outline-none focus:ring-2 focus:ring-purple-500 appearance-none shadow-sm cursor-pointer"
-                    >
-                      <option value="professional">Professional</option>
-                      <option value="casual">Casual</option>
-                      <option value="enthusiastic">Enthusiastic</option>
-                      <option value="informative">Informative</option>
-                      <option value="funny">Funny</option>
-                    </select>
-                  </div>
+                  <label className="text-sm font-medium text-gray-700">Tone</label>
+                  <select 
+                    value={tone}
+                    onChange={(e) => setTone(e.target.value)}
+                    className="w-full bg-white border border-gray-200 rounded-lg px-4 py-2.5 text-gray-900 focus:outline-none focus:ring-2 focus:ring-purple-500 appearance-none shadow-sm"
+                  >
+                    <option value="professional">Professional</option>
+                    <option value="casual">Casual</option>
+                    <option value="enthusiastic">Enthusiastic</option>
+                    <option value="informative">Informative</option>
+                  </select>
                 </div>
               </div>
 
@@ -228,15 +124,15 @@ export default function AIWriterTool() {
               <button
                 onClick={generateContent}
                 disabled={isGenerating || !topic || modelStatus !== 'ready'}
-                className="w-full bg-linear-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 text-white py-4 rounded-xl font-bold transition-all shadow-lg shadow-purple-500/20 flex items-center justify-center gap-2 transform active:scale-95 disabled:opacity-50 disabled:scale-100 disabled:cursor-not-allowed"
+                className="w-full bg-indigo-600 hover:bg-indigo-700 text-white py-4 rounded-xl font-bold transition-all shadow-lg flex items-center justify-center gap-2 disabled:opacity-50"
               >
                 {isGenerating ? (
                   <>
-                    <Loader2 className="animate-spin w-5 h-5" /> {t('tools_ui.ai_writer_tool.generating')}
+                    <Loader2 className="animate-spin w-5 h-5" /> Generating...
                   </>
                 ) : (
                   <>
-                    <MonitorPlay className="w-5 h-5" /> {t('tools_ui.ai_writer_tool.generate_button')}
+                    <Wand2 className="w-5 h-5" /> Generate Content
                   </>
                 )}
               </button>
@@ -249,18 +145,21 @@ export default function AIWriterTool() {
         {result ? (
           <div className="flex-1 bg-white border border-gray-200 rounded-2xl overflow-hidden flex flex-col animate-in fade-in shadow-sm">
             <div className="p-4 border-b border-gray-100 flex items-center justify-between bg-gray-50">
-              <span className="text-sm font-medium text-gray-500">{t('tools_ui.common.offline_result')}</span>
+              <span className="text-sm font-medium text-gray-500">Offline Result</span>
               <button 
-                onClick={copyToClipboard}
-                className="text-xs font-medium text-blue-600 hover:text-blue-700 flex items-center gap-1.5 transition-colors bg-blue-50 px-3 py-1.5 rounded-full"
+                onClick={() => handleCopy(result, 'result-copy')}
+                className={cn(
+                  "text-xs font-medium flex items-center gap-1.5 transition-colors px-3 py-1.5 rounded-full cursor-pointer",
+                  copiedId === 'result-copy' ? "bg-green-100 text-green-700" : "text-blue-600 hover:text-blue-700 bg-blue-50"
+                )}
               >
-                <Copy className="w-3.5 h-3.5" /> {t('tools_ui.common.copy')}
+                <Copy className="w-3.5 h-3.5" /> {copiedId === 'result-copy' ? 'Copied!' : 'Copy'}
               </button>
             </div>
-            <div className="flex-1 p-8 overflow-y-auto custom-scrollbar bg-white">
-              <div className="prose prose-gray max-w-none prose-headings:text-gray-900 prose-p:text-gray-600 prose-strong:text-gray-900">
+            <div className="flex-1 p-8 overflow-y-auto bg-white">
+              <div className="prose prose-gray max-w-none">
                 {result.split('\n').map((line, i) => (
-                    <p key={i} className="mb-4">{line}</p>
+                    <p key={i} className="mb-4 text-gray-600">{line}</p>
                 ))}
               </div>
             </div>
@@ -268,9 +167,9 @@ export default function AIWriterTool() {
         ) : (
           <div className="flex-1 bg-gray-50 border-2 border-dashed border-gray-200 rounded-2xl flex items-center justify-center text-gray-400 p-8 text-center">
             <div>
-              <Sparkles className="w-12 h-12 mx-auto mb-4 opacity-50 text-gray-300" />
-              <p className="font-medium text-gray-500">{t('tools_ui.common.generated_content_placeholder')}</p>
-              <p className="text-xs text-gray-400 mt-2">{t('tools_ui.common.runs_locally')}</p>
+              <Sparkles className="w-12 h-12 mx-auto mb-4 opacity-30 text-gray-400" />
+              <p className="font-medium text-gray-500">Your content will appear here</p>
+              <p className="text-xs text-gray-400 mt-2">Powered by local Gemini Nano</p>
             </div>
           </div>
         )}

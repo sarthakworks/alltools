@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
-import { Copy, FileCode, AlignLeft, AlertCircle } from 'lucide-react';
+import { Copy, FileCode, AlignLeft, AlertCircle, Check } from 'lucide-react';
 import * as prettier from "prettier/standalone";
 import * as parserPostcss from "prettier/plugins/postcss";
 import { useTranslation } from 'react-i18next';
+import { useCopyToClipboard } from '../../common/hooks/useCopyToClipboard';
 
 export default function CssFormatter() {
   const { t } = useTranslation();
@@ -10,6 +11,7 @@ export default function CssFormatter() {
   const [output, setOutput] = useState<string>("");
   const [error, setError] = useState<string>("");
   const [indentSize, setIndentSize] = useState<number>(2);
+  const { copiedId, handleCopy } = useCopyToClipboard();
 
   const formatCss = async () => {
     setError("");
@@ -41,9 +43,7 @@ export default function CssFormatter() {
     }
   };
 
-  const copyToClipboard = () => {
-    navigator.clipboard.writeText(output);
-  };
+
 
   const loadSample = () => {
     const sample = `body{background:#fff;font-family:sans-serif}h1{color:#333;font-size:2rem}.container{display:flex;justify-content:center}`;
@@ -110,14 +110,22 @@ export default function CssFormatter() {
                 </button>
             </div>
 
-            {output && (
+             {output && (
                  <button 
-                    onClick={copyToClipboard}
+                    onClick={() => handleCopy(output, 'css-output')}
                     className="flex items-center gap-1.5 text-xs font-medium text-gray-600 hover:text-blue-600 transition-colors"
                   >
-                    <Copy className="w-3.5 h-3.5" /> {t('tools_ui.common.copy')}
+                    {copiedId === 'css-output' ? (
+                      <>
+                        <Check className="w-3.5 h-3.5" /> {t('tools_ui.common.copied')}
+                      </>
+                    ) : (
+                      <>
+                        <Copy className="w-3.5 h-3.5" /> {t('tools_ui.common.copy')}
+                      </>
+                    )}
                   </button>
-            )}
+             )}
           </div>
 
           <div className="p-4 grow flex flex-col relative">

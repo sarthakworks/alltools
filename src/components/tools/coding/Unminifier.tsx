@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Copy, FileCode, Maximize2, AlertCircle } from 'lucide-react';
+import { Copy, FileCode, Maximize2, AlertCircle, Check } from 'lucide-react';
 import * as prettier from "prettier/standalone";
 import * as parserHtml from "prettier/plugins/html";
 import * as parserEstree from "prettier/plugins/estree";
@@ -8,6 +8,7 @@ import * as parserPostcss from "prettier/plugins/postcss"; // CSS
 import { xml2json, json2xml } from 'xml-js';
 import { useTranslation } from 'react-i18next';
 import '../../../i18n';
+import { useCopyToClipboard } from '../../common/hooks/useCopyToClipboard';
 
 export default function Unminifier() {
   const { t } = useTranslation();
@@ -15,6 +16,7 @@ export default function Unminifier() {
   const [output, setOutput] = useState<string>("");
   const [error, setError] = useState<string>("");
   const [lang, setLang] = useState<string>("html");
+  const { copiedId, handleCopy } = useCopyToClipboard();
 
   const unminify = async () => {
     setError("");
@@ -52,9 +54,7 @@ export default function Unminifier() {
     }
   };
 
-  const copyToClipboard = () => {
-    navigator.clipboard.writeText(output);
-  };
+
 
   const loadSample = () => {
     if (lang === 'html') setInput('<div class="box"><h1>Title</h1><p>Content</p></div>');
@@ -135,10 +135,18 @@ export default function Unminifier() {
 
             {output && (
                  <button 
-                    onClick={copyToClipboard}
+                    onClick={() => handleCopy(output, 'unminify-output')}
                     className="flex items-center gap-1.5 text-xs font-medium text-gray-600 hover:text-indigo-600 transition-colors"
                   >
-                    <Copy className="w-3.5 h-3.5" /> {t('tools_ui.common.copy')}
+                    {copiedId === 'unminify-output' ? (
+                      <>
+                        <Check className="w-3.5 h-3.5" /> {t('tools_ui.common.copied')}
+                      </>
+                    ) : (
+                      <>
+                        <Copy className="w-3.5 h-3.5" /> {t('tools_ui.common.copy')}
+                      </>
+                    )}
                   </button>
             )}
           </div>

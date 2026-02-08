@@ -3,6 +3,7 @@ import { Copy, GitCompare, Trash2, ArrowRightLeft, ArrowRight, RotateCcw, Check 
 import * as Diff from 'diff';
 import { useTranslation } from 'react-i18next';
 import '../../../i18n';
+import { useCopyToClipboard } from '../../common/hooks/useCopyToClipboard';
 
 interface DiffRow {
   leftLineNumber: number | null;
@@ -25,6 +26,7 @@ export default function DiffChecker() {
   // 'right' (undefined/default) = Keep Modified.
   // 'left' = Overwrite with Original (Revert).
   const [mergeState, setMergeState] = useState<Record<string, 'left' | 'right'>>({});
+  const { copiedId, handleCopy } = useCopyToClipboard();
 
   const processDiff = (origText: string, modText: string) => {
     if (!origText && !modText) {
@@ -200,9 +202,7 @@ console.log(add(1, 2));`);
      .join('\n');
   }, [diffRows, mergeState]);
 
-  const copyMerged = () => {
-      navigator.clipboard.writeText(mergedText);
-  };
+
 
   return (
     <div className="max-w-[1600px] mx-auto p-4 sm:p-6 lg:p-8">
@@ -302,8 +302,19 @@ console.log(add(1, 2));`);
                           <Check className="w-3.5 h-3.5" /> {t('tools_ui.diff_checker.accept_all')}
                       </button>
                       <div className="h-6 w-px bg-gray-300 mx-2"></div>
-                       <button onClick={copyMerged} className="px-4 py-1.5 text-xs font-bold bg-cyan-600 text-white rounded-md hover:bg-cyan-700 flex items-center gap-1.5 shadow-sm shadow-cyan-600/20">
-                          <Copy className="w-3.5 h-3.5" /> {t('tools_ui.diff_checker.copy_merged')}
+                       <button 
+                         onClick={() => handleCopy(mergedText, 'merged-output')} 
+                         className="px-4 py-1.5 text-xs font-bold bg-cyan-600 text-white rounded-md hover:bg-cyan-700 flex items-center gap-1.5 shadow-sm shadow-cyan-600/20"
+                       >
+                         {copiedId === 'merged-output' ? (
+                           <>
+                             <Check className="w-3.5 h-3.5" /> {t('tools_ui.common.copied')}
+                           </>
+                         ) : (
+                           <>
+                             <Copy className="w-3.5 h-3.5" /> {t('tools_ui.diff_checker.copy_merged')}
+                           </>
+                         )}
                       </button>
                   </div>
               </div>

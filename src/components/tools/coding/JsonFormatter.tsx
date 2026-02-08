@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
-import { Copy, FileJson, Minimize2, AlignLeft, AlertCircle } from 'lucide-react';
+import { Copy, FileJson, Minimize2, AlignLeft, AlertCircle, Check } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import '../../../i18n';
+import { useCopyToClipboard } from '../../common/hooks/useCopyToClipboard';
 
 export default function JsonFormatter() {
   const { t } = useTranslation();
@@ -9,6 +10,7 @@ export default function JsonFormatter() {
   const [output, setOutput] = useState<string>("");
   const [error, setError] = useState<string>("");
   const [indentation, setIndentation] = useState<number | string>(2);
+  const { copiedId, handleCopy } = useCopyToClipboard();
 
   const formatJson = () => {
     setError("");
@@ -40,9 +42,7 @@ export default function JsonFormatter() {
     }
   };
 
-  const copyToClipboard = () => {
-    navigator.clipboard.writeText(output);
-  };
+
 
   const loadSample = () => {
     const sample = {
@@ -127,10 +127,18 @@ export default function JsonFormatter() {
 
             {output && (
                  <button 
-                    onClick={copyToClipboard}
+                    onClick={() => handleCopy(output, 'json-output')}
                     className="flex items-center gap-1.5 text-xs font-medium text-gray-600 hover:text-teal-600 transition-colors"
                   >
-                    <Copy className="w-3.5 h-3.5" /> {t('tools_ui.common.copy')}
+                    {copiedId === 'json-output' ? (
+                      <>
+                        <Check className="w-3.5 h-3.5" /> {t('tools_ui.common.copied')}
+                      </>
+                    ) : (
+                      <>
+                        <Copy className="w-3.5 h-3.5" /> {t('tools_ui.common.copy')}
+                      </>
+                    )}
                   </button>
             )}
           </div>

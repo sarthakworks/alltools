@@ -54,3 +54,15 @@
     text-wrap: balance;
   }
 }
+
+/* common styles below */
+button,
+a,
+select {
+  cursor: pointer;
+}
+
+input,
+textarea {
+  cursor: text;
+}
